@@ -4,21 +4,20 @@ require_relative "lib/yard/markdown/version"
 
 Gem::Specification.new do |spec|
   spec.name = "yard-markdown"
-  spec.version = Yard::Markdown::VERSION
+  spec.version = YARD::Markdown::VERSION
   spec.authors = ["Stanislav (Stas) Katkov"]
-  spec.email = ["yard@skatkov.com"]
+  spec.email = ["yard-markdown@skatkov.com"]
 
-  spec.summary = "TODO: Write a short summary, because RubyGems requires one."
-  spec.description = "TODO: Write a longer description or delete this line."
-  spec.homepage = "https://github.com/skatkov/yard-markdown"
+  spec.summary = "yard-markdown is a yard plugin template to generate markdown files"
+  spec.description = "yard-markdown is a yard plugin template to generate markdown files"
+  spec.homepage = "https://poshtui.com"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
 
   spec.metadata["allowed_push_host"] = "TODO: Set to your gem server 'https://example.com'"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "TODO: Put your gem's public repo URL here."
-  spec.metadata["changelog_uri"] = "TODO: Put your gem's CHANGELOG.md URL here."
+  spec.metadata["source_code_uri"] = "https://github.com/skatkov/yard-markdown"
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
@@ -37,4 +36,6 @@ Gem::Specification.new do |spec|
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
+
+  spec.add_dependency "yard"
 end

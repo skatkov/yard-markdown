@@ -7,3 +7,4 @@
 /spec/reports/
 /tmp/
 .vscode/
+.DS_Store
