@@ -105,12 +105,15 @@ class Duck
   # Use when in trouble.
   @@rubber_ducks = []
 
-  # Returns list of all rubber ducks.
+  # @return [Array<Duck>] list of all rubber ducks
   def self.rubber_ducks
     @@rubber_ducks
   end
 
   # Creates a new duck.
+  #
+  # @param [Boolean] domestic
+  # @param [Boolean] rubber
   def initialize(domestic, rubber)
     @domestic = domestic
     @rubber = rubber

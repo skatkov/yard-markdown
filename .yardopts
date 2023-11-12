@@ -1,5 +1,6 @@
 --load ./lib/yard/markdown.rb
 --format markdown
+--markup markdown
 --private
 --protected
 -

@@ -2,9 +2,10 @@
 
 require 'yard'
 require_relative "markdown/version"
+require_relative "serializers/markdown_serializer"
 
 module YARD
   module Markdown
-    YARD::Templates::Engine.register_template_path "#{File.dirname(__FILE__)}/../../templates"
+    YARD::Templates::Engine.register_template_path "/../../templates"
   end
 end
