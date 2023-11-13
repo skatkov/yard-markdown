@@ -16,7 +16,9 @@ def init
 
   objects.each do |object|
     begin
-      serialize(object)
+      Templates::Engine.with_serializer(object, options.serializer) do
+        serialize(object)
+      end
     rescue => e
       path = options.serializer.serialized_path(object)
       log.error "Exception occurred while generating '#{path}'"
@@ -25,11 +27,10 @@ def init
   end
 end
 
-# Generate an document for the specified object. This method is used by
-# most of the objects found in the Registry.
-# @param [CodeObject] object to be saved to Markdown
-def serialize(object)
-  options.object = object
 
-  object.format(format: 'markdown', markup: 'markdown')
+def serialize(object)
+  {
+    test: 'test',
+    object_docstring: object.docstring
+  }
 end
