@@ -17,6 +17,8 @@ def init
   options.serializer.extension = "md"
 
   objects.each do |object|
+    next if object.name == :root
+
     begin
       Templates::Engine.with_serializer(object, options.serializer) do
         serialize(object)
