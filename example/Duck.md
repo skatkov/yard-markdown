@@ -1,4 +1,4 @@
-# Duck
+# Class: Duck
 A duck is a Waterfowl Bird.
 
 Features:

@@ -32,9 +32,9 @@ def init
 end
 
 def serialize(object)
-  template = ERB.new(%q{# <%= object.title %>
+  template = ERB.new(%q{# <%= format_object_title object %>
   <%= object.docstring %>
-  }.gsub(/^  /, ''), trim_mode: "%<>")
+  }.gsub(/^  /, ''))
 
   template.result(binding)
 end
