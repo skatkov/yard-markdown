@@ -33,8 +33,57 @@ end
 
 def serialize(object)
   template = ERB.new(%q{# <%= format_object_title object %>
-  <%= object.docstring %>
-  }.gsub(/^  /, ''))
+<%= object.docstring %>
+
+
+<% if constant_listing.size > 0 %>
+<% groups(constant_listing, "Constant") do |list, name| %>
+  ## <%= name %>
+  | Name | Value | Description |
+  | ---- | ---- | ----------- |
+  <% list.each do |cnst| %>
+  |<%= cnst.name %> | <%= cnst.value %> | <%= cnst.docstring %>
+  <% end %>
+<% end %>
+<% end %>
+  }.gsub(/^  /, ''), trim_mode: "%<>")
 
   template.result(binding)
+end
+
+def constant_listing
+  return @constants if defined?(@constants) && @constants
+  @constants = object.constants(:included => false, :inherited => false)
+  @constants += object.cvars
+  @constants
+end
+
+def groups(list, type = "Method")
+  groups_data = object.groups
+  if groups_data
+    list.each {|m| groups_data |= [m.group] if m.group && owner != m.namespace }
+    others = list.select {|m| !m.group || !groups_data.include?(m.group) }
+    groups_data.each do |name|
+      items = list.select {|m| m.group == name }
+      yield(items, name) unless items.empty?
+    end
+  else
+    others = []
+    group_data = {}
+    list.each do |itm|
+      if itm.group
+        (group_data[itm.group] ||= []) << itm
+      else
+        others << itm
+      end
+    end
+    group_data.each {|group, items| yield(items, group) unless items.empty? }
+  end
+
+  return if others.empty?
+  if others.first.respond_to?(:scope)
+    scopes(others) {|items, scope| yield(items, "#{scope.to_s.capitalize} #{type}") }
+  else
+    yield(others, type)
+  end
 end
