@@ -5,3 +5,7 @@ A mixin for waterfowl creatures.
 | Name | Value | Description |
 | ---- | ---- | ----------- |
 |DEFAULT_DUCK_VELOCITY | 70 | Default velocity for a flying duck.
+
+# Public Instance Methods
+## #swim
+

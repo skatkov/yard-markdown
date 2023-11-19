@@ -16,6 +16,8 @@ def init
 
   options.serializer.extension = "md"
 
+  generate_method_list
+
   objects.each do |object|
     next if object.name == :root
 
@@ -46,6 +48,20 @@ def serialize(object)
   <% end %>
 <% end %>
 <% end %>
+
+<% if (insmeths = public_instance_methods(object)).size > 0 %>
+  # Public Instance Methods
+  <% insmeths.each do |item| %>
+  ## <%= item.name(true) %>
+  <% end %>
+<% end %>
+
+<% if (pubmeths = public_class_methods(object)).size > 0 %>
+  # Public Class Methods
+  <% pubmeths.each do |item| %>
+  ## <%= item.name(true) %>
+  <% end %>
+<% end %>
   }.gsub(/^  /, ''), trim_mode: "%<>")
 
   template.result(binding)
@@ -56,6 +72,30 @@ def constant_listing
   @constants = object.constants(:included => false, :inherited => false)
   @constants += object.cvars
   @constants
+end
+
+include Helpers::ModuleHelper
+
+def public_method_list(object)
+  object.meths(:visibility => [:public]).sort_by {|m| m.name.to_s }
+end
+
+def public_class_methods(object)
+  public_method_list(object).select {|o| o.scope == :class }
+end
+
+def public_instance_methods(object)
+  public_method_list(object).select {|o| o.scope == :instance }
+end
+
+def generate_method_list
+  @items = prune_method_listing(Registry.all(:method), false)
+  @items = @items.reject {|m| m.name.to_s =~ /=$/ && m.is_attribute? }
+  @items = @items.sort_by {|m| m.name.to_s }
+  #@list_title = "Method List"
+  #@list_type = "method"
+  #generate_list_contents
+  #binding.irb
 end
 
 def groups(list, type = "Method")
