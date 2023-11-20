@@ -52,14 +52,17 @@ def serialize(object)
 <% if (insmeths = public_instance_methods(object)).size > 0 %>
   # Public Instance Methods
   <% insmeths.each do |item| %>
-  ## <%= item.name(true) %>
+  ## <%= item.name(true) %>(<%= item.parameters.map {|p| p.join(" ") }.join(", ") %>)
+  <%= item.docstring %>
+
   <% end %>
 <% end %>
 
 <% if (pubmeths = public_class_methods(object)).size > 0 %>
   # Public Class Methods
   <% pubmeths.each do |item| %>
-  ## <%= item.name(true) %>
+  ## <%= item.name(true) %>(<%= item.parameters.map {|p| p.join(" ") }.join(", ") %>)
+  <%= item.docstring %>
   <% end %>
 <% end %>
   }.gsub(/^  /, ''), trim_mode: "%<>")
@@ -95,7 +98,7 @@ def generate_method_list
   #@list_title = "Method List"
   #@list_type = "method"
   #generate_list_contents
-  #binding.irb
+  # binding.irb
 end
 
 def groups(list, type = "Method")
