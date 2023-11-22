@@ -1,15 +1,16 @@
 # Class: Bird
 The base class for all birds.
 
-## Constant
+# Constants
 | Name | Value | Description |
 | ---- | ---- | ----------- |
 |DEFAULT_DUCK_VELOCITY | 70 | Default velocity for a flying duck.
 
 # Public Instance Methods
-## #_fly_impl(_direction , _velocity )
+
+## _fly_impl(_direction , _velocity ) [](#method-i-_fly_impl)
 :nodoc:
-## #fly(direction , velocity )
+## fly(direction , velocity ) [](#method-i-fly)
 Fly somewhere.
 
 Flying is the most critical feature of birds.
@@ -23,9 +24,8 @@ Flying is the most critical feature of birds.
 = Example
 
   fly(:south, 70)
-## #speak()
+## speak() [](#method-i-speak)
 Produce some noise.
 --
 FIXME: maybe extract this to a base class +Animal+?
 ++
-

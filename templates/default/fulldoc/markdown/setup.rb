@@ -39,8 +39,8 @@ def serialize(object)
 
 
 <% if constant_listing.size > 0 %>
-<% groups(constant_listing, "Constant") do |list, name| %>
-  ## <%= name %>
+<% groups(constant_listing, "Constants") do |list, name| %>
+  # <%= name %>
   | Name | Value | Description |
   | ---- | ---- | ----------- |
   <% list.each do |cnst| %>
@@ -52,22 +52,27 @@ def serialize(object)
 <% if (insmeths = public_instance_methods(object)).size > 0 %>
   # Public Instance Methods
   <% insmeths.each do |item| %>
-  ## <%= item.name(true) %>(<%= item.parameters.map {|p| p.join(" ") }.join(", ") %>)
-  <%= item.docstring %>
 
+  ## <%= item.name(false) %>(<%= item.parameters.map {|p| p.join(" ") }.join(", ") %>) [](#<%=aref(item)%>)
+  <%= item.docstring %>
   <% end %>
 <% end %>
 
 <% if (pubmeths = public_class_methods(object)).size > 0 %>
   # Public Class Methods
   <% pubmeths.each do |item| %>
-  ## <%= item.name(true) %>(<%= item.parameters.map {|p| p.join(" ") }.join(", ") %>)
+  ## <%= item.name(false) %>(<%= item.parameters.map {|p| p.join(" ") }.join(", ") %>) [](#<%=aref(item)%>)
   <%= item.docstring %>
+
   <% end %>
 <% end %>
   }.gsub(/^  /, ''), trim_mode: "%<>")
 
   template.result(binding)
+end
+
+def aref(object)
+  "#{object.type}-#{object.scope[0]}-#{object.name(false)}"
 end
 
 def constant_listing

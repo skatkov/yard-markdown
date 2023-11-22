@@ -12,29 +12,30 @@ Features:
 
    * swim
 
-## Constant
+# Constants
 | Name | Value | Description |
 | ---- | ---- | ----------- |
 |DEFAULT_DUCK_VELOCITY | 70 | Default velocity for a flying duck.
 
 # Public Instance Methods
-## #domestic()
+
+## domestic() [](#method-i-domestic)
 True for domestic ducks.
-## #domestic=(value )
+## domestic=(value ) [](#method-i-domestic=)
 True for domestic ducks.
-## #initialize(domestic , rubber )
+## initialize(domestic , rubber ) [](#method-i-initialize)
 Creates a new duck.
-## #rubber()
+## rubber() [](#method-i-rubber)
 True for rubber ducks.
-## #speak()
+## speak() [](#method-i-speak)
 Duck overrides generic implementation.
-## #swim()
+## swim() [](#method-i-swim)
 Swimming helper.
-## #useful?()
+## useful?() [](#method-i-useful?)
 Checks if this duck is a useful one.
 
 :call-seq:
   Bird.useful? -> bool
-
 # Public Class Methods
-## rubber_ducks()
+## rubber_ducks() [](#method-c-rubber_ducks)
+
