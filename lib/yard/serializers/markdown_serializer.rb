@@ -4,7 +4,7 @@ module YARD
   module Serializers
     class MarkdownSerializer < YARD::Serializers::FileSystemSerializer
       def initialize(opts = {})
-        super(opts.merge(extension: 'md'))
+        super(opts.merge(extension: "md"))
       end
     end
   end

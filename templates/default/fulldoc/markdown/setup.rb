@@ -3,11 +3,11 @@
 # https://github.com/lsegal/yard/blob/2d197a381c5d4cc5c55b2c60fff992b31c986361/docs/CodeObjects.md
 
 require_relative "../../../../lib/yard/serializers/markdown_serializer"
-require 'erb'
+require "erb"
 
 def init
   # here I need to copy README.md if there is one.
-  #I also need to write index.md files
+  # I also need to write index.md files
 
   options.objects = objects = run_verifier(options.objects)
 
@@ -34,7 +34,7 @@ def init
 end
 
 def serialize(object)
-  template = ERB.new(%q{# <%= format_object_title object %>
+  template = ERB.new('# <%= format_object_title object %>
 <%= object.docstring %>
 
 
@@ -66,7 +66,7 @@ def serialize(object)
 
   <% end %>
 <% end %>
-  }.gsub(/^  /, ''), trim_mode: "%<>")
+  '.gsub(/^  /, ""), trim_mode: "%<>")
 
   template.result(binding)
 end
@@ -77,7 +77,7 @@ end
 
 def constant_listing
   return @constants if defined?(@constants) && @constants
-  @constants = object.constants(:included => false, :inherited => false)
+  @constants = object.constants(included: false, inherited: false)
   @constants += object.cvars
   @constants
 end
@@ -85,34 +85,35 @@ end
 include Helpers::ModuleHelper
 
 def public_method_list(object)
-  object.meths(:visibility => [:public]).sort_by {|m| m.name.to_s }
+  object.meths(visibility: [:public]).sort_by { |m| m.name.to_s }
 end
 
 def public_class_methods(object)
-  public_method_list(object).select {|o| o.scope == :class }
+  public_method_list(object).select { |o| o.scope == :class }
 end
 
 def public_instance_methods(object)
-  public_method_list(object).select {|o| o.scope == :instance }
+  public_method_list(object).select { |o| o.scope == :instance }
 end
 
 def generate_method_list
   @items = prune_method_listing(Registry.all(:method), false)
-  @items = @items.reject {|m| m.name.to_s =~ /=$/ && m.is_attribute? }
-  @items = @items.sort_by {|m| m.name.to_s }
-  #@list_title = "Method List"
-  #@list_type = "method"
-  #generate_list_contents
+  @items = @items.reject { |m| m.name.to_s =~ /=$/ && m.is_attribute? }
+  @items = @items.sort_by { |m| m.name.to_s }
+
+  # @list_title = "Method List"
+  # @list_type = "method"
+  # generate_list_contents
   # binding.irb
 end
 
 def groups(list, type = "Method")
   groups_data = object.groups
   if groups_data
-    list.each {|m| groups_data |= [m.group] if m.group && owner != m.namespace }
-    others = list.select {|m| !m.group || !groups_data.include?(m.group) }
+    list.each { |m| groups_data |= [m.group] if m.group && owner != m.namespace }
+    others = list.select { |m| !m.group || !groups_data.include?(m.group) }
     groups_data.each do |name|
-      items = list.select {|m| m.group == name }
+      items = list.select { |m| m.group == name }
       yield(items, name) unless items.empty?
     end
   else
@@ -125,12 +126,12 @@ def groups(list, type = "Method")
         others << itm
       end
     end
-    group_data.each {|group, items| yield(items, group) unless items.empty? }
+    group_data.each { |group, items| yield(items, group) unless items.empty? }
   end
 
   return if others.empty?
   if others.first.respond_to?(:scope)
-    scopes(others) {|items, scope| yield(items, "#{scope.to_s.capitalize} #{type}") }
+    scopes(others) { |items, scope| yield(items, "#{scope.to_s.capitalize} #{type}") }
   else
     yield(others, type)
   end

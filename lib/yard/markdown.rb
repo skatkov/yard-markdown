@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'yard'
+require "yard"
 require_relative "markdown/version"
 require_relative "serializers/markdown_serializer"
 

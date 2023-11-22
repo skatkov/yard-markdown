@@ -2,12 +2,8 @@
 
 require "test_helper"
 
-class Yard::TestMarkdown < Minitest::Test
+class YARD::TestMarkdown < Minitest::Test
   def test_that_it_has_a_version_number
-    refute_nil ::Yard::Markdown::VERSION
-  end
-
-  def test_it_does_something_useful
-    assert false
+    refute_nil ::YARD::Markdown::VERSION
   end
 end
