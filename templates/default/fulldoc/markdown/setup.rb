@@ -66,6 +66,15 @@ def serialize(object)
 
   <% end %>
 <% end %>
+
+<% if (attrs = attr_listing(object)).size > 0 %>
+  # Attributes
+  <% attrs.each do |meth|%>
+  ## <%= meth.name %><%= meth.reader? ? "[RW]" : "[R]" %>
+  <%= meth.docstring %>
+
+  <% end %>
+<% end %>
   '.gsub(/^  /, ""), trim_mode: "%<>")
 
   template.result(binding)
@@ -96,6 +105,23 @@ def public_instance_methods(object)
   public_method_list(object).select { |o| o.scope == :instance }
 end
 
+def attr_listing(object)
+  @attrs = []
+  object.inheritance_tree(true).each do |superclass|
+    next if superclass.is_a?(CodeObjects::Proxy)
+    next if !options.embed_mixins.empty? &&
+            !options.embed_mixins_match?(superclass)
+    [:class, :instance].each do |scope|
+      superclass.attributes[scope].each do |_name, rw|
+        attr = prune_method_listing([rw[:read], rw[:write]].compact, false).first
+        @attrs << attr if attr
+      end
+    end
+    break if options.embed_mixins.empty?
+  end
+  sort_listing @attrs
+end
+
 def generate_method_list
   @items = prune_method_listing(Registry.all(:method), false)
   @items = @items.reject { |m| m.name.to_s =~ /=$/ && m.is_attribute? }
@@ -105,6 +131,10 @@ def generate_method_list
   # @list_type = "method"
   # generate_list_contents
   # binding.irb
+end
+
+def sort_listing(list)
+  list.sort_by {|o| [o.scope.to_s, o.name.to_s.downcase] }
 end
 
 def groups(list, type = "Method")

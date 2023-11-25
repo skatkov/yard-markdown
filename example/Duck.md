@@ -39,3 +39,9 @@ Checks if this duck is a useful one.
 # Public Class Methods
 ## rubber_ducks() [](#method-c-rubber_ducks)
 
+
+# Attributes
+## domestic[RW]
+True for domestic ducks.
+## rubber[RW]
+True for rubber ducks.
