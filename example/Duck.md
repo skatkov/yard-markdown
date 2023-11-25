@@ -19,13 +19,13 @@ Features:
 
 # Public Instance Methods
 
-## domestic() [](#method-i-domestic)
+## domestic() [](#attribute-i-domestic)
 True for domestic ducks.
-## domestic=(value ) [](#method-i-domestic=)
+## domestic=(value ) [](#attribute-i-domestic=)
 True for domestic ducks.
 ## initialize(domestic , rubber ) [](#method-i-initialize)
 Creates a new duck.
-## rubber() [](#method-i-rubber)
+## rubber() [](#attribute-i-rubber)
 True for rubber ducks.
 ## speak() [](#method-i-speak)
 Duck overrides generic implementation.
@@ -39,9 +39,8 @@ Checks if this duck is a useful one.
 # Public Class Methods
 ## rubber_ducks() [](#method-c-rubber_ducks)
 
-
 # Attributes
-## domestic[RW]
+## domestic[RW] [](#attribute-i-domestic)
 True for domestic ducks.
-## rubber[RW]
+## rubber[RW] [](#attribute-i-rubber)
 True for rubber ducks.

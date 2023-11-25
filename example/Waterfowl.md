@@ -10,4 +10,3 @@ A mixin for waterfowl creatures.
 
 ## swim() [](#method-i-swim)
 Swimming helper.
-

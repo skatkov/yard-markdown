@@ -66,12 +66,11 @@ def serialize(object)
 
   <% end %>
 <% end %>
-
 <% if (attrs = attr_listing(object)).size > 0 %>
   # Attributes
-  <% attrs.each do |meth|%>
-  ## <%= meth.name %><%= meth.reader? ? "[RW]" : "[R]" %>
-  <%= meth.docstring %>
+  <% attrs.each do |item|%>
+  ## <%= item.name %><%= item.reader? ? "[RW]" : "[R]" %> [](#<%=aref(item)%>)
+  <%= item.docstring %>
 
   <% end %>
 <% end %>
@@ -81,7 +80,11 @@ def serialize(object)
 end
 
 def aref(object)
-  "#{object.type}-#{object.scope[0]}-#{object.name(false)}"
+  if !object.attr_info.nil?
+    "attribute-#{object.scope[0]}-#{object.name(false)}"
+  else
+    "#{object.type}-#{object.scope[0]}-#{object.name(false)}"
+  end
 end
 
 def constant_listing
