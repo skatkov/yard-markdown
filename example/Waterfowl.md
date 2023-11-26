@@ -1,4 +1,9 @@
 # Module: Waterfowl
+| | |
+| -----------------:  | :-----    |
+| **Defined in:**    | example.rb    |
+
+
 A mixin for waterfowl creatures.
 
 # Constants

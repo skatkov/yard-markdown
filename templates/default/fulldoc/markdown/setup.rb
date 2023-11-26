@@ -35,6 +35,21 @@ end
 
 def serialize(object)
   template = ERB.new('# <%= format_object_title object %>
+| | |
+| -----------------:  | :-----    |
+<% if CodeObjects::ClassObject === object && object.superclass %>
+  | **Inherits:** | <%= object.superclass %>  |
+<% end %>
+<% [[:class, "Extended by"], [:instance, "Includes"]].each do |scope, name| %>
+  <% if (mix = run_verifier(object.mixins(scope))).size > 0 %>
+  | **<%= name %>:** | <%= mix.sort_by {|o| o.path }.join(", ") %> |
+  <% end %>
+<% end %>
+<% unless object.root? %>
+  | **Defined in:**    | <%= object.file ? object.file : "(unknown)" %>    |
+<% end %>
+
+
 <%= object.docstring %>
 
 

@@ -1,4 +1,10 @@
 # Class: Bird
+| | |
+| -----------------:  | :-----    |
+| **Inherits:** | Object  |
+| **Defined in:**    | example.rb    |
+
+
 The base class for all birds.
 
 # Constants
