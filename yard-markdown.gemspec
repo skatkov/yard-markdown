@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors = ["Stanislav (Stas) Katkov"]
   spec.email = ["yard-markdown@skatkov.com"]
 
-  spec.summary = "yard-markdown is a yard plugin template to generate markdown files"
-  spec.description = "yard-markdown is a yard plugin template to generate markdown files"
+  spec.summary = "yard theme plugin that generates markdown documentation for gems"
+  spec.description = "yard theme plugin that generates markdown documentation for gems"
   spec.homepage = "https://poshtui.com"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
