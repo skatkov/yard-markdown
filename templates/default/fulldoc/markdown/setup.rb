@@ -41,20 +41,20 @@ def serialize(object)
 <% if constant_listing.size > 0 %>
 <% groups(constant_listing, "Constants") do |list, name| %>
   # <%= name %>
-  | Name | Value | Description |
-  | ---- | ---- | ----------- |
   <% list.each do |cnst| %>
-  |<%= cnst.name %> | <%= cnst.value %> | <%= cnst.docstring %>
+  ## <%= cnst.name %> =
+  (<%= cnst.value %>) <%= cnst.docstring %>
   <% end %>
 <% end %>
+
 <% end %>
 
 <% if (insmeths = public_instance_methods(object)).size > 0 %>
   # Public Instance Methods
   <% insmeths.each do |item| %>
-
-  ## <%= item.name(false) %>(<%= item.parameters.map {|p| p.join(" ") }.join(", ") %>) [](#<%=aref(item)%>)
+  ## <%= item.name(false) %>(<%= item.parameters.map {|p| p.join(" ") }.join(", ")%>) [](#<%=aref(item)%>)
   <%= item.docstring %>
+
   <% end %>
 <% end %>
 
@@ -97,7 +97,7 @@ end
 include Helpers::ModuleHelper
 
 def public_method_list(object)
-  object.meths(visibility: [:public]).sort_by { |m| m.name.to_s }
+  prune_method_listing(object.meths(inherited: false, visibility: [:public]), included: false).sort_by { |m| m.name.to_s }
 end
 
 def public_class_methods(object)

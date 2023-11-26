@@ -2,12 +2,11 @@
 The base class for all birds.
 
 # Constants
-| Name | Value | Description |
-| ---- | ---- | ----------- |
-|DEFAULT_DUCK_VELOCITY | 70 | Default velocity for a flying duck.
+## DEFAULT_DUCK_VELOCITY =
+(70) Default velocity for a flying duck.
+
 
 # Public Instance Methods
-
 ## _fly_impl(_direction , _velocity ) [](#method-i-_fly_impl)
 :nodoc:
 ## fly(direction , velocity ) [](#method-i-fly)
