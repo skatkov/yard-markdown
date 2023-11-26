@@ -1,7 +1,8 @@
 PATH
   remote: .
   specs:
-    yard-markdown (0.1.0)
+    yard-markdown (0.1.1)
+      yard
 
 GEM
   remote: https://rubygems.org/
@@ -71,4 +72,4 @@ DEPENDENCIES
   yard-markdown!
 
 BUNDLED WITH
-   2.4.20
+   2.4.22
