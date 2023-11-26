@@ -2,7 +2,6 @@
 
 # https://github.com/lsegal/yard/blob/2d197a381c5d4cc5c55b2c60fff992b31c986361/docs/CodeObjects.md
 
-require_relative "../../../../lib/yard/serializers/markdown_serializer"
 require "erb"
 
 def init

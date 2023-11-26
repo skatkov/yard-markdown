@@ -2,7 +2,6 @@
 
 require "yard"
 require_relative "markdown/version"
-require_relative "serializers/markdown_serializer"
 
 module YARD
   module Markdown

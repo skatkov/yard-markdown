@@ -5,7 +5,7 @@
 | **Extended by:** | Animal |
 | **Includes:** | Waterfowl |
 | **Defined in:**    | example.rb    |
-|| |
+
 
 A duck is a Waterfowl Bird.
 
