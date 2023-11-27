@@ -1,4 +1,4 @@
---load ./lib/yard/markdown.rb
+--load ./lib/yard-markdown.rb
 --format markdown
 --markup markdown
 --output-dir example
