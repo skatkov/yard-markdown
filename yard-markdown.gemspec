@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-require_relative "lib/yard/markdown/version"
-
 Gem::Specification.new do |spec|
   spec.name = "yard-markdown"
-  spec.version = YARD::Markdown::VERSION
+  spec.version = "0.1.2"
   spec.authors = ["Stanislav (Stas) Katkov"]
   spec.email = ["yard-markdown@skatkov.com"]
 
