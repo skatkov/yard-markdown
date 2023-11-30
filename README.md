@@ -14,7 +14,7 @@ gem 'yard-markdown'
 ```
 And run `bundle install`
 
-Run yardoc with `--format=markdown` parameter.
+Run yardoc with `--format=markdown --plugin=markdown` parameters.
 
 ## Backstory
 Successor to rdoc-mardown gem that was authored by me. So there is a lot of similarities between two - [example](https://github.com/skatkov/rdoc-markdown/tree/main/example).
