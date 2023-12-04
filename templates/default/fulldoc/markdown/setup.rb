@@ -46,14 +46,24 @@ def serialize_index(objects)
     objects.each do |object|
       next if object.name == :root
 
+      if object.type == :class
+        csv << [object.name, 'Class', options.serializer.serialized_path(object)]
+      end
+
       if constant_listing.size.positive?
-        constant_listing.each { |cnst|  csv << [cnst.name, 'Constant', (options.serializer.serialized_path(object) + "#" +aref(cnst))] }
+        constant_listing.each { |cnst| csv << [cnst.name(false), 'Constant', (options.serializer.serialized_path(object) + "#" +aref(cnst))] }
       end
 
       if (insmeths = public_instance_methods(object)).size > 0
-        insmeths.each do |item|
-          csv << [item.name(false), 'Method', options.serializer.serialized_path(object) + "#" + aref(item)]
-        end
+        insmeths.each { |item| csv << [item.name(false), 'Method', options.serializer.serialized_path(object) + "#" + aref(item)] }
+      end
+
+      if (pubmeths = public_class_methods(object)).size > 0
+        pubmeths.each { |item| csv << [item.name(false), 'Method', options.serializer.serialized_path(object) + '#' + aref(item)]}
+      end
+
+      if (attrs = attr_listing(object)).size > 0
+        attrs.each { |item| csv << [item.name(false), 'Attribute', options.serializer.serialized_path(object) + "#" + aref(item)]}
       end
     end
   end
@@ -83,7 +93,7 @@ def serialize(object)
 <% groups(constant_listing, "Constants") do |list, name| %>
   # <%= name %>
   <% list.each do |cnst| %>
-  ## <%= cnst.name %> =
+  ## <%= cnst.name %> = [](#<%=aref(cnst)%>)
   (<%= cnst.value %>) <%= cnst.docstring %>
   <% end %>
 <% end %>
