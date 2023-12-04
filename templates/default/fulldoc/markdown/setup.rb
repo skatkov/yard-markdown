@@ -30,6 +30,33 @@ def init
       log.backtrace(e)
     end
   end
+
+  serialize_index(objects)
+end
+
+
+require 'csv'
+
+def serialize_index(objects)
+  filepath = "#{options.serializer.basepath}/index.csv"
+
+  CSV.open(filepath, 'wb') do |csv|
+    csv << %w[name type path]
+
+    objects.each do |object|
+      next if object.name == :root
+
+      if constant_listing.size.positive?
+        constant_listing.each { |cnst|  csv << [cnst.name, 'Constant', (options.serializer.serialized_path(object) + "#" +aref(cnst))] }
+      end
+
+      if (insmeths = public_instance_methods(object)).size > 0
+        insmeths.each do |item|
+          csv << [item.name(false), 'Method', options.serializer.serialized_path(object) + "#" + aref(item)]
+        end
+      end
+    end
+  end
 end
 
 def serialize(object)
@@ -88,13 +115,15 @@ def serialize(object)
 
   <% end %>
 <% end %>
-  '.gsub(/^  /, ""), trim_mode: "%<>")
+  '.gsub(/^  /, ''), trim_mode: '%<>')
 
   template.result(binding)
 end
 
 def aref(object)
-  if !object.attr_info.nil?
+  if object.type == :constant
+    "constant-#{object.name(false)}"
+  elsif !object.attr_info.nil?
     "attribute-#{object.scope[0]}-#{object.name(false)}"
   else
     "#{object.type}-#{object.scope[0]}-#{object.name(false)}"
@@ -103,6 +132,7 @@ end
 
 def constant_listing
   return @constants if defined?(@constants) && @constants
+
   @constants = object.constants(included: false, inherited: false)
   @constants += object.cvars
   @constants
