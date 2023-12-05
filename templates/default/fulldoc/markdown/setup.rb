@@ -30,6 +30,45 @@ def init
       log.backtrace(e)
     end
   end
+
+  serialize_index(objects)
+end
+
+
+require 'csv'
+
+def serialize_index(objects)
+  filepath = "#{options.serializer.basepath}/index.csv"
+
+  CSV.open(filepath, 'wb') do |csv|
+    csv << %w[name type path]
+
+    objects.each do |object|
+      next if object.name == :root
+
+      if object.type == :class
+        csv << [object.name, 'Class', options.serializer.serialized_path(object)]
+      elsif object.type == :module
+        csv << [object.name, 'Module', options.serializer.serialized_path(object)]
+      end
+
+      if constant_listing.size.positive?
+        constant_listing.each { |cnst| csv << [cnst.name(false), 'Constant', (options.serializer.serialized_path(object) + "#" +aref(cnst))] }
+      end
+
+      if (insmeths = public_instance_methods(object)).size > 0
+        insmeths.each { |item| csv << [item.name(false), 'Method', options.serializer.serialized_path(object) + "#" + aref(item)] }
+      end
+
+      if (pubmeths = public_class_methods(object)).size > 0
+        pubmeths.each { |item| csv << [item.name(false), 'Method', options.serializer.serialized_path(object) + '#' + aref(item)]}
+      end
+
+      if (attrs = attr_listing(object)).size > 0
+        attrs.each { |item| csv << [item.name(false), 'Attribute', options.serializer.serialized_path(object) + "#" + aref(item)]}
+      end
+    end
+  end
 end
 
 def serialize(object)
@@ -56,7 +95,7 @@ def serialize(object)
 <% groups(constant_listing, "Constants") do |list, name| %>
   # <%= name %>
   <% list.each do |cnst| %>
-  ## <%= cnst.name %> =
+  ## <%= cnst.name %> = [](#<%=aref(cnst)%>)
   (<%= cnst.value %>) <%= cnst.docstring %>
   <% end %>
 <% end %>
@@ -88,13 +127,15 @@ def serialize(object)
 
   <% end %>
 <% end %>
-  '.gsub(/^  /, ""), trim_mode: "%<>")
+  '.gsub(/^  /, ''), trim_mode: '%<>')
 
   template.result(binding)
 end
 
 def aref(object)
-  if !object.attr_info.nil?
+  if object.type == :constant
+    "constant-#{object.name(false)}"
+  elsif !object.attr_info.nil?
     "attribute-#{object.scope[0]}-#{object.name(false)}"
   else
     "#{object.type}-#{object.scope[0]}-#{object.name(false)}"
@@ -103,6 +144,7 @@ end
 
 def constant_listing
   return @constants if defined?(@constants) && @constants
+
   @constants = object.constants(included: false, inherited: false)
   @constants += object.cvars
   @constants

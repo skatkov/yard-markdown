@@ -21,7 +21,7 @@ Features:
    * swim
 
 # Constants
-## DEFAULT_DUCK_VELOCITY =
+## DEFAULT_DUCK_VELOCITY = [](#constant-DEFAULT_DUCK_VELOCITY)
 (70) Default velocity for a flying duck.
 
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
-require "yard/markdown"
+require "yard-markdown"
 
 require "minitest/autorun"
