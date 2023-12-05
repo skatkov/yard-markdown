@@ -34,38 +34,37 @@ def init
   serialize_index(objects)
 end
 
-
-require 'csv'
+require "csv"
 
 def serialize_index(objects)
   filepath = "#{options.serializer.basepath}/index.csv"
 
-  CSV.open(filepath, 'wb') do |csv|
+  CSV.open(filepath, "wb") do |csv|
     csv << %w[name type path]
 
     objects.each do |object|
       next if object.name == :root
 
       if object.type == :class
-        csv << [object.name, 'Class', options.serializer.serialized_path(object)]
+        csv << [object.name, "Class", options.serializer.serialized_path(object)]
       elsif object.type == :module
-        csv << [object.name, 'Module', options.serializer.serialized_path(object)]
+        csv << [object.name, "Module", options.serializer.serialized_path(object)]
       end
 
       if constant_listing.size.positive?
-        constant_listing.each { |cnst| csv << [cnst.name(false), 'Constant', (options.serializer.serialized_path(object) + "#" +aref(cnst))] }
+        constant_listing.each { |cnst| csv << [cnst.name(false), "Constant", (options.serializer.serialized_path(object) + "#" + aref(cnst))] }
       end
 
       if (insmeths = public_instance_methods(object)).size > 0
-        insmeths.each { |item| csv << [item.name(false), 'Method', options.serializer.serialized_path(object) + "#" + aref(item)] }
+        insmeths.each { |item| csv << [item.name(false), "Method", options.serializer.serialized_path(object) + "#" + aref(item)] }
       end
 
       if (pubmeths = public_class_methods(object)).size > 0
-        pubmeths.each { |item| csv << [item.name(false), 'Method', options.serializer.serialized_path(object) + '#' + aref(item)]}
+        pubmeths.each { |item| csv << [item.name(false), "Method", options.serializer.serialized_path(object) + "#" + aref(item)] }
       end
 
       if (attrs = attr_listing(object)).size > 0
-        attrs.each { |item| csv << [item.name(false), 'Attribute', options.serializer.serialized_path(object) + "#" + aref(item)]}
+        attrs.each { |item| csv << [item.name(false), "Attribute", options.serializer.serialized_path(object) + "#" + aref(item)] }
       end
     end
   end
@@ -127,7 +126,7 @@ def serialize(object)
 
   <% end %>
 <% end %>
-  '.gsub(/^  /, ''), trim_mode: '%<>')
+  '.gsub(/^  /, ""), trim_mode: "%<>")
 
   template.result(binding)
 end
@@ -150,7 +149,9 @@ def constant_listing
   @constants
 end
 
+# standard:disable Style/MixinUsage
 include Helpers::ModuleHelper
+# standard:enable Style/MixinUsage
 
 def public_method_list(object)
   prune_method_listing(object.meths(inherited: false, visibility: [:public]), included: false).sort_by { |m| m.name.to_s }
@@ -169,7 +170,7 @@ def attr_listing(object)
   object.inheritance_tree(true).each do |superclass|
     next if superclass.is_a?(CodeObjects::Proxy)
     next if !options.embed_mixins.empty? &&
-            !options.embed_mixins_match?(superclass)
+      !options.embed_mixins_match?(superclass)
     [:class, :instance].each do |scope|
       superclass.attributes[scope].each do |_name, rw|
         attr = prune_method_listing([rw[:read], rw[:write]].compact, false).first
@@ -193,7 +194,7 @@ def generate_method_list
 end
 
 def sort_listing(list)
-  list.sort_by {|o| [o.scope.to_s, o.name.to_s.downcase] }
+  list.sort_by { |o| [o.scope.to_s, o.name.to_s.downcase] }
 end
 
 def groups(list, type = "Method")
