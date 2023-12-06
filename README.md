@@ -1,11 +1,12 @@
 # Yard::Markdown
 
-Yard theme plugin that generates markdown documentation for gems
+Yard plugin to generate markdown documentation
 
 ## Goals:
 - Compatible with Github Flavored Markdown
 - Mimick yard html layout in markdown format as much as possible
 - Produce .csv index file alonside markdown documentation to act as file index
+- Include markdown already present
 
 ## Usage
 Add these lines:
