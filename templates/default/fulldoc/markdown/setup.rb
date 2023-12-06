@@ -21,9 +21,7 @@ def init
     next if object.name == :root
 
     begin
-      Templates::Engine.with_serializer(object, options.serializer) do
-        serialize(object)
-      end
+      Templates::Engine.with_serializer(object, options.serializer) { serialize(object) }
     rescue => e
       path = options.serializer.serialized_path(object)
       log.error "Exception occurred while generating '#{path}'"
@@ -52,26 +50,52 @@ def serialize_index(objects)
       end
 
       if constant_listing.size.positive?
-        constant_listing.each { |cnst| csv << [cnst.name(false), "Constant", (options.serializer.serialized_path(object) + "#" + aref(cnst))] }
+        constant_listing.each do |cnst|
+          csv << [
+            cnst.name(false),
+            "Constant",
+            (options.serializer.serialized_path(object) + "#" + aref(cnst)),
+          ]
+        end
       end
 
       if (insmeths = public_instance_methods(object)).size > 0
-        insmeths.each { |item| csv << [item.name(false), "Method", options.serializer.serialized_path(object) + "#" + aref(item)] }
+        insmeths.each do |item|
+          csv << [
+            item.name(false),
+            "Method",
+            options.serializer.serialized_path(object) + "#" + aref(item),
+          ]
+        end
       end
 
       if (pubmeths = public_class_methods(object)).size > 0
-        pubmeths.each { |item| csv << [item.name(false), "Method", options.serializer.serialized_path(object) + "#" + aref(item)] }
+        pubmeths.each do |item|
+          csv << [
+            item.name(false),
+            "Method",
+            options.serializer.serialized_path(object) + "#" + aref(item),
+          ]
+        end
       end
 
       if (attrs = attr_listing(object)).size > 0
-        attrs.each { |item| csv << [item.name(false), "Attribute", options.serializer.serialized_path(object) + "#" + aref(item)] }
+        attrs.each do |item|
+          csv << [
+            item.name(false),
+            "Attribute",
+            options.serializer.serialized_path(object) + "#" + aref(item),
+          ]
+        end
       end
     end
   end
 end
 
 def serialize(object)
-  template = ERB.new('# <%= format_object_title object %>
+  template =
+    ERB.new(
+      '# <%= format_object_title object %>
 | | |
 | -----------------:  | :-----    |
 <% if CodeObjects::ClassObject === object && object.superclass %>
@@ -126,7 +150,9 @@ def serialize(object)
 
   <% end %>
 <% end %>
-  '.gsub(/^  /, ""), trim_mode: "%<>")
+  '.gsub(/^  /, ""),
+      trim_mode: "%<>",
+    )
 
   template.result(binding)
 end
@@ -154,7 +180,10 @@ include Helpers::ModuleHelper
 # standard:enable Style/MixinUsage
 
 def public_method_list(object)
-  prune_method_listing(object.meths(inherited: false, visibility: [:public]), included: false).sort_by { |m| m.name.to_s }
+  prune_method_listing(
+    object.meths(inherited: false, visibility: [:public]),
+    included: false,
+  ).sort_by { |m| m.name.to_s }
 end
 
 def public_class_methods(object)
@@ -167,18 +196,19 @@ end
 
 def attr_listing(object)
   @attrs = []
-  object.inheritance_tree(true).each do |superclass|
-    next if superclass.is_a?(CodeObjects::Proxy)
-    next if !options.embed_mixins.empty? &&
-      !options.embed_mixins_match?(superclass)
-    [:class, :instance].each do |scope|
-      superclass.attributes[scope].each do |_name, rw|
-        attr = prune_method_listing([rw[:read], rw[:write]].compact, false).first
-        @attrs << attr if attr
+  object
+    .inheritance_tree(true)
+    .each do |superclass|
+      next if superclass.is_a?(CodeObjects::Proxy)
+      next if !options.embed_mixins.empty? && !options.embed_mixins_match?(superclass)
+      %i[class instance].each do |scope|
+        superclass.attributes[scope].each do |_name, rw|
+          attr = prune_method_listing([rw[:read], rw[:write]].compact, false).first
+          @attrs << attr if attr
+        end
       end
+      break if options.embed_mixins.empty?
     end
-    break if options.embed_mixins.empty?
-  end
   sort_listing @attrs
 end
 
@@ -209,13 +239,7 @@ def groups(list, type = "Method")
   else
     others = []
     group_data = {}
-    list.each do |itm|
-      if itm.group
-        (group_data[itm.group] ||= []) << itm
-      else
-        others << itm
-      end
-    end
+    list.each { |itm| itm.group ? (group_data[itm.group] ||= []) << itm : others << itm }
     group_data.each { |group, items| yield(items, group) unless items.empty? }
   end
 
