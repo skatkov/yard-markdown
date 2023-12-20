@@ -26,9 +26,7 @@ gem install yard-markdown
 Run `yardoc --format=markdown` to generate markdown documentation.
 
 ## Backstory
-Successor to rdoc-mardown gem that was authored by me. So there is a lot of similarities between two - [example](https://github.com/skatkov/rdoc-markdown/tree/main/example).
-
-This gem is used by documentation reviewing tool called [POSH TUI](https://poshtui.com)
+This is a successor to [rdoc-mardown gem](https://github.com/skatkov/rdoc-markdown/tree/main/example) with small differences in implementation. This gem was written to power API documentation for ruby developers - [POSH TUI](https://poshtui.com).
 
 ## Testing
 Unit tests can't really test this gem properly. So it's semi-manual process of making changes and reviewing output.
