@@ -9,13 +9,21 @@ Yard plugin to generate markdown documentation
 - Include markdown files that are already present in source code.
 
 ## Usage
-Add these lines:
-```
-gem 'yard-markdown'
-```
-And run `bundle install`
+Yard doesn't load plugin by default, so you need to load plugin through `~/.yard/config`:
 
-Run yardoc with `--format=markdown --plugin=markdown` parameters.
+```yaml
+!!!yaml
+load_plugins: true
+autoload_plugins:
+  - markdown
+```
+
+Install a plugin
+```
+gem install yard-markdown
+```
+
+Run `yardoc --format=markdown` to generate markdown documentation.
 
 ## Backstory
 Successor to rdoc-mardown gem that was authored by me. So there is a lot of similarities between two - [example](https://github.com/skatkov/rdoc-markdown/tree/main/example).
