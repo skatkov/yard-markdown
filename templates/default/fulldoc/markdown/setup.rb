@@ -3,11 +3,11 @@
 # https://github.com/lsegal/yard/blob/2d197a381c5d4cc5c55b2c60fff992b31c986361/docs/CodeObjects.md
 
 require "erb"
+require "csv"
+
+include Helpers::ModuleHelper
 
 def init
-  # here I need to copy README.md if there is one.
-  # I also need to write index.md files
-
   options.objects = objects = run_verifier(options.objects)
 
   options.delete(:objects)
@@ -31,8 +31,6 @@ def init
 
   serialize_index(objects)
 end
-
-require "csv"
 
 def serialize_index(objects)
   filepath = "#{options.serializer.basepath}/index.csv"
@@ -119,7 +117,7 @@ def serialize(object)
   # <%= name %>
   <% list.each do |cnst| %>
   ## <%= cnst.name %> = [](#<%=aref(cnst)%>)
-  (<%= cnst.value %>) <%= cnst.docstring %>
+  <%= cnst.docstring %>
   <% end %>
 <% end %>
 
@@ -174,10 +172,6 @@ def constant_listing
   @constants += object.cvars
   @constants
 end
-
-# standard:disable Style/MixinUsage
-include Helpers::ModuleHelper
-# standard:enable Style/MixinUsage
 
 def public_method_list(object)
   prune_method_listing(
