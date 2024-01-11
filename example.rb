@@ -131,6 +131,8 @@ end
 
 # Default velocity for a flying duck.
 DEFAULT_DUCK_VELOCITY = 70
+DEFAULT_SPEED = 10 # Maximum speed for a swimming duck.
+
 
 # Default rubber duck.
 #

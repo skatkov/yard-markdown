@@ -1,14 +1,17 @@
 name,type,path
 Waterfowl,Module,Waterfowl.md
 DEFAULT_DUCK_VELOCITY,Constant,Waterfowl.md#constant-DEFAULT_DUCK_VELOCITY
+DEFAULT_SPEED,Constant,Waterfowl.md#constant-DEFAULT_SPEED
 swim,Method,Waterfowl.md#method-i-swim
 Bird,Class,Bird.md
 DEFAULT_DUCK_VELOCITY,Constant,Bird.md#constant-DEFAULT_DUCK_VELOCITY
+DEFAULT_SPEED,Constant,Bird.md#constant-DEFAULT_SPEED
 _fly_impl,Method,Bird.md#method-i-_fly_impl
 fly,Method,Bird.md#method-i-fly
 speak,Method,Bird.md#method-i-speak
 Duck,Class,Duck.md
 DEFAULT_DUCK_VELOCITY,Constant,Duck.md#constant-DEFAULT_DUCK_VELOCITY
+DEFAULT_SPEED,Constant,Duck.md#constant-DEFAULT_SPEED
 initialize,Method,Duck.md#method-i-initialize
 speak,Method,Duck.md#method-i-speak
 swim,Method,Duck.md#method-i-swim

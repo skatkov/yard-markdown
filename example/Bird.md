@@ -4,18 +4,17 @@
 | **Inherits:** | Object  |
 | **Defined in:**    | example.rb    |
 
-
 The base class for all birds.
-
 # Constants
-## DEFAULT_DUCK_VELOCITY = [](#constant-DEFAULT_DUCK_VELOCITY)
-(70) Default velocity for a flying duck.
-
+## DEFAULT_DUCK_VELOCITY [](#constant-DEFAULT_DUCK_VELOCITY)
+Default velocity for a flying duck.
+## DEFAULT_SPEED [](#constant-DEFAULT_SPEED)
+Maximum speed for a swimming duck.
 
 # Public Instance Methods
-## _fly_impl(_direction , _velocity ) [](#method-i-_fly_impl)
+## _fly_impl(_direction, _velocity) [](#method-i-_fly_impl)
 :nodoc:
-## fly(direction , velocity ) [](#method-i-fly)
+## fly(direction, velocity) [](#method-i-fly)
 Fly somewhere.
 
 Flying is the most critical feature of birds.

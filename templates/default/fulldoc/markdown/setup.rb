@@ -108,25 +108,23 @@ def serialize(object)
   | **Defined in:**    | <%= object.file ? object.file : "(unknown)" %>    |
 <% end %>
 
-
 <%= object.docstring %>
-
 
 <% if constant_listing.size > 0 %>
 <% groups(constant_listing, "Constants") do |list, name| %>
   # <%= name %>
   <% list.each do |cnst| %>
-  ## <%= cnst.name %> = [](#<%=aref(cnst)%>)
+  ## <%= cnst.name %> [](#<%=aref(cnst)%>)
   <%= cnst.docstring %>
+
   <% end %>
 <% end %>
-
 <% end %>
 
 <% if (insmeths = public_instance_methods(object)).size > 0 %>
   # Public Instance Methods
   <% insmeths.each do |item| %>
-  ## <%= item.name(false) %>(<%= item.parameters.map {|p| p.join(" ") }.join(", ")%>) [](#<%=aref(item)%>)
+  ## <%= item.name(false) %>(<%= item.parameters.map {|p| p.join("") }.join(", ")%>) [](#<%=aref(item)%>)
   <%= item.docstring %>
 
   <% end %>

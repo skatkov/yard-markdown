@@ -6,7 +6,6 @@
 | **Includes:** | Waterfowl |
 | **Defined in:**    | example.rb    |
 
-
 A duck is a Waterfowl Bird.
 
 Features:
@@ -19,14 +18,14 @@ Features:
  waterfowl::
 
    * swim
-
 # Constants
-## DEFAULT_DUCK_VELOCITY = [](#constant-DEFAULT_DUCK_VELOCITY)
-(70) Default velocity for a flying duck.
-
+## DEFAULT_DUCK_VELOCITY [](#constant-DEFAULT_DUCK_VELOCITY)
+Default velocity for a flying duck.
+## DEFAULT_SPEED [](#constant-DEFAULT_SPEED)
+Maximum speed for a swimming duck.
 
 # Public Instance Methods
-## initialize(domestic , rubber ) [](#method-i-initialize)
+## initialize(domestic, rubber) [](#method-i-initialize)
 Creates a new duck.
 ## speak() [](#method-i-speak)
 Duck overrides generic implementation.
