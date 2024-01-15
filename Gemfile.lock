@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    yard-markdown (0.2.2)
+    yard-markdown (0.3.0)
       yard
 
 GEM
