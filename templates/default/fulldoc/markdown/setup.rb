@@ -108,24 +108,14 @@ def serialize(object)
   | **Defined in:**    | <%= object.file ? object.file : "(unknown)" %>    |
 <% end %>
 
-<%= object.docstring %>
+<%= rdoc_to_md object.docstring %>
 
-<% if constant_listing.size > 0 %>
-<% groups(constant_listing, "Constants") do |list, name| %>
-  # <%= name %>
-  <% list.each do |cnst| %>
-  ## <%= cnst.name %> [](#<%=aref(cnst)%>)
-  <%= cnst.docstring %>
-
-  <% end %>
-<% end %>
-<% end %>
 
 <% if (insmeths = public_instance_methods(object)).size > 0 %>
   # Public Instance Methods
   <% insmeths.each do |item| %>
   ## <%= item.name(false) %>(<%= item.parameters.map {|p| p.join("") }.join(", ")%>) [](#<%=aref(item)%>)
-  <%= item.docstring %>
+  <%= rdoc_to_md item.docstring %>
 
   <% end %>
 <% end %>
@@ -134,7 +124,7 @@ def serialize(object)
   # Public Class Methods
   <% pubmeths.each do |item| %>
   ## <%= item.name(false) %>(<%= item.parameters.map {|p| p.join(" ") }.join(", ") %>) [](#<%=aref(item)%>)
-  <%= item.docstring %>
+  <%= rdoc_to_md item.docstring %>
 
   <% end %>
 <% end %>
@@ -142,15 +132,31 @@ def serialize(object)
   # Attributes
   <% attrs.each do |item|%>
   ## <%= item.name %><%= item.reader? ? "[RW]" : "[R]" %> [](#<%=aref(item)%>)
-  <%= item.docstring %>
+  <%= rdoc_to_md item.docstring %>
 
   <% end %>
 <% end %>
-  '.gsub(/^  /, ""),
-      trim_mode: "%<>",
-    )
+
+
+<% if constant_listing.size > 0 %>
+<% groups(constant_listing, "Constants") do |list, name| %>
+  # <%= name %>
+  <% list.each do |cnst| %>
+  ## <%= cnst.name %> [](#<%=aref(cnst)%>)
+  <%= rdoc_to_md cnst.docstring %>
+
+  <% end %>
+<% end %>
+<% end %>
+  ', trim_mode: "%<>")
 
   template.result(binding)
+end
+
+require 'rdoc'
+
+def rdoc_to_md(docstring)
+  RDoc::Markup::ToMarkdown.new.convert(docstring)
 end
 
 def aref(object)
