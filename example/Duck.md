@@ -20,63 +20,38 @@ Features:
 
       * swim
 
+# Public Instance Methods
+## initialize(domestic, rubber) [](#method-i-initialize)
+Creates a new duck.
 
-  # Public Instance Methods
-  
-  ## initialize(domestic, rubber) [](#method-i-initialize)
-  Creates a new duck.
+## speak() [](#method-i-speak)
+Duck overrides generic implementation.
 
+## swim() [](#method-i-swim)
+Swimming helper.
 
-  
-  ## speak() [](#method-i-speak)
-  Duck overrides generic implementation.
-
-
-  
-  ## swim() [](#method-i-swim)
-  Swimming helper.
-
-
-  
-  ## useful?() [](#method-i-useful?)
-  Checks if this duck is a useful one.
+## useful?() [](#method-i-useful?)
+Checks if this duck is a useful one.
 
 :call-seq:
     Bird.useful? -> bool
 
 
-  
+# Public Class Methods
+## rubber_ducks() [](#method-c-rubber_ducks)
 
-  # Public Class Methods
-  
-  ## rubber_ducks() [](#method-c-rubber_ducks)
-  
+# Attributes
+## domestic[RW] [](#attribute-i-domestic)
+True for domestic ducks.
 
-  
-  # Attributes
-  
-  ## domestic[RW] [](#attribute-i-domestic)
-  True for domestic ducks.
+## rubber[RW] [](#attribute-i-rubber)
+True for rubber ducks.
 
 
-  
-  ## rubber[RW] [](#attribute-i-rubber)
-  True for rubber ducks.
+# Constants
+## DEFAULT_DUCK_VELOCITY [](#constant-DEFAULT_DUCK_VELOCITY)
+Default velocity for a flying duck.
 
+## DEFAULT_SPEED [](#constant-DEFAULT_SPEED)
+Maximum speed for a swimming duck.
 
-  
-
-
-  # Constants
-  
-  ## DEFAULT_DUCK_VELOCITY [](#constant-DEFAULT_DUCK_VELOCITY)
-  Default velocity for a flying duck.
-
-
-  
-  ## DEFAULT_SPEED [](#constant-DEFAULT_SPEED)
-  Maximum speed for a swimming duck.
-
-
-  
-  

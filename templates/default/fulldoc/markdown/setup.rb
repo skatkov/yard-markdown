@@ -106,45 +106,39 @@ def serialize(object)
 
 <%= rdoc_to_md object.docstring %>
 
-
 <% if (insmeths = public_instance_methods(object)).size > 0 %>
-  # Public Instance Methods
-  <% insmeths.each do |item| %>
-  ## <%= item.name(false) %>(<%= item.parameters.map {|p| p.join("") }.join(", ")%>) [](#<%=aref(item)%>)
-  <%= rdoc_to_md item.docstring %>
+# Public Instance Methods
+<% insmeths.each do |item| %>
+## <%= item.name(false) %>(<%= item.parameters.map {|p| p.join("") }.join(", ")%>) [](#<%=aref(item)%>)
+<%= rdoc_to_md item.docstring %>
 
-  <% end %>
-<% end %>
+<% end %><% end %>
 
 <% if (pubmeths = public_class_methods(object)).size > 0 %>
-  # Public Class Methods
-  <% pubmeths.each do |item| %>
-  ## <%= item.name(false) %>(<%= item.parameters.map {|p| p.join(" ") }.join(", ") %>) [](#<%=aref(item)%>)
-  <%= rdoc_to_md item.docstring %>
+# Public Class Methods
+<% pubmeths.each do |item| %>
+## <%= item.name(false) %>(<%= item.parameters.map {|p| p.join(" ") }.join(", ") %>) [](#<%=aref(item)%>)
+<%= rdoc_to_md item.docstring %>
 
-  <% end %>
+<% end %>
 <% end %>
 <% if (attrs = attr_listing(object)).size > 0 %>
-  # Attributes
-  <% attrs.each do |item|%>
-  ## <%= item.name %><%= item.reader? ? "[RW]" : "[R]" %> [](#<%=aref(item)%>)
-  <%= rdoc_to_md item.docstring %>
+# Attributes
+<% attrs.each do |item|%>
+## <%= item.name %><%= item.reader? ? "[RW]" : "[R]" %> [](#<%=aref(item)%>)
+<%= rdoc_to_md item.docstring %>
 
-  <% end %>
 <% end %>
-
+<% end %>
 
 <% if constant_listing.size > 0 %>
 <% groups(constant_listing, "Constants") do |list, name| %>
-  # <%= name %>
-  <% list.each do |cnst| %>
-  ## <%= cnst.name %> [](#<%=aref(cnst)%>)
-  <%= rdoc_to_md cnst.docstring %>
+# <%= name %>
+<% list.each do |cnst| %>
+## <%= cnst.name %> [](#<%=aref(cnst)%>)
+<%= rdoc_to_md cnst.docstring %>
 
-  <% end %>
-<% end %>
-<% end %>
-  ', trim_mode: "%<>")
+<% end %><% end %><% end %>', trim_mode: "<>")
 
   template.result(binding)
 end
