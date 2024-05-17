@@ -42,9 +42,9 @@ def serialize_index(objects)
       next if object.name == :root
 
       if object.type == :class
-        csv << [object.name, "Class", options.serializer.serialized_path(object)]
+        csv << [object.path, "Class", options.serializer.serialized_path(object)]
       elsif object.type == :module
-        csv << [object.name, "Module", options.serializer.serialized_path(object)]
+        csv << [object.path, "Module", options.serializer.serialized_path(object)]
       end
 
       if constant_listing.size.positive?
