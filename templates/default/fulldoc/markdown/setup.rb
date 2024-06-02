@@ -101,7 +101,7 @@ def serialize(object)
 **<%= name %>:** <%= mix.sort_by {|o| o.path }.join(", ") %>
   <% end %><% end %>
 <% unless object.root? %>
-**Defined in:** <%= object.file ? object.file : "(unknown)" %>
+**Defined in:** <%= object.file ? object.file.sub(Dir.pwd, '') : "(unknown)" %>
 <% end %>
 
 <%= rdoc_to_md object.docstring %>
