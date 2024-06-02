@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.email = ["yard-markdown@skatkov.com"]
 
   spec.summary = "yard plugin to generate markdown documentation"
-  spec.description = "yard plugin to generates markdown documentation for gems"
+  spec.description = "yard plugin to generate markdown documentation for gems"
   spec.homepage = "https://poshtui.com"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
