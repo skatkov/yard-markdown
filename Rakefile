@@ -9,8 +9,4 @@ Rake::TestTask.new(:test) do |t|
   t.test_files = FileList["test/**/test_*.rb"]
 end
 
-require "syntax_tree/rake_tasks"
-SyntaxTree::Rake::CheckTask.new
-SyntaxTree::Rake::WriteTask.new
-
 task default: %i[test stree:write]
