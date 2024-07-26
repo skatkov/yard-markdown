@@ -101,7 +101,7 @@ def serialize(object)
 **<%= name %>:** <%= mix.sort_by {|o| o.path }.join(", ") %>
   <% end %><% end %>
 <% unless object.root? %>
-**Defined in:** <%= object.file ? object.file.sub(Dir.pwd, '') : "(unknown)" %>
+**Defined in:** <%= object.file ? object.file.sub(Dir.pwd, "") : "(unknown)" %>
 <% end %>
 
 <%= rdoc_to_md object.docstring %>
@@ -138,12 +138,14 @@ def serialize(object)
 ## <%= cnst.name %> [](#<%=aref(cnst)%>)
 <%= rdoc_to_md cnst.docstring %>
 
-<% end %><% end %><% end %>', trim_mode: "<>")
+<% end %><% end %><% end %>',
+      trim_mode: "<>",
+    )
 
   template.result(binding)
 end
 
-require 'rdoc'
+require "rdoc"
 
 def rdoc_to_md(docstring)
   RDoc::Markup::ToMarkdown.new.convert(docstring)
