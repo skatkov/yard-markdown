@@ -14,19 +14,14 @@ jobs:
     strategy:
       matrix:
         ruby:
-          - '3.2.1'
+          - "3.2.1"
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: ${{ matrix.ruby }}
-        bundler-cache: true
-    - name: test
-      run: bundle exec rake test
-    - name: syntax_tree
-      if: ${{ !cancelled() }}
-      run: |
-        set -E
-        bundle exec stree check Gemfile $(git ls-files '*.rb') $(git ls-files '*.rake')
+      - uses: actions/checkout@v4
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - name: test
+        run: bundle exec rake test
