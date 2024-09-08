@@ -50,7 +50,7 @@ def serialize_index(objects)
       if constant_listing.size.positive?
         constant_listing.each do |cnst|
           csv << [
-            cnst.name(false),
+            "#{object.path}.#{cnst.name(false)}",
             "Constant",
             (options.serializer.serialized_path(object) + "#" + aref(cnst)),
           ]
@@ -60,7 +60,7 @@ def serialize_index(objects)
       if (insmeths = public_instance_methods(object)).size > 0
         insmeths.each do |item|
           csv << [
-            item.name(false),
+            "#{object.path}.#{item.name(false)}",
             "Method",
             options.serializer.serialized_path(object) + "#" + aref(item),
           ]
@@ -70,7 +70,7 @@ def serialize_index(objects)
       if (pubmeths = public_class_methods(object)).size > 0
         pubmeths.each do |item|
           csv << [
-            item.name(false),
+            "#{object.path}.#{item.name(false)}",
             "Method",
             options.serializer.serialized_path(object) + "#" + aref(item),
           ]
