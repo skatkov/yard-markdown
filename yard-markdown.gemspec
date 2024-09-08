@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.name = "yard-markdown"
-  spec.version = "0.3.5"
+  spec.version = "0.3.6"
   spec.authors = ["Stanislav (Stas) Katkov"]
   spec.email = ["yard-markdown@skatkov.com"]
 
@@ -36,4 +36,6 @@ Gem::Specification.new do |spec|
   # guide at: https://bundler.io/guides/creating_gem.html
 
   spec.add_dependency "yard"
+  # After ruby 3.4 this package is not part of standard library anymore
+  spec.add_dependency "csv"
 end
