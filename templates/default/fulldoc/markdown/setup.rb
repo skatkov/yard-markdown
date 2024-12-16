@@ -159,7 +159,7 @@ end
 
 def render_tags(object)
   object.tags.inject("") do |result, tag|
-    result + "**#{tag.tag_name}** [#{tag.types&.join(', ')}#] #{tag.text}\n"
+    result + "**#{tag.tag_name}** [#{tag.types&.join(', ')}] #{tag.text}\n"
   end
 end
 

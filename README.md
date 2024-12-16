@@ -31,4 +31,8 @@ This is a successor to [rdoc-mardown gem](https://github.com/skatkov/rdoc-markdo
 ## Testing
 Unit tests can't really test this gem properly. So it's semi-manual process of making changes and reviewing output.
 
-  `yardoc example.rb` -> outputs everything into example/ folder.
+Testing Rdoc conversion to markdown:
+  `yardoc example_rdoc.rb` -> outputs everything into example/ folder.
+
+Testing Yard conversion to markdown:
+  `yardoc example_yard.rb` -> outputs everything into example/ folder.

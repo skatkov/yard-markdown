@@ -8,7 +8,7 @@ A mixin for aquatic creatures.
 ## swim() [](#method-i-swim)
 Swim in the water.
 
-**return** [void#] 
+**return** [void] 
 
 
 # Constants
