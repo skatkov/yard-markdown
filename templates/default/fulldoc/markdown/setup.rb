@@ -126,9 +126,7 @@ def serialize(object)
 ## <%= item.name(false) %>(<%= item.parameters.map {|p| p.join(" ") }.join(", ") %>) [](#<%=aref(item)%>)
 <%= rdoc_to_md item.docstring %>
 <%= render_tags item %>
-
-<% end %>
-<% end %>
+<% end %><% end %>
 <% if (attrs = attr_listing(object)).size > 0 %>
 # Attributes
 <% attrs.each do |item|%>
@@ -136,9 +134,7 @@ def serialize(object)
 <%= rdoc_to_md item.docstring %>
 
 <%= render_tags item %>
-<% end %>
-<% end %>
-
+<% end %><% end %>
 <% if constant_listing.size > 0 %>
 <% groups(constant_listing, "Constants") do |list, name| %>
 # <%= name %>
