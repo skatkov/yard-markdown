@@ -5,7 +5,7 @@
     
 **Includes:** Waterfowl
   
-**Defined in:** example.rb
+**Defined in:** example_rdoc.rb
 
 A duck is a Waterfowl Bird.
 
@@ -24,13 +24,13 @@ Features:
 ## initialize(domestic, rubber) [](#method-i-initialize)
 Creates a new duck.
 
-**param** [Boolean#] 
-**param** [Boolean#] 
-**return** [Duck#] a new instance of Duck
+**param** [Boolean] 
+**param** [Boolean] 
+**return** [Duck] a new instance of Duck
 ## speak() [](#method-i-speak)
 Duck overrides generic implementation.
 
-**yield** [speech#] 
+**yield** [speech] 
 ## swim() [](#method-i-swim)
 Swimming helper.
 
@@ -40,11 +40,11 @@ Checks if this duck is a useful one.
 :call-seq:
     Bird.useful? -> bool
 
-**return** [Boolean#] 
+**return** [Boolean] 
 
 # Public Class Methods
 ## rubber_ducks() [](#method-c-rubber_ducks)
-**return** [Array<Duck>#] list of all rubber ducks
+**return** [Array<Duck>] list of all rubber ducks
 
 # Attributes
 ## domestic[RW] [](#attribute-i-domestic)

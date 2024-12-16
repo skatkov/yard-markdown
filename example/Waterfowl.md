@@ -1,6 +1,6 @@
 # Module: Waterfowl
     
-**Defined in:** example.rb
+**Defined in:** example_rdoc.rb
 
 A mixin for waterfowl creatures.
 

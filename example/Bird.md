@@ -1,7 +1,7 @@
 # Class: Bird
 **Inherits:** Object
     
-**Defined in:** example.rb
+**Defined in:** example_rdoc.rb
 
 The base class for all birds.
 
@@ -27,7 +27,7 @@ Flying is the most critical feature of birds.
 ## speak() [](#method-i-speak)
 Produce some noise. -- FIXME: maybe extract this to a base class `Animal`? ++
 
-**yield** ["tweet"#] 
+**yield** ["tweet"] 
 
 
 # Constants
