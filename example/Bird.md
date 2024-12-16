@@ -27,12 +27,15 @@ Flying is the most critical feature of birds.
 ## speak() [](#method-i-speak)
 Produce some noise. -- FIXME: maybe extract this to a base class `Animal`? ++
 
+**yield** ["tweet"#] 
 
 
 # Constants
 ## DEFAULT_DUCK_VELOCITY [](#constant-DEFAULT_DUCK_VELOCITY)
 Default velocity for a flying duck.
 
+
 ## DEFAULT_SPEED [](#constant-DEFAULT_SPEED)
 Maximum speed for a swimming duck.
+
 

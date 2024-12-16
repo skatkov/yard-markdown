@@ -106,12 +106,14 @@ def serialize(object)
 
 <%= rdoc_to_md object.docstring %>
 
+<%= render_tags object %>
 <% if (insmeths = public_instance_methods(object)).size > 0 %>
 # Public Instance Methods
 <% insmeths.each do |item| %>
 ## <%= item.name(false) %>(<%= item.parameters.map {|p| p.join("") }.join(", ")%>) [](#<%=aref(item)%>)
 <%= rdoc_to_md item.docstring %>
 
+<%= render_tags item %>
 <% end %><% end %>
 
 <% if (pubmeths = public_class_methods(object)).size > 0 %>
@@ -119,6 +121,7 @@ def serialize(object)
 <% pubmeths.each do |item| %>
 ## <%= item.name(false) %>(<%= item.parameters.map {|p| p.join(" ") }.join(", ") %>) [](#<%=aref(item)%>)
 <%= rdoc_to_md item.docstring %>
+<%= render_tags item %>
 
 <% end %>
 <% end %>
@@ -128,6 +131,7 @@ def serialize(object)
 ## <%= item.name %><%= item.reader? ? "[RW]" : "[R]" %> [](#<%=aref(item)%>)
 <%= rdoc_to_md item.docstring %>
 
+<%= render_tags item %>
 <% end %>
 <% end %>
 
@@ -137,6 +141,8 @@ def serialize(object)
 <% list.each do |cnst| %>
 ## <%= cnst.name %> [](#<%=aref(cnst)%>)
 <%= rdoc_to_md cnst.docstring %>
+
+<%= render_tags cnst %>
 
 <% end %><% end %><% end %>',
       trim_mode: "<>",
@@ -149,6 +155,12 @@ require "rdoc"
 
 def rdoc_to_md(docstring)
   RDoc::Markup::ToMarkdown.new.convert(docstring)
+end
+
+def render_tags(object)
+  object.tags.inject("") do |result, tag|
+    result + "**#{tag.tag_name}** [#{tag.types&.join(', ')}#] #{tag.text}\n"
+  end
 end
 
 def aref(object)
