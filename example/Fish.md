@@ -17,11 +17,14 @@ Swim in a specific direction.
 
 Swimming is the most critical feature of fish.
 
-**example** [] swim(:north, 30)
 **param** [Symbol, String] The direction to swim
 **param** [Integer] The speed at which to swim
 **return** [Boolean] Whether the swim was successful
 
+**example**
+```ruby
+swim(:north, 30)
+```
 
 # Constants
 ## DEFAULT_SALMON_SPEED [](#constant-DEFAULT_SALMON_SPEED)
