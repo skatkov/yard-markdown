@@ -142,13 +142,12 @@ def serialize(object)
 <% if constant_listing.size > 0 %>
 <% groups(constant_listing, "Constants") do |list, name| %>
 # <%= name %>
+<% if list.size > 0 %>
+| Name | Value | Title |
+| ---  | ---   | ---   |
 <% list.each do |cnst| %>
-## <%= cnst.name %> [](#<%=aref(cnst)%>)
-<%= rdoc_to_md cnst.docstring %>
-
-<%= render_tags cnst %>
-
-<% end %><% end %><% end %>',
+| [<%= cnst.name %>](#<%=aref(cnst)%>) | <%= cnst.value %> |<%= cnst.sep %> |
+<% end %><% end %><% end %><% end %>',
       trim_mode: "<>",
     )
 
