@@ -1,8 +1,5 @@
 # A mixin for aquatic creatures.
 #
-# @see [YARD Documentation](https://yardoc.org/)
-# @see [Markdown Syntax](https://daringfireball.net/projects/markdown/syntax)
-#
 module Aquatic
   # Swim in the water.
   #

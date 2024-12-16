@@ -12,7 +12,7 @@ Swim in the water.
 
 
 # Constants
-| Name | Value | Title |
-| ---  | ---   | ---   |
-| [DEFAULT_SALMON_SPEED](#constant-DEFAULT_SALMON_SPEED) | 20 |:: |
-| [MAX_DEPTH](#constant-MAX_DEPTH) | 500 |:: |
+| Name | Value |
+| ---  | ---   |
+| [DEFAULT_SALMON_SPEED](#constant-DEFAULT_SALMON_SPEED) | 20 |
+| [MAX_DEPTH](#constant-MAX_DEPTH) | 500 |
