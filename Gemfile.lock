@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    yard-markdown (0.4.1)
+    yard-markdown (0.4.2)
       csv
       yard
 

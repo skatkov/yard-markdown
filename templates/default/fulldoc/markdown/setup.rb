@@ -111,6 +111,15 @@ def serialize(object)
 <%= rdoc_to_md object.docstring %>
 
 <%= render_tags object %>
+
+<% if constant_listing.size > 0 %>
+<% groups(constant_listing, "Constants") do |list, name| %>
+<% if list.size > 0 %>
+| <%= name %> | Default Value |
+| ---  | ---   |
+<% list.each do |cnst| %>
+| [<%= cnst.name %>](#<%=aref(cnst)%>) | <%= cnst.value %> |
+<% end %><% end %><% end %><% end %>
 <% if (insmeths = public_instance_methods(object)).size > 0 %>
 # Public Instance Methods
 <% insmeths.each do |item| %>
@@ -134,16 +143,7 @@ def serialize(object)
 <%= rdoc_to_md item.docstring %>
 
 <%= render_tags item %>
-<% end %><% end %>
-<% if constant_listing.size > 0 %>
-<% groups(constant_listing, "Constants") do |list, name| %>
-# <%= name %>
-<% if list.size > 0 %>
-| Name | Default Value |
-| ---  | ---   |
-<% list.each do |cnst| %>
-| [<%= cnst.name %>](#<%=aref(cnst)%>) | <%= cnst.value %> |
-<% end %><% end %><% end %><% end %>',
+<% end %><% end %>',
       trim_mode: "<>",
     )
 
@@ -179,7 +179,7 @@ def render_tags(object)
   result = String.new("")
   object.tags.each do |tag|
     result << if !(tag.tag_name == "example")
-      "**@#{tag.tag_name}** [#{tag.types&.join(', ')}] #{tag.text}\n"
+      "**@#{tag.tag_name}** [#{tag.types&.join(', ')}] #{tag.text}\n\n"
     else
       ""
     end
