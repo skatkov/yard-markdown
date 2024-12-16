@@ -6,7 +6,6 @@ Yard plugin to generate markdown documentation
 - Compatible with Github Flavored Markdown
 - Mimick yard html layout where it makes sense to maintain familiarity
 - Produce .csv index file alonside markdown documentation to act as file index
-- Include markdown files that are already present in source code.
 
 ## Usage
 Yard doesn't load plugin by default, so you need to load plugin through `~/.yard/config`:
