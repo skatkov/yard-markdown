@@ -50,7 +50,7 @@ Swim in the water.
 **@return** [Boolean] True for wild salmon
 
 # Constants
-| Name | Value |
+| Name | Default Value |
 | ---  | ---   |
 | [DEFAULT_SALMON_SPEED](#constant-DEFAULT_SALMON_SPEED) | 20 |
 | [MAX_DEPTH](#constant-MAX_DEPTH) | 500 |

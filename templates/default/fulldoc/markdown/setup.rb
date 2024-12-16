@@ -143,7 +143,7 @@ def serialize(object)
 <% groups(constant_listing, "Constants") do |list, name| %>
 # <%= name %>
 <% if list.size > 0 %>
-| Name | Value |
+| Name | Default Value |
 | ---  | ---   |
 <% list.each do |cnst| %>
 | [<%= cnst.name %>](#<%=aref(cnst)%>) | <%= cnst.value %> |
