@@ -8,13 +8,11 @@ A mixin for aquatic creatures.
 ## swim() [](#method-i-swim)
 Swim in the water.
 
-**return** [void] 
+**@return** [void] 
 
 
 # Constants
-## DEFAULT_SALMON_SPEED [](#constant-DEFAULT_SALMON_SPEED)
-
-
-## MAX_DEPTH [](#constant-MAX_DEPTH)
-
-
+| Name | Default Value |
+| ---  | ---   |
+| [DEFAULT_SALMON_SPEED](#constant-DEFAULT_SALMON_SPEED) | 20 |
+| [MAX_DEPTH](#constant-MAX_DEPTH) | 500 |

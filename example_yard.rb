@@ -1,12 +1,5 @@
-# @title YARD Markdown Example
-# @description This example demonstrates various YARD features using markdown formatting.
-#
-# ## Links
-#
-# 1. [YARD Documentation](https://yardoc.org/)
-# 2. [Markdown Syntax](https://daringfireball.net/projects/markdown/syntax)
-
 # A mixin for aquatic creatures.
+#
 module Aquatic
   # Swim in the water.
   #
@@ -135,11 +128,9 @@ class Salmon < Fish
   end
 end
 
-# @!constant [Integer] DEFAULT_SALMON_SPEED
-#   Default speed for a swimming salmon
+# Default speed for a swimming salmon
 DEFAULT_SALMON_SPEED = 20
 
-# @!constant [Integer] MAX_DEPTH
 #   Maximum depth for salmon habitat
 MAX_DEPTH = 500
 
