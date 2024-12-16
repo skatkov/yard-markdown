@@ -90,6 +90,10 @@ def serialize_index(objects)
   end
 end
 
+# @param object [YARD::CodeObjects::Base]
+# @return [String] markdown formatted string
+#
+# @todo Extract template out of setup.rb class.
 def serialize(object)
   template =
     ERB.new(
@@ -106,12 +110,14 @@ def serialize(object)
 
 <%= rdoc_to_md object.docstring %>
 
+<%= render_tags object %>
 <% if (insmeths = public_instance_methods(object)).size > 0 %>
 # Public Instance Methods
 <% insmeths.each do |item| %>
 ## <%= item.name(false) %>(<%= item.parameters.map {|p| p.join("") }.join(", ")%>) [](#<%=aref(item)%>)
 <%= rdoc_to_md item.docstring %>
 
+<%= render_tags item %>
 <% end %><% end %>
 
 <% if (pubmeths = public_class_methods(object)).size > 0 %>
@@ -119,6 +125,7 @@ def serialize(object)
 <% pubmeths.each do |item| %>
 ## <%= item.name(false) %>(<%= item.parameters.map {|p| p.join(" ") }.join(", ") %>) [](#<%=aref(item)%>)
 <%= rdoc_to_md item.docstring %>
+<%= render_tags item %>
 
 <% end %>
 <% end %>
@@ -128,6 +135,7 @@ def serialize(object)
 ## <%= item.name %><%= item.reader? ? "[RW]" : "[R]" %> [](#<%=aref(item)%>)
 <%= rdoc_to_md item.docstring %>
 
+<%= render_tags item %>
 <% end %>
 <% end %>
 
@@ -138,6 +146,8 @@ def serialize(object)
 ## <%= cnst.name %> [](#<%=aref(cnst)%>)
 <%= rdoc_to_md cnst.docstring %>
 
+<%= render_tags cnst %>
+
 <% end %><% end %><% end %>',
       trim_mode: "<>",
     )
@@ -147,8 +157,48 @@ end
 
 require "rdoc"
 
+##
+# Converts rdoc to markdown.
+#
+# I didn't found a way to detect yard/rdoc docstrings, so we're running docstrings through rdoc to markdown converter in all cases. If it's yard docstring, it doesn't seem to have any negative effect on end results. But absense of bugs, doesn't mean that there are no issues.
+#
+# @param docstring [String, YARD::Docstring]
+# @return [String] markdown formatted string
 def rdoc_to_md(docstring)
   RDoc::Markup::ToMarkdown.new.convert(docstring)
+end
+
+##
+# Formats yard tags belonging to a object.
+#
+# This is mostly a feature of yard and rdoc doesn't have any of that. Rdoc supports ":nodoc:" and other tags. Yard claims to have full support for rdoc, doesn't really handle tags like ":nodoc:" or anything else from rdoc.
+#
+# There is an attempt to handle @example tag differently, we surround it with a code block.
+#
+# @see https://rubydoc.info/gems/yard/file/docs/TagsArch.md
+#
+# @param object [YARD::CodeObjects::Base]
+# @return [String] markdown formatted string of Tags
+
+def render_tags(object)
+  result = String.new("")
+  object.tags.each do |tag|
+    result << if !(tag.tag_name == "example")
+      "**@#{tag.tag_name}** [#{tag.types&.join(', ')}] #{tag.text}\n"
+    else
+      ""
+    end
+  end
+
+  object.tags.each do |tag|
+    result << if (tag.tag_name == "example")
+      "\n**@#{tag.tag_name}**\n```ruby\n#{tag.text}\n```"
+    else
+      ""
+    end
+  end
+
+  result
 end
 
 def aref(object)
