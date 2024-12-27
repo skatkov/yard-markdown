@@ -3,7 +3,6 @@
     
 **Includes:** Aquatic
   
-**Defined in:** example_yard.rb
 
 A salmon is an Aquatic Fish.
 
@@ -16,11 +15,21 @@ A salmon is an Aquatic Fish.
     *   swim (overridden)
 
 
-| Constants | Default Value |
-| ---  | ---   |
-| [DEFAULT_SALMON_SPEED](#constant-DEFAULT_SALMON_SPEED) | 20 |
-| [MAX_DEPTH](#constant-MAX_DEPTH) | 500 |
-# Public Instance Methods
+# Class Methods
+## wild_salmon() [](#method-c-wild_salmon)
+**@return** [Array<Salmon>] List of all wild salmon
+
+# Attributes
+## farmed[RW] [](#attribute-i-farmed)
+
+**@return** [Boolean] True for farmed salmon
+
+## wild[RW] [](#attribute-i-wild)
+
+**@return** [Boolean] True for wild salmon
+
+
+#Instance Methods
 ## initialize(farmed, wild) [](#method-i-initialize)
 Creates a new salmon.
 
@@ -48,18 +57,4 @@ Checks if this salmon is sustainable.
 Swim in the water.
 
 **@return** [void] 
-
-
-# Public Class Methods
-## wild_salmon() [](#method-c-wild_salmon)
-**@return** [Array<Salmon>] List of all wild salmon
-
-# Attributes
-## farmed[RW] [](#attribute-i-farmed)
-
-**@return** [Boolean] True for farmed salmon
-
-## wild[RW] [](#attribute-i-wild)
-
-**@return** [Boolean] True for wild salmon
 

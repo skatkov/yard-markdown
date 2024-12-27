@@ -1,16 +1,12 @@
 # Class: Fish
 **Inherits:** Object
     
-**Defined in:** example_yard.rb
 
 The base class for all fish.
 
 
-| Constants | Default Value |
-| ---  | ---   |
-| [DEFAULT_SALMON_SPEED](#constant-DEFAULT_SALMON_SPEED) | 20 |
-| [MAX_DEPTH](#constant-MAX_DEPTH) | 500 |
-# Public Instance Methods
+
+#Instance Methods
 ## make_sound() [](#method-i-make_sound)
 Make a sound.
 
