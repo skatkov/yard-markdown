@@ -1,0 +1,7 @@
+# Class: HaveInstanceVariableMatcher
+**Inherits:** VariableMatcher
+    
+
+
+
+

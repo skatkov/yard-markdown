@@ -1,0 +1,6 @@
+# Module: BindingSpecs::LocationMethod
+    
+
+
+
+

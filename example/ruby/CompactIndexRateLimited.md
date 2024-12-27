@@ -1,0 +1,7 @@
+# Class: CompactIndexRateLimited
+**Inherits:** CompactIndexAPI
+    
+
+
+
+

@@ -1,0 +1,7 @@
+# Class: EndpointBasicAuthentication
+**Inherits:** Endpoint
+    
+
+
+
+

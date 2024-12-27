@@ -1,0 +1,6 @@
+# Class: Bug::Class::VersionMax
+    
+
+
+
+

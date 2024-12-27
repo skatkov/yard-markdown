@@ -1,0 +1,7 @@
+# Class: EndpointMarshalFailBasicAuthentication
+**Inherits:** EndpointMarshalFail
+    
+
+
+
+

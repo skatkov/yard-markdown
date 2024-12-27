@@ -1,0 +1,7 @@
+# Class: HCMSpecs
+**Inherits:** Object
+    
+
+
+
+

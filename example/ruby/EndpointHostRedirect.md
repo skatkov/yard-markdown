@@ -1,0 +1,7 @@
+# Class: EndpointHostRedirect
+**Inherits:** Endpoint
+    
+
+
+
+

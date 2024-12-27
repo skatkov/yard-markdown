@@ -1,0 +1,7 @@
+# Class: EndpointCredsDiffHost
+**Inherits:** Endpoint
+    
+
+
+
+

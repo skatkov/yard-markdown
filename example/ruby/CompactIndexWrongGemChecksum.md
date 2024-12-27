@@ -1,0 +1,7 @@
+# Class: CompactIndexWrongGemChecksum
+**Inherits:** CompactIndexAPI
+    
+
+
+
+

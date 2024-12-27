@@ -1,0 +1,7 @@
+# Exception: FooError
+**Inherits:** RuntimeError
+    
+
+
+
+

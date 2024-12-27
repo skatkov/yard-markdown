@@ -1,0 +1,7 @@
+# Class: CApiClassSpecs
+**Inherits:** Object
+    
+
+
+
+

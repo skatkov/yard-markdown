@@ -1,0 +1,7 @@
+# Exception: SocketError
+**Inherits:** StandardError
+    
+
+
+
+

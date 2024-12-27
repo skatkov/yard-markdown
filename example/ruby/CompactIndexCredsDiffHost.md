@@ -1,0 +1,7 @@
+# Class: CompactIndexCredsDiffHost
+**Inherits:** CompactIndexAPI
+    
+
+
+
+

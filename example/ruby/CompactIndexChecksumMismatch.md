@@ -1,0 +1,7 @@
+# Class: CompactIndexChecksumMismatch
+**Inherits:** CompactIndexAPI
+    
+
+
+
+

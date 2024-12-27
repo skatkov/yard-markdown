@@ -1,0 +1,7 @@
+# Class: Child
+**Inherits:** Parent
+    
+
+
+
+
