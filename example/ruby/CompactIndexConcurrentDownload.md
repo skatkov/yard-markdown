@@ -1,7 +1,0 @@
-# Class: CompactIndexConcurrentDownload
-**Inherits:** CompactIndexAPI
-    
-
-
-
-

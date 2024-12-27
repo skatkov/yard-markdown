@@ -1,6 +1,0 @@
-# Module: Bundler::Persistent::Net
-    
-
-
-
-

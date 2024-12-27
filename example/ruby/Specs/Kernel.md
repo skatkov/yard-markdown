@@ -1,6 +1,0 @@
-# Module: Specs::Kernel
-    
-
-
-
-

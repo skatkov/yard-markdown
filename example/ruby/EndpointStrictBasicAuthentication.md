@@ -1,7 +1,0 @@
-# Class: EndpointStrictBasicAuthentication
-**Inherits:** Endpoint
-    
-
-
-
-

@@ -1,7 +1,0 @@
-# Class: CompactIndexBasicAuthentication
-**Inherits:** CompactIndexAPI
-    
-
-
-
-

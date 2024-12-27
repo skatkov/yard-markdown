@@ -1,7 +1,0 @@
-# Class: HPMMSpecs
-**Inherits:** Object
-    
-
-
-
-

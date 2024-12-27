@@ -1,7 +1,0 @@
-# Class: UserArray
-**Inherits:** Array
-    
-
-
-
-

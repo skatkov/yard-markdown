@@ -1,6 +1,0 @@
-# Module: MarshalTestLib::Mod1
-    
-
-
-
-

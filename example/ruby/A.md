@@ -1,7 +1,0 @@
-# Class: A
-**Inherits:** Object
-    
-
-
-
-

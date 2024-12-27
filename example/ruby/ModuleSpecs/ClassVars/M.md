@@ -1,6 +1,0 @@
-# Module: ModuleSpecs::ClassVars::M
-    
-
-
-
-

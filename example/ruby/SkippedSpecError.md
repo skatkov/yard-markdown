@@ -1,7 +1,0 @@
-# Exception: SkippedSpecError
-**Inherits:** StandardError
-    
-
-
-
-

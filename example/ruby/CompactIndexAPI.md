@@ -1,7 +1,0 @@
-# Class: CompactIndexAPI
-**Inherits:** Endpoint
-    
-
-
-
-

@@ -1,7 +1,0 @@
-# Class: CompactIndexForbidden
-**Inherits:** CompactIndexAPI
-    
-
-
-
-

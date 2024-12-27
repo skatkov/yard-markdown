@@ -1,7 +1,0 @@
-# Class: EndpointFallback
-**Inherits:** Endpoint
-    
-
-
-
-

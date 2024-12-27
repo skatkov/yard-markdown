@@ -1,7 +1,0 @@
-# Class: UserString
-**Inherits:** String
-    
-
-
-
-

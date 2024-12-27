@@ -1,7 +1,0 @@
-# Exception: OtherCustomException
-**Inherits:** StandardError
-    
-
-
-
-

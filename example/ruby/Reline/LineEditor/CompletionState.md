@@ -1,6 +1,0 @@
-# Module: Reline::LineEditor::CompletionState
-    
-
-
-
-

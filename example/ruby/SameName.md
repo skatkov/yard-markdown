@@ -1,7 +1,0 @@
-# Class: SameName
-**Inherits:** Object
-    
-
-
-
-

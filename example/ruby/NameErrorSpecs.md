@@ -1,7 +1,0 @@
-# Class: NameErrorSpecs
-**Inherits:** Object
-    
-
-
-
-

@@ -13,22 +13,23 @@ task default: %i[test stree:write]
 
 
 namespace :examples do
-  desc "Generate example/rdoc/ documentation using yard-markdown plugin"
+  desc "Generate basic example documentation using yard-markdown plugin"
   task :generate do
     Rake::Task["examples:yard"].invoke
     Rake::Task["examples:rdoc"].invoke
-    Rake::Task["examples:ruby"].invoke
   end
 
-
+  desc "Generate example documentation for code annotated with yard"
   task :yard do
     sh "yardoc --output-dir example/yard example_yard.rb"
   end
 
+  desc "Generate example documentation for code annotated with rdoc"
   task :rdoc do
     sh "yardoc --output-dir example/rdoc example_rdoc.rb"
   end
 
+  desc "Generate example documentation for code annotated with ruby source code"
   task :ruby do
     sh "yardoc source_ruby --output-dir example/ruby"
   end

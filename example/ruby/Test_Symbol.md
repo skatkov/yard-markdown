@@ -1,6 +1,0 @@
-# Module: Test_Symbol
-    
-
-
-
-

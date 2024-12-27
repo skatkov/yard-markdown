@@ -1,7 +1,0 @@
-# Class: EndpointMirrorSource
-**Inherits:** Endpoint
-    
-
-
-
-

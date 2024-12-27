@@ -1,6 +1,0 @@
-# Module: RefinementSpec::ModuleWithAncestors
-    
-
-
-
-

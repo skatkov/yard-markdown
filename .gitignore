@@ -8,5 +8,6 @@
 /tmp/
 .vscode/
 .DS_Store
-// file is just to big.
-example/ruby/index.csv
+
+
+example/ruby/

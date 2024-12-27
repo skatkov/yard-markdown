@@ -1,6 +1,0 @@
-# Module: RbInstall::Specs
-    
-
-
-
-
