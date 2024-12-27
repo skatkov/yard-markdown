@@ -1,0 +1,7 @@
+# Exception: CoreDumpError
+**Inherits:** StandardError
+    
+
+
+
+

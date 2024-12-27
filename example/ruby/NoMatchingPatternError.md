@@ -1,0 +1,7 @@
+# Exception: NoMatchingPatternError
+**Inherits:** StandardError
+    
+
+
+
+

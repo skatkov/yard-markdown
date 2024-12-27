@@ -1,0 +1,147 @@
+# Class: ObjectSpace::WeakKeyMap
+**Inherits:** Object
+    
+
+An ObjectSpace::WeakKeyMap is a key-value map that holds weak references to
+its keys, so they can be garbage collected when there is no more references.
+
+Unlike ObjectSpace::WeakMap:
+
+*   references to values are *strong*, so they aren't garbage collected while
+    they are in the map;
+*   keys are compared by value (using Object#eql?), not by identity;
+*   only garbage-collectable objects can be used as keys.
+
+        map = ObjectSpace::WeakKeyMap.new
+        val = Time.new(2023, 12, 7)
+        key = "name"
+        map[key] = val
+
+        # Value is fetched by equality: the instance of string "name" is
+        # different here, but it is equal to the key
+        map["name"] #=> 2023-12-07 00:00:00 +0200
+
+        val = nil
+        GC.start
+        # There are no more references to `val`, yet the pair isn't
+        # garbage-collected.
+        map["name"] #=> 2023-12-07 00:00:00 +0200
+
+        key = nil
+        GC.start
+        # There are no more references to `key`, key and value are
+        # garbage-collected.
+        map["name"] #=> nil
+
+(Note that GC.start is used here only for demonstrational purposes and might
+not always lead to demonstrated results.)
+
+The collection is especially useful for implementing caches of lightweight
+value objects, so that only one copy of each value representation would be
+stored in memory, but the copies that aren't used would be garbage-collected.
+
+    CACHE = ObjectSpace::WeakKeyMap
+
+    def make_value(**)
+       val = ValueObject.new(**)
+       if (existing = @cache.getkey(val))
+          # if the object with this value exists, we return it
+          existing
+       else
+          # otherwise, put it in the cache
+          @cache[val] = true
+          val
+       end
+    end
+
+This will result in `make_value` returning the same object for same set of
+attributes always, but the values that aren't needed anymore wouldn't be
+sitting in the cache forever.
+
+
+
+#Instance Methods
+## [](key) [](#method-i-[])
+Returns the value associated with the given `key` if found.
+
+If `key` is not found, returns `nil`.
+
+**@overload** [] 
+
+## []=(key, val) [](#method-i-[]=)
+Associates the given `value` with the given `key`
+
+The reference to `key` is weak, so when there is no other reference to `key`
+it may be garbage collected.
+
+If the given `key` exists, replaces its value with the given `value`; the
+ordering is not affected
+
+**@overload** [] 
+
+## clear() [](#method-i-clear)
+Removes all map entries; returns `self`.
+
+**@overload** [] 
+
+## delete(key) [](#method-i-delete)
+Deletes the entry for the given `key` and returns its associated value.
+
+If no block is given and `key` is found, deletes the entry and returns the
+associated value:
+    m = ObjectSpace::WeakKeyMap.new
+    key = "foo" # to hold reference to the key
+    m[key] = 1
+    m.delete("foo") # => 1
+    m["foo"] # => nil
+
+If no block given and `key` is not found, returns `nil`.
+
+If a block is given and `key` is found, ignores the block, deletes the entry,
+and returns the associated value:
+    m = ObjectSpace::WeakKeyMap.new
+    key = "foo" # to hold reference to the key
+    m[key] = 2
+    m.delete("foo") { |key| raise 'Will never happen'} # => 2
+
+If a block is given and `key` is not found, yields the `key` to the block and
+returns the block's return value:
+    m = ObjectSpace::WeakKeyMap.new
+    m.delete("nosuch") { |key| "Key #{key} not found" } # => "Key nosuch not found"
+
+**@overload** [] 
+
+**@overload** [] 
+
+## getkey(key) [](#method-i-getkey)
+Returns the existing equal key if it exists, otherwise returns `nil`.
+
+This might be useful for implementing caches, so that only one copy of some
+object would be used everywhere in the program:
+
+    value = {amount: 1, currency: 'USD'}
+
+    # Now if we put this object in a cache:
+    cache = ObjectSpace::WeakKeyMap.new
+    cache[value] = true
+
+    # ...we can always extract from there and use the same object:
+    copy = cache.getkey({amount: 1, currency: 'USD'})
+    copy.object_id == value.object_id #=> true
+
+**@overload** [] 
+
+## inspect() [](#method-i-inspect)
+Returns a new String containing informations about the map:
+
+    m = ObjectSpace::WeakKeyMap.new
+    m[key] = value
+    m.inspect # => "#<ObjectSpace::WeakKeyMap:0x00000001028dcba8 size=1>"
+
+**@overload** [] 
+
+## key?(key) [](#method-i-key?)
+Returns `true` if `key` is a key in `self`, otherwise `false`.
+
+**@overload** [] 
+

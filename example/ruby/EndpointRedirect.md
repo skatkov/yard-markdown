@@ -1,0 +1,7 @@
+# Class: EndpointRedirect
+**Inherits:** Endpoint
+    
+
+
+
+

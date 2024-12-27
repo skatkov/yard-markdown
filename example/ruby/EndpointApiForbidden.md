@@ -1,0 +1,7 @@
+# Class: EndpointApiForbidden
+**Inherits:** Endpoint
+    
+
+
+
+

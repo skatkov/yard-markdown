@@ -1,0 +1,6 @@
+# Module: Psych::TestClass::Foo
+    
+
+
+
+

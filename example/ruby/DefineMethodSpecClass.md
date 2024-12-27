@@ -1,0 +1,7 @@
+# Class: DefineMethodSpecClass
+**Inherits:** Object
+    
+
+
+
+

@@ -1,0 +1,7 @@
+# Class: CompactIndexEtagMatch
+**Inherits:** CompactIndexAPI
+    
+
+
+
+

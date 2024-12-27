@@ -1,0 +1,7 @@
+# Exception: MyTimeout
+**Inherits:** StandardError
+    
+
+
+
+

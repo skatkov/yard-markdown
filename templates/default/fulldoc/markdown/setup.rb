@@ -126,7 +126,7 @@ def serialize(object)
 <% end %><% end %>
 
 <% if (insmeths = public_instance_methods(object)).size > 0 %>
-#Instance Methods
+# Instance Methods
 <% insmeths.each do |item| %>
 ## <%= item.name(false) %>(<%= item.parameters.map {|p| p.join("") }.join(", ")%>) [](#<%=aref(item)%>)
 <%= rdoc_to_md item.docstring %>

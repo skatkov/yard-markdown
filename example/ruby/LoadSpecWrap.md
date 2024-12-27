@@ -1,0 +1,7 @@
+# Class: LoadSpecWrap
+**Inherits:** Object
+    
+
+
+
+

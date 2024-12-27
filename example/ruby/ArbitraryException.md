@@ -1,0 +1,7 @@
+# Exception: ArbitraryException
+**Inherits:** StandardError
+    
+
+
+
+

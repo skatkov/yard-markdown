@@ -1,0 +1,7 @@
+# Class: RubyExeSpecs
+**Inherits:** Object
+    
+
+
+
+
