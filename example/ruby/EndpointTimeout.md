@@ -1,7 +1,0 @@
-# Class: EndpointTimeout
-**Inherits:** EndpointFallback
-    
-
-
-
-

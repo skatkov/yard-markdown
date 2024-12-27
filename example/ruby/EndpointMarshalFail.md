@@ -1,7 +1,0 @@
-# Class: EndpointMarshalFail
-**Inherits:** EndpointFallback
-    
-
-
-
-

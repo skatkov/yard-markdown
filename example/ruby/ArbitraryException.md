@@ -1,7 +1,0 @@
-# Exception: ArbitraryException
-**Inherits:** StandardError
-    
-
-
-
-

@@ -1,7 +1,0 @@
-# Exception: MockAndRaiseError
-**Inherits:** Exception
-    
-
-
-
-

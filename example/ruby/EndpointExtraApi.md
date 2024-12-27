@@ -1,7 +1,0 @@
-# Class: EndpointExtraApi
-**Inherits:** Endpoint
-    
-
-
-
-

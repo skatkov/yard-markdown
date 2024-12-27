@@ -1,6 +1,0 @@
-# Module: TestRefinement::MethodMissing::Bar
-    
-
-
-
-

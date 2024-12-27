@@ -1,7 +1,0 @@
-# Class: CompactIndexNoGem
-**Inherits:** CompactIndexAPI
-    
-
-
-
-

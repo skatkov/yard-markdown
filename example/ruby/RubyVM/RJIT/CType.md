@@ -1,6 +1,0 @@
-# Module: RubyVM::RJIT::CType
-    
-
-
-
-

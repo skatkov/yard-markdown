@@ -1,7 +1,0 @@
-# Module: Rake
-    
-
-:stopdoc:
-
-
-

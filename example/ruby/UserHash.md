@@ -1,7 +1,0 @@
-# Class: UserHash
-**Inherits:** Hash
-    
-
-
-
-

@@ -1,6 +1,0 @@
-# Module: TestRefinement::FooExt2
-    
-
-
-
-

@@ -1,7 +1,0 @@
-# Exception: SpecExpectationNotMetError
-**Inherits:** StandardError
-    
-
-
-
-

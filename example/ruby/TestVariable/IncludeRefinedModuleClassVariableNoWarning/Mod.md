@@ -1,6 +1,0 @@
-# Module: TestVariable::IncludeRefinedModuleClassVariableNoWarning::Mod
-    
-
-
-
-

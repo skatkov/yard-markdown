@@ -1,7 +1,0 @@
-# Exception: UnexpectedException
-**Inherits:** Exception
-    
-
-
-
-

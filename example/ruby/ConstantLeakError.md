@@ -1,7 +1,0 @@
-# Exception: ConstantLeakError
-**Inherits:** StandardError
-    
-
-
-
-

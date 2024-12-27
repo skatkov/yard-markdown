@@ -1,7 +1,0 @@
-# Class: CApiKernelSpecs
-**Inherits:** Object
-    
-
-
-
-

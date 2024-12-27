@@ -1,7 +1,0 @@
-# Class: CompactIndexExtra
-**Inherits:** CompactIndexAPI
-    
-
-
-
-

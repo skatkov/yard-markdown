@@ -1,7 +1,0 @@
-# Class: StringSubclass
-**Inherits:** String
-    
-
-
-
-

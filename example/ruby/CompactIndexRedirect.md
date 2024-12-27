@@ -1,7 +1,0 @@
-# Class: CompactIndexRedirect
-**Inherits:** CompactIndexAPI
-    
-
-
-
-

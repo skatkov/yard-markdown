@@ -1,7 +1,0 @@
-# Class: RationalSub
-**Inherits:** Rational
-    
-
-
-
-

@@ -1,6 +1,0 @@
-# Module: CApiObjectSpecs::MVars
-    
-
-
-
-

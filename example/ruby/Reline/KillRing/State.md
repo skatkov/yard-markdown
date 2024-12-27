@@ -1,6 +1,0 @@
-# Module: Reline::KillRing::State
-    
-
-
-
-

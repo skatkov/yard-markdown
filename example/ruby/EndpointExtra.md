@@ -1,7 +1,0 @@
-# Class: EndpointExtra
-**Inherits:** Endpoint
-    
-
-
-
-

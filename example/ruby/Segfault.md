@@ -1,7 +1,0 @@
-# Class: Segfault
-**Inherits:** Object
-    
-
-
-
-

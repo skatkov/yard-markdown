@@ -1,7 +1,0 @@
-# Class: CompactIndexRangeNotSatisfiable
-**Inherits:** CompactIndexAPI
-    
-
-
-
-

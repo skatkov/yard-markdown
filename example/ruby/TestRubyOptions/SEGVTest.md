@@ -1,6 +1,0 @@
-# Module: TestRubyOptions::SEGVTest
-    
-
-
-
-

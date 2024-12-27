@@ -1,7 +1,0 @@
-# Class: CompactIndexWrongDependencies
-**Inherits:** CompactIndexAPI
-    
-
-
-
-

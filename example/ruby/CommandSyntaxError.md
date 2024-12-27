@@ -1,7 +1,0 @@
-# Exception: CommandSyntaxError
-**Inherits:** RuntimeError
-    
-
-
-
-

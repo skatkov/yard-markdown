@@ -1,7 +1,0 @@
-# Class: SummaryFormatter
-**Inherits:** BaseFormatter
-    
-
-
-
-

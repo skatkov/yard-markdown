@@ -1,7 +1,0 @@
-# Class: CompactIndexPrecompiledBefore
-**Inherits:** CompactIndexAPI
-    
-
-
-
-

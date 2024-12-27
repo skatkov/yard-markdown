@@ -1,7 +1,0 @@
-# Class: Parent
-**Inherits:** Object
-    
-
-
-
-

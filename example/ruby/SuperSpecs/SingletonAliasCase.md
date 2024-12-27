@@ -1,6 +1,0 @@
-# Module: SuperSpecs::SingletonAliasCase
-    
-
-
-
-
