@@ -33,7 +33,7 @@ It seems important to note, that yard claims to have support for RDoc. That supp
 
 If you know how to improve that, please get in touch or submit a patch.
 
-So in meantime, there is work going on a competing gem for RDoc and it's called [rdoc-mardown gem](https://github.com/skatkov/rdoc-markdown/tree/main/example).
+So in meantime, there is work going on a competing gem for RDoc and it's called [rdoc-mardown gem](https://github.com/skatkov/rdoc-markdown/).
 
 ## Note on index.csv file
 This gem emits index of all markdown files in a index.csv file.
