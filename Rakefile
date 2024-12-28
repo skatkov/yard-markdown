@@ -28,9 +28,4 @@ namespace :examples do
   task :rdoc do
     sh "yardoc --output-dir example/rdoc example_rdoc.rb"
   end
-
-  desc "Generate example documentation for code annotated with ruby source code"
-  task :ruby do
-    sh "yardoc source_ruby --output-dir example/ruby"
-  end
 end
