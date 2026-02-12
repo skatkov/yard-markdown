@@ -3,7 +3,6 @@
 require 'test_helper'
 
 class YARD::TestTagFormatting < Minitest::Test
-  TEMPLATE_PATH = File.expand_path('../../templates/default/fulldoc/markdown/setup.rb', __dir__)
   Tag = Struct.new(:tag_name, :name, :types, :text, keyword_init: true)
 
   def test_formats_hash_types_without_errors
@@ -21,11 +20,9 @@ class YARD::TestTagFormatting < Minitest::Test
   private
 
   def formatter
-    @formatter ||= begin
-      source = File.read(TEMPLATE_PATH).lines.reject { |line| line.strip == 'include Helpers::ModuleHelper' }.join
-      mod = Module.new
-      mod.module_eval(source, TEMPLATE_PATH)
-      Object.new.extend(mod)
-    end
+    @formatter ||= YARD::Templates::Engine.template(:default, :module, :markdown).new(
+      format: :markdown,
+      template: :default
+    )
   end
 end
