@@ -19,6 +19,10 @@ class YARD::TestTemplateSections < Minitest::Test
         attributes_section
         public_class_methods_section
         public_instance_methods_section
+        protected_class_methods_section
+        protected_instance_methods_section
+        private_class_methods_section
+        private_instance_methods_section
       ],
       template.sections.map(&:name)
     )
