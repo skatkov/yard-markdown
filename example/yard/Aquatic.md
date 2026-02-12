@@ -1,13 +1,13 @@
-# Module: Aquatic
-    
+# Module Aquatic
+<a id="module-Aquatic"></a>
 
 A mixin for aquatic creatures.
 
+## Public Instance Methods
+### `swim()`
+<a id="method-i-swim"></a>
+<a id="swim-instance_method"></a>
 
-
-#Instance Methods
-## swim() [](#method-i-swim)
 Swim in the water.
 
-**@return** [void] 
-
+- **@return** [void]

@@ -1,10 +1,9 @@
-# Class: Duck
-**Inherits:** Object
-  
-**Extended by:** Animal
-    
-**Includes:** Waterfowl
-  
+# Class Duck
+<a id="class-Duck"></a>
+
+**Inherits:** `Object`
+**Extended by:** `Animal`
+**Includes:** `Waterfowl`
 
 A duck is a Waterfowl Bird.
 
@@ -19,42 +18,68 @@ Features:
 
       * swim
 
+## Constants
+### `@@rubber_ducks`
+<a id="classvariable--40-40rubber_ducks"></a>
+<a id="@@rubber_ducks-classvariable"></a>
 
-# Class Methods
-## rubber_ducks() [](#method-c-rubber_ducks)
-**@return** [Array<Duck>] list of all rubber ducks
+Global list of all rubber ducks.
 
-# Attributes
-## domestic[RW] [](#attribute-i-domestic)
+Use when in trouble.
+### `MAX_VELOCITY`
+<a id="constant-MAX_VELOCITY"></a>
+<a id="MAX_VELOCITY-constant"></a>
+
+Maximum velocity for a flying duck.
+
+## Attributes
+### `domestic` [RW]
+<a id="attribute-i-domestic"></a>
+<a id="domestic-instance_method"></a>
+
 True for domestic ducks.
+### `rubber` [R]
+<a id="attribute-i-rubber"></a>
+<a id="rubber-instance_method"></a>
 
-## rubber[RW] [](#attribute-i-rubber)
 True for rubber ducks.
 
+## Public Class Methods
+### `rubber_ducks()`
+<a id="method-c-rubber_ducks"></a>
+<a id="rubber_ducks-class_method"></a>
 
-#Instance Methods
-## initialize(domestic, rubber) [](#method-i-initialize)
+- **@return** [Array<Duck>] list of all rubber ducks
+
+## Public Instance Methods
+### `initialize(domestic, rubber)`
+<a id="method-i-initialize"></a>
+<a id="initialize-instance_method"></a>
+
 Creates a new duck.
 
-**@param** [Boolean] 
+- **@param** `domestic` [Boolean]
+- **@param** `rubber` [Boolean]
+- **@return** [Duck] a new instance of Duck
+### `speak()`
+<a id="method-i-speak"></a>
+<a id="speak-instance_method"></a>
 
-**@param** [Boolean] 
-
-**@return** [Duck] a new instance of Duck
-
-## speak() [](#method-i-speak)
 Duck overrides generic implementation.
 
-**@yield** [speech] 
+- **@yield** [speech]
+### `swim()`
+<a id="method-i-swim"></a>
+<a id="swim-instance_method"></a>
 
-## swim() [](#method-i-swim)
 Swimming helper.
+### `useful?()`
+<a id="method-i-useful-3F"></a>
+<a id="useful?-instance_method"></a>
 
-## useful?() [](#method-i-useful?)
 Checks if this duck is a useful one.
 
 :call-seq:
     Bird.useful? -> bool
 
-**@return** [Boolean] 
-
+- **@return** [Boolean]

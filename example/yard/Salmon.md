@@ -1,8 +1,8 @@
-# Class: Salmon
-**Inherits:** Fish
-    
-**Includes:** Aquatic
-  
+# Class Salmon
+<a id="class-Salmon"></a>
+
+**Inherits:** `Fish`
+**Includes:** `Aquatic`
 
 A salmon is an Aquatic Fish.
 
@@ -14,47 +14,74 @@ A salmon is an Aquatic Fish.
 *   **Aquatic**
     *   swim (overridden)
 
+## Constants
+### Salmon specific attributes
+#### `MAX_SPEED`
+<a id="constant-MAX_SPEED"></a>
+<a id="MAX_SPEED-constant"></a>
 
-# Class Methods
-## wild_salmon() [](#method-c-wild_salmon)
-**@return** [Array<Salmon>] List of all wild salmon
+- **@return** [Integer] Maximum speed for a swimming salmon
+### General
+#### `@@wild_salmon`
+<a id="classvariable--40-40wild_salmon"></a>
+<a id="@@wild_salmon-classvariable"></a>
 
-# Attributes
-## farmed[RW] [](#attribute-i-farmed)
+Global list of all wild salmon.
 
-**@return** [Boolean] True for farmed salmon
+Use for conservation efforts.
 
-## wild[RW] [](#attribute-i-wild)
+## Attributes
+### Salmon specific attributes
+#### `farmed` [RW]
+<a id="attribute-i-farmed"></a>
+<a id="farmed-instance_method"></a>
 
-**@return** [Boolean] True for wild salmon
+- **@return** [Boolean] True for farmed salmon
+#### `wild` [R]
+<a id="attribute-i-wild"></a>
+<a id="wild-instance_method"></a>
 
+- **@return** [Boolean] True for wild salmon
 
-#Instance Methods
-## initialize(farmed, wild) [](#method-i-initialize)
-Creates a new salmon.
+## Public Class Methods
+### `wild_salmon()`
+<a id="method-c-wild_salmon"></a>
+<a id="wild_salmon-class_method"></a>
 
-**@param** [Boolean] Whether the salmon is farmed
+- **@return** [Array<Salmon>] List of all wild salmon
 
-**@param** [Boolean] Whether the salmon is wild
+## Public Instance Methods
+### Fish overrides
+#### `make_sound()`
+<a id="method-i-make_sound"></a>
+<a id="make_sound-instance_method"></a>
 
-**@return** [Salmon] a new instance of Salmon
-
-## make_sound() [](#method-i-make_sound)
 Salmon overrides generic implementation.
 
-**@return** [void] 
+- **@return** [void]
+- **@yield** [sound] The sound produced by the salmon
+- **@yieldparam** `sound` [String] The actual sound
+### General
+#### `initialize(farmed, wild)`
+<a id="method-i-initialize"></a>
+<a id="initialize-instance_method"></a>
 
-**@yield** [sound] The sound produced by the salmon
+Creates a new salmon.
 
-**@yieldparam** [String] The actual sound
+- **@param** `farmed` [Boolean] Whether the salmon is farmed
+- **@param** `wild` [Boolean] Whether the salmon is wild
+- **@return** [Salmon] a new instance of Salmon
+#### `sustainable?()`
+<a id="method-i-sustainable-3F"></a>
+<a id="sustainable?-instance_method"></a>
 
-## sustainable?() [](#method-i-sustainable?)
 Checks if this salmon is sustainable.
 
-**@return** [Boolean] Whether the salmon is sustainable
+- **@return** [Boolean] Whether the salmon is sustainable
+#### `swim()`
+<a id="method-i-swim"></a>
+<a id="swim-instance_method"></a>
 
-## swim() [](#method-i-swim)
 Swim in the water.
 
-**@return** [void] 
-
+- **@return** [void]
