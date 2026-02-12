@@ -33,6 +33,7 @@ class MarkdownValidator
   def validate_file(file)
     content = File.read(file)
 
+    render_commonmark!(content, file)
     render_gfm!(content, file)
 
     raise ValidationError, "local .html link found in #{relative_path(file)}" if content.match?(LOCAL_HTML_LINK_REGEX)
@@ -122,6 +123,12 @@ class MarkdownValidator
     CommonMarker.render_html(content, :GITHUB_PRE_LANG, GFM_EXTENSIONS)
   rescue StandardError => e
     raise ValidationError, "GFM render failed for #{relative_path(file)}: #{e.message}"
+  end
+
+  def render_commonmark!(content, file)
+    CommonMarker.render_html(content)
+  rescue StandardError => e
+    raise ValidationError, "CommonMark render failed for #{relative_path(file)}: #{e.message}"
   end
 
   def relative_path(path)

@@ -25,3 +25,5 @@ jobs:
           bundler-cache: true
       - name: test
         run: bundle exec rake test
+      - name: validate real-world markdown
+        run: bundle exec rake markdown:validate_real_world

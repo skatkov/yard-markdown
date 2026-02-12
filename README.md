@@ -69,6 +69,8 @@ There is also a real-world validation harness for repositories with substantial 
 bundle exec rake markdown:validate_real_world
 ```
 
-This task reports unresolved local links found in upstream source comments, while still validating markdown file generation and local anchor/link structure.
+This task validates generated markdown against CommonMark + GFM rendering, and reports unresolved local links found in upstream source comments while still validating local anchor/link structure.
+
+GitHub Actions CI now runs this task on every push/PR, so `sidekiq` and other real-world fixture gems are verified continuously.
 
 For reproducible checks, the task clones pinned tags (`rspec-core` `v3.13.2`, `sidekiq` `v7.3.10`) into `tmp/real-world/repos` before generating output.
