@@ -89,8 +89,7 @@ def serialize(object)
   group_order = Array(object.groups)
   current_path = options.serializer.serialized_path(object)
 
-  lines << "# #{object.type.to_s.capitalize} #{object.path}"
-  lines.concat(anchor_tags_for(object))
+  lines << heading_with_anchors("# #{object.type.to_s.capitalize} #{object.path}", object)
 
   append_lines(lines, object_relationships(object))
   append_lines(lines, rdoc_to_md(object.docstring))
@@ -139,11 +138,11 @@ def render_constants(constants, group_order)
       item_heading = '###'
     end
 
-    items.each do |item|
-      lines << "#{item_heading} `#{item.name(false)}`"
-      lines.concat(anchor_tags_for(item))
-      append_lines(lines, documented_text(item))
-      append_lines(lines, render_tags(item))
+    items.each_with_index do |item, index|
+      lines << '' if index.positive?
+      lines << heading_with_anchors("#{item_heading} `#{item.name(false)}`", item)
+      append_lines(lines, documented_text(item), separated: false)
+      append_lines(lines, render_tags(item), separated: false)
     end
   end
 
@@ -163,11 +162,11 @@ def render_attributes(attrs, group_order)
       item_heading = '###'
     end
 
-    items.each do |item|
-      lines << "#{item_heading} `#{item.name(false)}` [#{attribute_access(item)}]"
-      lines.concat(anchor_tags_for(item))
-      append_lines(lines, documented_text(item))
-      append_lines(lines, render_tags(item))
+    items.each_with_index do |item, index|
+      lines << '' if index.positive?
+      lines << heading_with_anchors("#{item_heading} `#{item.name(false)}` [#{attribute_access(item)}]", item)
+      append_lines(lines, documented_text(item), separated: false)
+      append_lines(lines, render_tags(item), separated: false)
     end
   end
 
@@ -187,11 +186,11 @@ def render_methods(section_title, methods, group_order)
       item_heading = '###'
     end
 
-    items.each do |item|
-      lines << "#{item_heading} `#{formatted_method_heading(item)}`"
-      lines.concat(anchor_tags_for(item))
-      append_lines(lines, documented_text(item))
-      append_lines(lines, render_tags(item))
+    items.each_with_index do |item, index|
+      lines << '' if index.positive?
+      lines << heading_with_anchors("#{item_heading} `#{formatted_method_heading(item)}`", item)
+      append_lines(lines, documented_text(item), separated: false)
+      append_lines(lines, render_tags(item), separated: false)
     end
   end
 
@@ -311,6 +310,13 @@ def anchor_tags_for(object)
   anchors.map { |id| anchor_tag(id) }
 end
 
+def heading_with_anchors(heading, object)
+  anchors = anchor_tags_for(object)
+  return heading if anchors.empty?
+
+  "#{heading} #{anchors.join(' ')}"
+end
+
 def anchor_component(value)
   value.to_s.each_char.map do |char|
     char.match?(/[A-Za-z0-9_-]/) ? char : format('-%X', char.ord)
@@ -385,10 +391,10 @@ def hidden_object?(object)
   object.docstring.to_s.strip.start_with?(':nodoc:')
 end
 
-def append_lines(lines, content)
+def append_lines(lines, content, separated: true)
   return if content.to_s.strip.empty?
 
-  lines << '' unless lines.empty? || lines.last.empty?
+  lines << '' if separated && !lines.empty? && !lines.last.empty?
   lines.concat(content.to_s.split("\n"))
 end
 
