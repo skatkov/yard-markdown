@@ -53,9 +53,38 @@ class YARD::TestMarkdown < Minitest::Test
     end
   end
 
+  def test_protected_and_private_visibility_flags_affect_output
+    with_generated_docs('test/example/visibility_example.rb', '--protected', '--private') do |output_dir|
+      visibility = File.read(File.join(output_dir, 'VisibilityExample.md'))
+
+      assert_includes visibility, '## Public Instance Methods'
+      assert_includes visibility, '### `public_api()`'
+      assert_includes visibility, '## Protected Instance Methods'
+      assert_includes visibility, '### `protected_api()`'
+      assert_includes visibility, '## Private Instance Methods'
+      assert_includes visibility, '### `private_api()`'
+    end
+  end
+
+  def test_no_private_flag_hides_private_tagged_objects
+    with_generated_docs('test/example/visibility_example.rb', '--private', '--no-private') do |output_dir|
+      visibility = File.read(File.join(output_dir, 'VisibilityExample.md'))
+
+      assert_includes visibility, '### `private_api()`'
+      refute_includes visibility, '### `private_tagged_api()`'
+      refute_includes visibility, 'INTERNAL_TOKEN'
+
+      index_rows = CSV.read(File.join(output_dir, 'index.csv'), headers: true)
+      names = index_rows.map { |row| row['name'] }
+      assert_includes names, 'VisibilityExample.private_api'
+      refute_includes names, 'VisibilityExample.private_tagged_api'
+      refute_includes names, 'VisibilityExample.INTERNAL_TOKEN'
+    end
+  end
+
   private
 
-  def with_generated_docs(source_file)
+  def with_generated_docs(source_file, *extra_args)
     Dir.mktmpdir('yard-markdown-test') do |output_dir|
       YARD::Registry.clear
 
@@ -68,6 +97,7 @@ class YARD::TestMarkdown < Minitest::Test
         "#{ROOT}/lib/yard-markdown.rb",
         '--output-dir',
         output_dir,
+        *extra_args,
         "#{ROOT}/#{source_file}"
       )
 

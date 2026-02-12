@@ -53,7 +53,7 @@ def serialize_index(objects)
         end
       end
 
-      if (insmeths = public_instance_methods(object)).size > 0
+      if (insmeths = visible_instance_methods(object)).size > 0
         insmeths.each do |item|
           csv << [
             "#{object.path}.#{item.name(false)}",
@@ -63,7 +63,7 @@ def serialize_index(objects)
         end
       end
 
-      if (pubmeths = public_class_methods(object)).size > 0
+      if (pubmeths = visible_class_methods(object)).size > 0
         pubmeths.each do |item|
           csv << [
             "#{object.path}.#{item.name(false)}",
@@ -110,24 +110,22 @@ def anchor_component(value)
 end
 
 def constant_listing(object)
-  constants = object.constants(included: false, inherited: false)
-  constants + object.cvars
+  constants = object.constants(included: false, inherited: false) + object.cvars
+  run_verifier(constants)
 end
 
-def public_method_list(object)
-  prune_method_listing(
-    object.meths(inherited: false, visibility: [:public]),
-    included: false
-  ).reject { |item| hidden_object?(item) }
+def visible_method_list(object)
+  prune_method_listing(object.meths(inherited: false, included: false))
+    .reject { |item| hidden_object?(item) }
     .sort_by { |m| m.name.to_s }
 end
 
-def public_class_methods(object)
-  public_method_list(object).select { |o| o.scope == :class }
+def visible_class_methods(object)
+  visible_method_list(object).select { |o| o.scope == :class }
 end
 
-def public_instance_methods(object)
-  public_method_list(object).select { |o| o.scope == :instance }
+def visible_instance_methods(object)
+  visible_method_list(object).select { |o| o.scope == :instance }
 end
 
 def attr_listing(object)

@@ -13,7 +13,11 @@ def init
            :constants_section,
            :attributes_section,
            :public_class_methods_section,
-           :public_instance_methods_section
+           :public_instance_methods_section,
+           :protected_class_methods_section,
+           :protected_instance_methods_section,
+           :private_class_methods_section,
+           :private_instance_methods_section
 end
 
 def run(opts = nil, sects = sections, start_at = 0, break_first = false, &block)
@@ -58,17 +62,45 @@ def attributes_section
 end
 
 def public_class_methods_section
-  methods = public_class_methods(object)
+  methods = methods_for(object, visibility: :public, scope: :class)
   return '' unless methods.any?
 
   render_section_content(render_methods('Public Class Methods', methods, Array(object.groups)))
 end
 
 def public_instance_methods_section
-  methods = public_instance_methods(object)
+  methods = methods_for(object, visibility: :public, scope: :instance)
   return '' unless methods.any?
 
   render_section_content(render_methods('Public Instance Methods', methods, Array(object.groups)))
+end
+
+def protected_class_methods_section
+  methods = methods_for(object, visibility: :protected, scope: :class)
+  return '' unless methods.any?
+
+  render_section_content(render_methods('Protected Class Methods', methods, Array(object.groups)))
+end
+
+def protected_instance_methods_section
+  methods = methods_for(object, visibility: :protected, scope: :instance)
+  return '' unless methods.any?
+
+  render_section_content(render_methods('Protected Instance Methods', methods, Array(object.groups)))
+end
+
+def private_class_methods_section
+  methods = methods_for(object, visibility: :private, scope: :class)
+  return '' unless methods.any?
+
+  render_section_content(render_methods('Private Class Methods', methods, Array(object.groups)))
+end
+
+def private_instance_methods_section
+  methods = methods_for(object, visibility: :private, scope: :instance)
+  return '' unless methods.any?
+
+  render_section_content(render_methods('Private Instance Methods', methods, Array(object.groups)))
 end
 
 def render_section_content(content)
@@ -310,24 +342,20 @@ def anchor_component(value)
 end
 
 def constant_listing(object)
-  constants = object.constants(included: false, inherited: false)
-  constants + object.cvars
+  constants = object.constants(included: false, inherited: false) + object.cvars
+  run_verifier(constants)
 end
 
 def public_method_list(object)
-  prune_method_listing(
-    object.meths(inherited: false, visibility: [:public]),
-    included: false
-  ).reject { |item| hidden_object?(item) }
+  prune_method_listing(object.meths(inherited: false, included: false))
+    .reject { |item| hidden_object?(item) }
     .sort_by { |m| m.name.to_s }
 end
 
-def public_class_methods(object)
-  public_method_list(object).select { |o| o.scope == :class }
-end
-
-def public_instance_methods(object)
-  public_method_list(object).select { |o| o.scope == :instance }
+def methods_for(object, visibility:, scope:)
+  public_method_list(object).select do |method_object|
+    method_object.visibility == visibility && method_object.scope == scope
+  end
 end
 
 def attr_listing(object)
