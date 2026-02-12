@@ -8,8 +8,10 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
+    commonmarker (0.23.12)
     csv (3.2.8)
     minitest (5.20.0)
+    mutex_m (0.3.0)
     rake (13.1.0)
     yard (0.9.34)
 
@@ -19,7 +21,9 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  commonmarker (~> 0.23)
   minitest (~> 5.0)
+  mutex_m
   rake (~> 13.0)
   yard
   yard-markdown!
