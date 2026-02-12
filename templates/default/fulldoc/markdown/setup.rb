@@ -268,11 +268,29 @@ def format_tag(tag)
   parts = ["**@#{tag.tag_name}**"]
   parts << "`#{tag.name}`" unless tag.name.to_s.strip.empty?
 
-  cleaned_types = Array(tag.types).map(&:to_s).map(&:strip).reject(&:empty?)
+  cleaned_types = normalized_tag_types(tag.types)
   parts << "[#{cleaned_types.join(', ')}]" unless cleaned_types.empty?
   parts << tag.text.to_s.strip unless tag.text.to_s.strip.empty?
 
   parts.join(' ')
+end
+
+def normalized_tag_types(types)
+  values = if types.is_a?(Hash)
+             types.map { |name, value| format_hash_tag_type(name, value) }
+           else
+             Array(types)
+           end
+
+  values.map(&:to_s).map(&:strip).reject(&:empty?)
+end
+
+def format_hash_tag_type(name, value)
+  key = name.to_s.strip
+  return '' if key.empty?
+  return key if value.nil? || value == true || (value.respond_to?(:empty?) && value.empty?)
+
+  "#{key}: #{value}"
 end
 
 def aref(object)
