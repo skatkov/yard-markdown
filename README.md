@@ -33,7 +33,7 @@ It seems important to note, that yard claims to have support for RDoc. That supp
 
 If you know how to improve that, please get in touch or submit a patch.
 
-So in meantime, there is work going on a competing gem for RDoc and it's called [rdoc-mardown gem](https://github.com/skatkov/rdoc-markdown/).
+So in meantime, there is work going on a competing gem for RDoc and it's called [rdoc-markdown gem](https://github.com/skatkov/rdoc-markdown/).
 
 ## Note on index.csv file
 This gem emits index of all markdown files in a index.csv file.
@@ -43,6 +43,32 @@ There are decent tools that offer search through structured plain-text files. Bu
 In my personal use-case, I use SQLite. All other databases seem to have a good support for CSV imports.
 
 ## Testing
-Unit tests can't really test this gem properly. So it's semi-manual process of making changes and reviewing output.
+Unit tests verify renderer behavior, index links, and anchor consistency for both YARD-style and RDoc-style sources.
 
-Easiest way to test is to run `rake generate_example` and check output in `example` directory.
+Run:
+
+```bash
+bundle exec rake test
+```
+
+Regenerate local sample docs:
+
+```bash
+bundle exec rake examples:generate
+```
+
+Validate generated markdown in sample docs:
+
+```bash
+bundle exec rake markdown:validate_examples
+```
+
+There is also a real-world validation harness for repositories with substantial YARD documentation (`rspec-core`, `sidekiq`):
+
+```bash
+bundle exec rake markdown:validate_real_world
+```
+
+This task reports unresolved local links found in upstream source comments, while still validating markdown file generation and local anchor/link structure.
+
+For reproducible checks, the task clones pinned tags (`rspec-core` `v3.13.2`, `sidekiq` `v7.3.10`) into `tmp/real-world/repos` before generating output.
