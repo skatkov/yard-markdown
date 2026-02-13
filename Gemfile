@@ -9,7 +9,8 @@ gem "rake", "~> 13.0"
 
 gem "minitest", "~> 5.0"
 gem "mutex_m"
-gem "commonmarker", "~> 0.23"
+gem "commonmarker"
+gem "redcarpet"
 
 # gem "ruby-lsp"
 gem "yard"
