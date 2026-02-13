@@ -9,7 +9,6 @@ Duck.MAX_VELOCITY,Constant,Duck.md#constant-MAX_VELOCITY
 Duck.@@rubber_ducks,Constant,Duck.md#classvariable--40-40rubber_ducks
 Duck.initialize,Method,Duck.md#method-i-initialize
 Duck.speak,Method,Duck.md#method-i-speak
-Duck.swim,Method,Duck.md#method-i-swim
 Duck.useful?,Method,Duck.md#method-i-useful-3F
 Duck.rubber_ducks,Method,Duck.md#method-c-rubber_ducks
 Duck.domestic,Attribute,Duck.md#attribute-i-domestic

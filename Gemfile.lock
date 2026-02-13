@@ -3,17 +3,31 @@ PATH
   specs:
     yard-markdown (0.5.0)
       csv
+      rdoc
       yard
 
 GEM
   remote: https://rubygems.org/
   specs:
-    commonmarker (0.23.12)
-    csv (3.2.8)
-    minitest (5.20.0)
+    commonmarker (2.6.3-arm64-darwin)
+    commonmarker (2.6.3-x86_64-linux)
+    csv (3.3.5)
+    date (3.5.1)
+    erb (6.0.1)
+    minitest (5.27.0)
     mutex_m (0.3.0)
-    rake (13.1.0)
-    yard (0.9.34)
+    psych (5.3.1)
+      date
+      stringio
+    rake (13.3.1)
+    rdoc (7.0.3)
+      erb
+      psych (>= 4.0.0)
+      tsort
+    redcarpet (3.6.1)
+    stringio (3.2.0)
+    tsort (0.2.0)
+    yard (0.9.38)
 
 PLATFORMS
   arm64-darwin-22
@@ -21,10 +35,11 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  commonmarker (~> 0.23)
+  commonmarker
   minitest (~> 5.0)
   mutex_m
   rake (~> 13.0)
+  redcarpet
   yard
   yard-markdown!
 
