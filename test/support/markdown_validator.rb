@@ -120,13 +120,18 @@ class MarkdownValidator
   end
 
   def render_gfm!(content, file)
-    CommonMarker.render_html(content, :GITHUB_PRE_LANG, GFM_EXTENSIONS)
+    options = {
+      render: { github_pre_lang: true },
+      extension: GFM_EXTENSIONS.each_with_object({}) { |ext, hash| hash[ext] = true }
+    }
+
+    Commonmarker.to_html(content, options: options)
   rescue StandardError => e
     raise ValidationError, "GFM render failed for #{relative_path(file)}: #{e.message}"
   end
 
   def render_commonmark!(content, file)
-    CommonMarker.render_html(content)
+    Commonmarker.to_html(content)
   rescue StandardError => e
     raise ValidationError, "CommonMark render failed for #{relative_path(file)}: #{e.message}"
   end
