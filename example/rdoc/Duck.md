@@ -48,6 +48,9 @@ Creates a new duck.
 Duck overrides generic implementation.
 - **@yield** [speech]
 
+### `swim()` <a id="method-i-swim"></a> <a id="swim-instance_method"></a>
+Swimming helper.
+
 ### `useful?()` <a id="method-i-useful-3F"></a> <a id="useful?-instance_method"></a>
 Checks if this duck is a useful one.
 

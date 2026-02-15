@@ -10,6 +10,7 @@ Salmon.@@wild_salmon,Constant,Salmon.md#classvariable--40-40wild_salmon
 Salmon.initialize,Method,Salmon.md#method-i-initialize
 Salmon.make_sound,Method,Salmon.md#method-i-make_sound
 Salmon.sustainable?,Method,Salmon.md#method-i-sustainable-3F
+Salmon.swim,Method,Salmon.md#method-i-swim
 Salmon.wild_salmon,Method,Salmon.md#method-c-wild_salmon
 Salmon.farmed,Attribute,Salmon.md#attribute-i-farmed
 Salmon.wild,Attribute,Salmon.md#attribute-i-wild

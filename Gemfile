@@ -14,3 +14,4 @@ gem "redcarpet"
 
 # gem "ruby-lsp"
 gem "yard"
+gem "irb"
