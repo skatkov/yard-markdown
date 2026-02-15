@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "fileutils"
+require "open3"
 require "shellwords"
 
 require "bundler/gem_tasks"
@@ -20,11 +21,57 @@ def shell_escape(path)
   Shellwords.escape(path)
 end
 
+COMMAND_WARNING_REGEX = /\bwarning:/i
+COMMAND_ERROR_REGEX = /\b(?:error|exception|fatal|loaderror)\b/i
+
+def analyze_command_output(text)
+  lines = text.each_line.map(&:strip).reject(&:empty?)
+  {
+    warnings: lines.grep(COMMAND_WARNING_REGEX),
+    errors: lines.grep(COMMAND_ERROR_REGEX)
+  }
+end
+
+def command_log_path(label)
+  safe_label = label.gsub(%r{[^a-zA-Z0-9_-]+}, "_")
+  File.join("tmp", "command-logs", "#{safe_label}.log")
+end
+
+def run_command_with_analysis(command, label:)
+  puts command
+
+  stdout, stderr, status = Open3.capture3(command)
+  combined_output = [stdout, stderr].reject(&:empty?).join("\n")
+  log_path = command_log_path(label)
+
+  FileUtils.mkdir_p(File.dirname(log_path))
+  File.write(log_path, combined_output)
+
+  puts combined_output unless combined_output.empty?
+
+  stdout_analysis = analyze_command_output(stdout)
+  stderr_analysis = analyze_command_output(stderr)
+  combined_analysis = {
+    warnings: stdout_analysis[:warnings] + stderr_analysis[:warnings],
+    errors: stdout_analysis[:errors] + stderr_analysis[:errors]
+  }
+
+  puts "Output analysis for #{label}: warnings=#{combined_analysis[:warnings].size}, errors=#{combined_analysis[:errors].size}"
+
+  return if status.success? && combined_analysis[:errors].empty?
+
+  details = ["#{label} failed output checks (log: #{log_path})"]
+  details << "exit status: #{status.exitstatus}" unless status.success?
+  details << "errors: #{combined_analysis[:errors].first(5).join(' | ')}" unless combined_analysis[:errors].empty?
+  raise details.join("\n")
+end
+
 def generate_markdown_docs(source, output_dir)
   FileUtils.rm_rf(output_dir)
   FileUtils.mkdir_p(output_dir)
 
-  sh "yardoc --no-stats --quiet --format markdown --load ./lib/yard-markdown.rb --output-dir #{shell_escape(output_dir)} #{shell_escape(source)}"
+  command = "yardoc --no-stats --quiet --format markdown --load ./lib/yard-markdown.rb --output-dir #{shell_escape(output_dir)} #{shell_escape(source)}"
+  run_command_with_analysis(command, label: "yardoc_#{output_dir}")
 end
 
 def checkout_repo(url, destination, ref: nil)
@@ -34,7 +81,7 @@ def checkout_repo(url, destination, ref: nil)
   command = "git clone --depth 1"
   command += " --branch #{shell_escape(ref)}" if ref
   command += " #{shell_escape(url)} #{shell_escape(destination)}"
-  sh command
+  run_command_with_analysis(command, label: "git_clone_#{destination}")
 end
 
 

@@ -52,3 +52,7 @@ Creates a new salmon.
 #### `sustainable?()` <a id="method-i-sustainable-3F"></a> <a id="sustainable?-instance_method"></a>
 Checks if this salmon is sustainable.
 - **@return** [Boolean] Whether the salmon is sustainable
+
+#### `swim()` <a id="method-i-swim"></a> <a id="swim-instance_method"></a>
+Swim in the water.
+- **@return** [void]
