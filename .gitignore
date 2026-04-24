@@ -6,6 +6,7 @@
 /pkg/
 /spec/reports/
 /tmp/
+.mutant/*
 .vscode/
 .DS_Store
 

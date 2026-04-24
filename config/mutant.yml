@@ -1,0 +1,15 @@
+usage: opensource
+
+integration:
+  name: minitest
+
+includes:
+  - lib
+  - test
+
+requires:
+  - ./test/support/mutant_setup.rb
+
+matcher:
+  subjects:
+    - YARD::Templates::Engine::Template__home_sk_Code_yard_markdown_templates_default_module_markdown#
