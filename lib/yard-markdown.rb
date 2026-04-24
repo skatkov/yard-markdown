@@ -2,6 +2,7 @@
 
 require "yard"
 require_relative "yard/markdown/anchor_component_helper"
+require_relative "yard/markdown/tag_formatting_helper"
 
 module YARD
   module Markdown

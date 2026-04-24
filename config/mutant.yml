@@ -13,3 +13,4 @@ requires:
 matcher:
   subjects:
     - YARD::Markdown::AnchorComponentHelper#
+    - YARD::Markdown::TagFormattingHelper#
