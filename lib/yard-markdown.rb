@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "yard"
+require_relative "yard/markdown/anchor_component_helper"
 
 module YARD
   module Markdown
