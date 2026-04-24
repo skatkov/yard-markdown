@@ -14,4 +14,5 @@ matcher:
   subjects:
     - YARD::Markdown::AnchorComponentHelper#
     - YARD::Markdown::ArefHelper#
+    - YARD::Markdown::ObjectListingHelper#
     - YARD::Markdown::TagFormattingHelper#
