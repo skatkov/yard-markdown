@@ -5,6 +5,7 @@ require 'csv'
 include Helpers::ModuleHelper
 
 include YARD::Markdown::ArefHelper
+include YARD::Markdown::ObjectListingHelper
 
 def init
   options.objects = objects = run_verifier(options.objects).reject { |item| item.name == :root }
@@ -86,50 +87,4 @@ def serialize_index(objects)
       end
     end
   end
-end
-
-def constant_listing(object)
-  constants = object.constants(included: false, inherited: false)
-  constants + object.cvars
-end
-
-def public_method_list(object)
-  prune_method_listing(
-    object.meths(inherited: false, visibility: [:public]),
-    included: false
-  ).reject { |item| hidden_object?(item) }
-    .sort_by { |m| m.name.to_s }
-end
-
-def public_class_methods(object)
-  public_method_list(object).select { |o| o.scope == :class }
-end
-
-def public_instance_methods(object)
-  public_method_list(object).select { |o| o.scope == :instance }
-end
-
-def attr_listing(object)
-  attrs = []
-  object.inheritance_tree(true).each do |superclass|
-    next if superclass.is_a?(CodeObjects::Proxy)
-    next if !options.embed_mixins.empty? && !options.embed_mixins_match?(superclass)
-
-    %i[class instance].each do |scope|
-      superclass.attributes[scope].each do |_name, rw|
-        attr = prune_method_listing([rw[:read], rw[:write]].compact, false).first
-        attrs << attr if attr
-      end
-    end
-    break if options.embed_mixins.empty?
-  end
-  sort_listing(attrs)
-end
-
-def sort_listing(list)
-  list.sort_by { |o| [o.scope.to_s, o.name.to_s.downcase] }
-end
-
-def hidden_object?(object)
-  object.docstring.to_s.strip.start_with?(':nodoc:')
 end
