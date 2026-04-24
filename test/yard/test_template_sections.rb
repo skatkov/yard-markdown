@@ -3,6 +3,8 @@
 require 'test_helper'
 
 class YARD::TestTemplateSections < Minitest::Test
+  cover ModuleMarkdownTemplate
+
   def test_markdown_module_template_defines_customizable_sections
     template = YARD::Templates::Engine.template(:default, :module, :markdown).new(
       format: :markdown,

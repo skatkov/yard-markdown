@@ -3,6 +3,8 @@
 require 'test_helper'
 
 class YARD::TestTagFormatting < Minitest::Test
+  cover ModuleMarkdownTemplate
+
   Tag = Struct.new(:tag_name, :name, :types, :text, keyword_init: true)
 
   def test_formats_hash_types_without_errors
