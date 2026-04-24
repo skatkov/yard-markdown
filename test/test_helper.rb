@@ -4,6 +4,7 @@ $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 require "yard-markdown"
 
 require "minitest/autorun"
+require "minitest/strict"
 require "mutant/minitest/coverage"
 
 require_relative "support/mutant_setup"
