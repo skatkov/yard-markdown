@@ -8,6 +8,7 @@ include YARD::Markdown::AnchorComponentHelper
 include YARD::Markdown::ArefHelper
 include YARD::Markdown::DocumentationHelper
 include YARD::Markdown::HeadingHelper
+include YARD::Markdown::MethodPresentationHelper
 include YARD::Markdown::ObjectListingHelper
 include YARD::Markdown::SectionAssemblyHelper
 include YARD::Markdown::TagFormattingHelper
@@ -170,35 +171,6 @@ def render_methods(section_title, methods, group_order)
   end
 
   lines.join("\n")
-end
-
-def formatted_method_heading(method_object)
-  name = method_object.name(false).to_s
-  signature = method_signature(method_object)
-  signature = " #{signature}" if name.end_with?(']') && signature.start_with?('(')
-  "#{name}#{signature}"
-end
-
-def method_signature(method_object)
-  return '()' if method_object.parameters.nil? || method_object.parameters.empty?
-
-  rendered = method_object.parameters.map do |name, default|
-    default.nil? || default.empty? ? name : "#{name} = #{default}"
-  end
-
-  "(#{rendered.join(', ')})"
-end
-
-def attribute_access(attribute)
-  info = attribute.attr_info || {}
-  return 'RW' if info[:read] && info[:write]
-  return 'R' if info[:read]
-  return 'W' if info[:write]
-
-  return 'RW' if attribute.reader? && attribute.writer?
-  return 'R' if attribute.reader?
-
-  'W'
 end
 
 def finalize_markdown(content, current_path)
