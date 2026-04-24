@@ -5,6 +5,7 @@ require 'rdoc'
 
 include Helpers::ModuleHelper
 include YARD::Markdown::AnchorComponentHelper
+include YARD::Markdown::TagFormattingHelper
 
 def init
   sections :header,
@@ -208,58 +209,6 @@ def rdoc_to_md(docstring)
   return '' if text.strip.empty?
 
   RDoc::Markup::ToMarkdown.new.convert(text).to_s.strip
-end
-
-def render_tags(object)
-  return '' if object.tags.empty?
-
-  lines = []
-  regular_tags = object.tags.reject { |tag| tag.tag_name == 'example' }
-  example_tags = object.tags.select { |tag| tag.tag_name == 'example' }
-
-  regular_tags.each do |tag|
-    lines << "- #{format_tag(tag)}"
-  end
-
-  example_tags.each do |tag|
-    lines << '' unless lines.empty?
-    title = tag.name.to_s.strip.empty? ? '**@example**' : "**@example #{tag.name}**"
-    lines << title
-    lines << '```ruby'
-    lines << tag.text.to_s.rstrip
-    lines << '```'
-  end
-
-  lines.join("\n")
-end
-
-def format_tag(tag)
-  parts = ["**@#{tag.tag_name}**"]
-  parts << "`#{tag.name}`" unless tag.name.to_s.strip.empty?
-
-  cleaned_types = normalized_tag_types(tag.types)
-  parts << "[#{cleaned_types.join(', ')}]" unless cleaned_types.empty?
-  parts << tag.text.to_s.strip unless tag.text.to_s.strip.empty?
-
-  parts.join(' ')
-end
-
-def normalized_tag_types(types)
-  values = if types.is_a?(Hash)
-             types.map { |name, value| format_hash_tag_type(name, value) }
-           else
-             Array(types)
-           end
-
-  values.map(&:to_s).map(&:strip).reject(&:empty?)
-end
-
-def format_hash_tag_type(name, value)
-  key = name.to_s.strip
-  return '' if key.empty?
-  return key if value.nil? || value == true || (value.respond_to?(:empty?) && value.empty?)
-
-  "#{key}: #{value}"
 end
 
 def aref(object)
