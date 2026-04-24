@@ -4,6 +4,8 @@ require 'csv'
 
 include Helpers::ModuleHelper
 
+include YARD::Markdown::ArefHelper
+
 def init
   options.objects = objects = run_verifier(options.objects).reject { |item| item.name == :root }
 
@@ -84,29 +86,6 @@ def serialize_index(objects)
       end
     end
   end
-end
-
-def aref(object)
-  type = object.type
-
-  return "class-#{anchor_component(object.path.gsub('::', '-'))}" if type == :class
-  return "module-#{anchor_component(object.path.gsub('::', '-'))}" if type == :module
-  return "constant-#{anchor_component(object.name(false))}" if type == :constant
-  return "classvariable-#{anchor_component(object.name(false))}" if type == :classvariable
-
-  scope = object.scope == :class ? 'c' : 'i'
-
-  if object.respond_to?(:attr_info) && !object.attr_info.nil?
-    "attribute-#{scope}-#{anchor_component(object.name(false))}"
-  else
-    "method-#{scope}-#{anchor_component(object.name(false))}"
-  end
-end
-
-def anchor_component(value)
-  value.to_s.each_char.map do |char|
-    char.match?(/[A-Za-z0-9_-]/) ? char : format('-%X', char.ord)
-  end.join
 end
 
 def constant_listing(object)
