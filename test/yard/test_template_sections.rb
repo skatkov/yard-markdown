@@ -5,6 +5,7 @@ require 'test_helper'
 class YARD::TestTemplateSections < Minitest::Test
   cover YARD::Markdown::AnchorComponentHelper
   cover YARD::Markdown::ArefHelper
+  cover YARD::Markdown::HeadingHelper
 
   def test_markdown_module_template_defines_customizable_sections
     template = YARD::Templates::Engine.template(:default, :module, :markdown).new(
@@ -95,11 +96,44 @@ class YARD::TestTemplateSections < Minitest::Test
     assert_equal 'classvariable--40-40population', helper.aref(YARD::Registry.all.find { |o| o.type == :classvariable })
   end
 
+  def test_legacy_aref_formats_constants_classvariables_and_methods
+    YARD::Registry.clear
+    YARD.parse('example_yard.rb')
+
+    assert_equal 'MAX_SPEED-constant', heading_helper.legacy_aref(YARD::Registry.at('Salmon::MAX_SPEED'))
+    assert_equal '@@wild_salmon-classvariable', heading_helper.legacy_aref(YARD::Registry.at('Salmon::@@wild_salmon'))
+    assert_equal 'wild_salmon-class_method', heading_helper.legacy_aref(YARD::Registry.at('Salmon.wild_salmon'))
+    assert_equal 'sustainable?-instance_method', heading_helper.legacy_aref(YARD::Registry.at('Salmon#sustainable?'))
+  end
+
+  def test_heading_with_anchors_includes_current_and_legacy_anchor_tags
+    YARD::Registry.clear
+    YARD.parse('example_yard.rb')
+
+    assert_equal(
+      '# Sustainable <a id="method-i-sustainable-3F"></a> <a id="sustainable?-instance_method"></a>',
+      heading_helper.heading_with_anchors('# Sustainable', YARD::Registry.at('Salmon#sustainable?'))
+    )
+  end
+
+  def test_anchor_tags_for_discards_missing_legacy_anchors
+    YARD::Registry.clear
+    YARD.parse('example_yard.rb')
+
+    assert_equal ['<a id="class-Salmon"></a>'], heading_helper.anchor_tags_for(YARD::Registry.at('Salmon'))
+  end
+
   private
 
   def helper
     @helper ||= Class.new do
       include YARD::Markdown::ArefHelper
+    end.new
+  end
+
+  def heading_helper
+    @heading_helper ||= Class.new do
+      include YARD::Markdown::HeadingHelper
     end.new
   end
 end

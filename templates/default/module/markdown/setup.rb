@@ -6,6 +6,7 @@ require 'rdoc'
 include Helpers::ModuleHelper
 include YARD::Markdown::AnchorComponentHelper
 include YARD::Markdown::ArefHelper
+include YARD::Markdown::HeadingHelper
 include YARD::Markdown::ObjectListingHelper
 include YARD::Markdown::TagFormattingHelper
 
@@ -213,31 +214,6 @@ def rdoc_to_md(docstring)
   RDoc::Markup::ToMarkdown.new.convert(text).to_s.strip
 end
 
-def legacy_aref(object)
-  type = object.type
-
-  return "#{object.name(false)}-constant" if type == :constant
-  return "#{object.name(false)}-classvariable" if type == :classvariable
-  return nil unless object.respond_to?(:scope)
-
-  return "#{object.name(false)}-class_method" if object.scope == :class
-  return "#{object.name(false)}-instance_method" if object.scope == :instance
-
-  nil
-end
-
-def anchor_tags_for(object)
-  anchors = [aref(object), legacy_aref(object)].compact.uniq
-  anchors.map { |id| anchor_tag(id) }
-end
-
-def heading_with_anchors(heading, object)
-  anchors = anchor_tags_for(object)
-  return heading if anchors.empty?
-
-  "#{heading} #{anchors.join(' ')}"
-end
-
 def grouped_items(items, group_order)
   grouped = Hash.new { |hash, key| hash[key] = [] }
   items.each { |item| grouped[item.group] << item }
@@ -263,10 +239,6 @@ def append_lines(lines, content, separated: true)
 
   lines << '' if separated && !lines.empty? && !lines.last.empty?
   lines.concat(content.to_s.split("\n"))
-end
-
-def anchor_tag(id)
-  %(<a id="#{id}"></a>)
 end
 
 def finalize_markdown(content, current_path)
