@@ -64,8 +64,6 @@ class YARD::TestMarkdown < Minitest::Test
         '--quiet',
         '--format',
         'markdown',
-        '--load',
-        "#{ROOT}/lib/yard-markdown.rb",
         '--output-dir',
         output_dir,
         "#{ROOT}/#{source_file}"

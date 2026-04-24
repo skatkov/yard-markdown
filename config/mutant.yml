@@ -12,4 +12,4 @@ requires:
 
 matcher:
   subjects:
-    - YARD::Templates::Engine::Template__home_sk_Code_yard_markdown_templates_default_module_markdown#
+    - YARD::Markdown::AnchorComponentHelper#

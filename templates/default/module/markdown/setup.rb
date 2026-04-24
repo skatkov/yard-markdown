@@ -4,6 +4,7 @@ require 'pathname'
 require 'rdoc'
 
 include Helpers::ModuleHelper
+include YARD::Markdown::AnchorComponentHelper
 
 def init
   sections :header,
@@ -301,12 +302,6 @@ def heading_with_anchors(heading, object)
   return heading if anchors.empty?
 
   "#{heading} #{anchors.join(' ')}"
-end
-
-def anchor_component(value)
-  value.to_s.each_char.map do |char|
-    char.match?(/[A-Za-z0-9_-]/) ? char : format('-%X', char.ord)
-  end.join
 end
 
 def constant_listing(object)
