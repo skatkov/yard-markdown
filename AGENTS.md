@@ -28,18 +28,12 @@ Decide which bucket it falls into:
 Decide between A) and B) before changing anything. If unsure, ask
 the user.
 
-## What you may change
-
-- `lib/age.rb` -- the implementation. Multiple designs are valid.
-- `spec/age_spec.rb` -- the tests. Some existing tests are bad and
-  may be rewritten or replaced.
-
 ## Constraints
 
 - Line coverage must stay at 100%. Verify with:
 
   ```
-  SIMPLECOV=1 bundle exec rspec
+  SIMPLECOV=1 bundle exec rake test
   ```
 
 - You may not skip mutants by configuring mutant to ignore them.
@@ -53,6 +47,7 @@ the user.
 You are done when both of these are green:
 
 ```
-SIMPLECOV=1 bundle exec rspec
+SIMPLECOV=1 bundle exec rake test
 bundle exec mutant run
+bundle exec rake markdown:validate_real_world
 ```
