@@ -6,6 +6,7 @@ require 'rdoc'
 include Helpers::ModuleHelper
 include YARD::Markdown::AnchorComponentHelper
 include YARD::Markdown::ArefHelper
+include YARD::Markdown::DocumentationHelper
 include YARD::Markdown::HeadingHelper
 include YARD::Markdown::ObjectListingHelper
 include YARD::Markdown::SectionAssemblyHelper
@@ -198,21 +199,6 @@ def attribute_access(attribute)
   return 'R' if attribute.reader?
 
   'W'
-end
-
-def documented_text(object)
-  text = rdoc_to_md(object.docstring)
-  return text unless text.empty?
-  return '' unless object.tags.empty?
-
-  'Not documented.'
-end
-
-def rdoc_to_md(docstring)
-  text = docstring.to_s
-  return '' if text.strip.empty?
-
-  RDoc::Markup::ToMarkdown.new.convert(text).to_s.strip
 end
 
 def finalize_markdown(content, current_path)
