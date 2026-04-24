@@ -16,4 +16,5 @@ matcher:
     - YARD::Markdown::ArefHelper#
     - YARD::Markdown::HeadingHelper#
     - YARD::Markdown::ObjectListingHelper#
+    - YARD::Markdown::SectionAssemblyHelper#
     - YARD::Markdown::TagFormattingHelper#
