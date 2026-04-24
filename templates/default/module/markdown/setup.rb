@@ -5,6 +5,7 @@ require 'rdoc'
 
 include Helpers::ModuleHelper
 include YARD::Markdown::AnchorComponentHelper
+include YARD::Markdown::ArefHelper
 include YARD::Markdown::TagFormattingHelper
 
 def init
@@ -209,23 +210,6 @@ def rdoc_to_md(docstring)
   return '' if text.strip.empty?
 
   RDoc::Markup::ToMarkdown.new.convert(text).to_s.strip
-end
-
-def aref(object)
-  type = object.type
-
-  return "class-#{anchor_component(object.path.gsub('::', '-'))}" if type == :class
-  return "module-#{anchor_component(object.path.gsub('::', '-'))}" if type == :module
-  return "constant-#{anchor_component(object.name(false))}" if type == :constant
-  return "classvariable-#{anchor_component(object.name(false))}" if type == :classvariable
-
-  scope = object.scope == :class ? 'c' : 'i'
-
-  if object.respond_to?(:attr_info) && !object.attr_info.nil?
-    "attribute-#{scope}-#{anchor_component(object.name(false))}"
-  else
-    "method-#{scope}-#{anchor_component(object.name(false))}"
-  end
 end
 
 def legacy_aref(object)
