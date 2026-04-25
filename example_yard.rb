@@ -142,4 +142,4 @@ $default_wild_salmon = Salmon.new(false, true)
 # Farmed sustainable salmon.
 #
 # @note This is just a local variable for demonstration purposes.
-farmed_sustainable_salmon = Salmon.new(true, false)
+Salmon.new(true, false)

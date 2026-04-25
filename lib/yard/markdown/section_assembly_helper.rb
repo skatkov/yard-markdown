@@ -38,7 +38,7 @@ module YARD
       def append_lines(lines, content, separated: true)
         return if content.lstrip.empty?
 
-        lines << '' if separated && !lines.empty? && !lines.last.empty?
+        lines << "" if separated && !lines.empty? && !lines.last.empty?
         lines.concat(content.split("\n"))
       end
     end

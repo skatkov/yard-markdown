@@ -10,16 +10,16 @@ module YARD
       # @param group_order [Array<String>, nil] Preferred ordering for group headings.
       # @return [String] Markdown for the constants section.
       def render_constants(constants, group_order)
-        lines = ['## Constants']
+        lines = ["## Constants"]
         grouped_constants = grouped_items(constants.sort_by { |item| item.name }, group_order)
         uses_groups = grouped_constants.any? { |name, _items| !name.nil? }
 
         grouped_constants.each do |group_name, items|
           if uses_groups
-            lines << "### #{group_name || 'General'}"
-            item_heading = '####'
+            lines << "### #{group_name || "General"}"
+            item_heading = "####"
           else
-            item_heading = '###'
+            item_heading = "###"
           end
 
           lines << items.map { |item|
@@ -39,16 +39,16 @@ module YARD
       # @param group_order [Array<String>, nil] Preferred ordering for group headings.
       # @return [String] Markdown for the attributes section.
       def render_attributes(attrs, group_order)
-        lines = ['## Attributes']
+        lines = ["## Attributes"]
         grouped_attrs = grouped_items(attrs, group_order)
         uses_groups = grouped_attrs.any? { |name, _items| !name.nil? }
 
         grouped_attrs.each do |group_name, items|
           if uses_groups
-            lines << "### #{group_name || 'General'}"
-            item_heading = '####'
+            lines << "### #{group_name || "General"}"
+            item_heading = "####"
           else
-            item_heading = '###'
+            item_heading = "###"
           end
 
           lines << items.map { |item|
@@ -75,10 +75,10 @@ module YARD
 
         grouped_methods.each do |group_name, items|
           if uses_groups
-            lines << "### #{group_name || 'General'}"
-            item_heading = '####'
+            lines << "### #{group_name || "General"}"
+            item_heading = "####"
           else
-            item_heading = '###'
+            item_heading = "###"
           end
 
           lines << items.map { |item|

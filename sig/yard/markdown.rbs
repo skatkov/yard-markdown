@@ -11,14 +11,14 @@ module YARD
       # _@param_ `object` — Object being rendered.
       # 
       # _@return_ — Anchor id for the object's heading.
-      def aref: (untyped object) -> String
+      def aref: (Object object) -> String
 
       # Encodes a value so it can be embedded safely in an HTML anchor id.
       # 
       # _@param_ `value` — Raw anchor fragment to encode.
       # 
       # _@return_ — Anchor-safe identifier fragment.
-      def anchor_component: (Object value) -> String
+      def anchor_component: () -> String
     end
 
     # Builds headings and legacy anchors for rendered object sections.
@@ -30,14 +30,14 @@ module YARD
       # _@param_ `object` — Object being rendered.
       # 
       # _@return_ — Legacy anchor id, if supported.
-      def legacy_aref: (untyped object) -> String?
+      def legacy_aref: (Object object) -> String?
 
       # Returns all anchor tags that should be attached to a heading.
       # 
       # _@param_ `object` — Object being rendered.
       # 
       # _@return_ — HTML anchor tags for the object.
-      def anchor_tags_for: (untyped object) -> ::Array[String]
+      def anchor_tags_for: (Object object) -> Symbol
 
       # Appends the generated anchor tags to a Markdown heading.
       # 
@@ -46,7 +46,7 @@ module YARD
       # _@param_ `object` — Object being rendered.
       # 
       # _@return_ — Heading text with embedded anchor tags.
-      def heading_with_anchors: (String heading, untyped object) -> String
+      def heading_with_anchors: (String heading, Object object) -> String
 
       # Builds an HTML anchor tag for a generated id.
       # 
@@ -60,14 +60,14 @@ module YARD
       # _@param_ `object` — Object being rendered.
       # 
       # _@return_ — Anchor id for the object's heading.
-      def aref: (untyped object) -> String
+      def aref: () -> String
 
       # Encodes a value so it can be embedded safely in an HTML anchor id.
       # 
       # _@param_ `value` — Raw anchor fragment to encode.
       # 
       # _@return_ — Anchor-safe identifier fragment.
-      def anchor_component: (Object value) -> String
+      def anchor_component: () -> String
     end
 
     # Converts YARD docstrings into Markdown-friendly text.
@@ -77,7 +77,7 @@ module YARD
       # _@param_ `object` — Object whose docstring is being rendered.
       # 
       # _@return_ — Converted documentation text or a fallback message.
-      def documented_text: (untyped object) -> String
+      def documented_text: (Object object) -> String
 
       # Converts an RDoc-formatted docstring to Markdown.
       # 
@@ -94,49 +94,49 @@ module YARD
       # _@param_ `object` — Object being rendered.
       # 
       # _@return_ — Constants and class variables.
-      def constant_listing: (untyped object) -> ::Array[untyped]
+      def constant_listing: (Object object) -> Symbol
 
       # Returns the visible public methods defined directly on an object.
       # 
       # _@param_ `object` — Object being rendered.
       # 
       # _@return_ — Sorted public methods.
-      def public_method_list: (untyped object) -> ::Array[untyped]
+      def public_method_list: (Object object) -> Symbol
 
       # Returns the public class methods defined directly on an object.
       # 
       # _@param_ `object` — Object being rendered.
       # 
       # _@return_ — Sorted public class methods.
-      def public_class_methods: (untyped object) -> ::Array[untyped]
+      def public_class_methods: (Object object) -> Symbol
 
       # Returns the public instance methods defined directly on an object.
       # 
       # _@param_ `object` — Object being rendered.
       # 
       # _@return_ — Sorted public instance methods.
-      def public_instance_methods: (untyped object) -> ::Array[untyped]
+      def public_instance_methods: (Object object) -> Symbol
 
       # Returns the visible attribute methods for an object.
       # 
       # _@param_ `object` — Object being rendered.
       # 
       # _@return_ — Sorted attribute methods.
-      def attr_listing: (untyped object) -> ::Array[untyped]
+      def attr_listing: (Object object) -> Symbol
 
       # Sorts a listing by scope and case-insensitive name.
       # 
       # _@param_ `list` — Objects to sort.
       # 
       # _@return_ — Sorted objects.
-      def sort_listing: (::Array[untyped] list) -> ::Array[untyped]
+      def sort_listing: (Symbol list) -> Symbol
 
       # Returns whether an object is explicitly hidden with `:nodoc:`.
       # 
       # _@param_ `object` — Listed object whose docstring may start with `:nodoc:`.
       # 
       # _@return_ — True when the object should be hidden.
-      def hidden_object?: (untyped object) -> bool
+      def hidden_object?: (Object object) -> bool
     end
 
     # Formats YARD tags into Markdown list items and fenced examples.
@@ -146,21 +146,21 @@ module YARD
       # _@param_ `object` — Object whose tags are being rendered.
       # 
       # _@return_ — Markdown representation of the object's tags.
-      def render_tags: (untyped object) -> String
+      def render_tags: (Object object) -> String
 
       # Formats a non-example YARD tag as a Markdown list item body.
       # 
       # _@param_ `tag` — Non-example tag being converted into list item text.
       # 
       # _@return_ — Markdown representation of the tag.
-      def format_tag: (untyped tag) -> String
+      def format_tag: (Object tag) -> String
 
       # Normalizes tag type declarations into printable strings.
       # 
       # _@param_ `types` — Raw tag types from YARD.
       # 
       # _@return_ — Cleaned type strings.
-      def normalized_tag_types: ((::Array[Object] | ::Hash[untyped, untyped])? types) -> ::Array[String]
+      def normalized_tag_types: (Symbol? types) -> Symbol
 
       # Formats a hash-style tag type entry.
       # 
@@ -191,7 +191,7 @@ module YARD
       # _@param_ `group_order` — Preferred ordering for named groups.
       # 
       # _@return_ — Ordered pairs of group names and grouped items.
-      def grouped_items: (::Array[untyped] items, ::Array[String]? group_order) -> ::Array[::Array[untyped]]
+      def grouped_items: (Symbol items, Symbol? group_order) -> Symbol
 
       # Appends non-empty content to a mutable list of lines.
       # 
@@ -200,7 +200,7 @@ module YARD
       # _@param_ `content` — Rendered Markdown block to split into lines.
       # 
       # _@param_ `separated` — Whether to insert a blank separator line first.
-      def append_lines: (::Array[String] lines, String content, ?separated: bool) -> void
+      def append_lines: (Symbol lines, String content, ?separated: bool) -> void
     end
 
     # Rewrites generated Markdown links so they point at Markdown output.
@@ -212,7 +212,7 @@ module YARD
       # _@param_ `current_path` — Output path for the current document.
       # 
       # _@return_ — Normalized Markdown content with a trailing newline.
-      def finalize_markdown: ((String | ::Array[String]) content, String current_path) -> String
+      def finalize_markdown: ((String | Symbol) content, String current_path) -> String
 
       # Rewrites local Markdown links relative to the current output path.
       # 
@@ -230,7 +230,7 @@ module YARD
       # _@param_ `current_dir` — Directory for the current output file.
       # 
       # _@return_ — Matched registry object, if any.
-      def resolve_registry_object: (String path, Pathname current_dir) -> untyped?
+      def resolve_registry_object: (String path, Pathname current_dir) -> Object?
 
       # Resolves a local link target to the final relative Markdown path.
       # 
@@ -279,21 +279,21 @@ module YARD
       # _@param_ `method_object` — Method being rendered.
       # 
       # _@return_ — Method heading text.
-      def formatted_method_heading: (untyped method_object) -> String
+      def formatted_method_heading: (Object method_object) -> String
 
       # Returns the rendered parameter list for a method.
       # 
       # _@param_ `method_object` — Method being rendered.
       # 
       # _@return_ — Parenthesized method signature.
-      def method_signature: (untyped method_object) -> String
+      def method_signature: (Object method_object) -> String
 
       # Returns the access marker for an attribute.
       # 
       # _@param_ `attribute` — Attribute reader or writer.
       # 
       # _@return_ — Access mode marker such as `R`, `W`, or `RW`.
-      def attribute_access: (untyped attribute) -> String
+      def attribute_access: (Object attribute) -> String
     end
 
     # Renders grouped Markdown sections for constants, attributes, and methods.
@@ -305,7 +305,7 @@ module YARD
       # _@param_ `group_order` — Preferred ordering for group headings.
       # 
       # _@return_ — Markdown for the constants section.
-      def render_constants: (::Array[untyped] constants, ::Array[String]? group_order) -> String
+      def render_constants: (Symbol constants, Symbol? group_order) -> String
 
       # Renders the attributes section for an object page.
       # 
@@ -314,7 +314,7 @@ module YARD
       # _@param_ `group_order` — Preferred ordering for group headings.
       # 
       # _@return_ — Markdown for the attributes section.
-      def render_attributes: (::Array[untyped] attrs, ::Array[String]? group_order) -> String
+      def render_attributes: (Symbol attrs, Symbol? group_order) -> String
 
       # Renders a method section for an object page.
       # 
@@ -325,7 +325,7 @@ module YARD
       # _@param_ `group_order` — Preferred ordering for group headings.
       # 
       # _@return_ — Markdown for the method section.
-      def render_methods: (String section_title, ::Array[untyped] methods, ::Array[String]? group_order) -> String
+      def render_methods: (String section_title, Symbol methods, Symbol? group_order) -> String
     end
 
     # Renders inheritance and mixin relationship summaries.
@@ -342,7 +342,7 @@ module YARD
       # _@param_ `object` — Object being rendered.
       # 
       # _@return_ — Markdown summary of the object's relationships.
-      def object_relationships: (untyped object) -> String
+      def object_relationships: (Object object) -> String
     end
   end
 end

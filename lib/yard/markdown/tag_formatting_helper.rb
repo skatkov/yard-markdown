@@ -10,8 +10,8 @@ module YARD
       # @return [String] Markdown representation of the object's tags.
       def render_tags(object)
         lines = []
-        regular_tags = object.tags.reject { |tag| tag.tag_name == 'example' }
-        example_tags = object.tags.select { |tag| tag.tag_name == 'example' }
+        regular_tags = object.tags.reject { |tag| tag.tag_name == "example" }
+        example_tags = object.tags.select { |tag| tag.tag_name == "example" }
 
         regular_tags.each do |tag|
           lines << "- #{format_tag(tag)}"
@@ -19,11 +19,11 @@ module YARD
 
         example_tags.each do |tag|
           lines << nil unless lines.empty?
-          title = tag.name.to_s.rstrip.empty? ? '**@example**' : "**@example #{tag.name}**"
+          title = tag.name.to_s.rstrip.empty? ? "**@example**" : "**@example #{tag.name}**"
           lines << title
-          lines << '```ruby'
+          lines << "```ruby"
           lines << tag.text.to_s.rstrip
-          lines << '```'
+          lines << "```"
         end
 
         lines.join("\n")
@@ -38,10 +38,10 @@ module YARD
         parts << "`#{tag.name}`" unless tag.name.to_s.lstrip.empty?
 
         cleaned_types = normalized_tag_types(tag.types)
-        parts << "[#{cleaned_types.join(', ')}]" unless cleaned_types.empty?
+        parts << "[#{cleaned_types.join(", ")}]" unless cleaned_types.empty?
         parts << tag.text.strip unless tag.text.to_s.lstrip.empty?
 
-        parts.join(' ')
+        parts.join(" ")
       end
 
       # Normalizes tag type declarations into printable strings.
@@ -50,10 +50,10 @@ module YARD
       # @return [Array<String>] Cleaned type strings.
       def normalized_tag_types(types)
         values = if types.instance_of?(Hash)
-                   types.map { |name, value| format_hash_tag_type(name, value) }
-                 else
-                   Array(types)
-                 end
+          types.map { |name, value| format_hash_tag_type(name, value) }
+        else
+          Array(types)
+        end
 
         values.map(&:to_s).map(&:strip).reject(&:empty?)
       end

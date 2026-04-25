@@ -35,3 +35,6 @@ jobs:
         run: bundle exec rake types:check
       - name: validate real-world markdown
         run: bundle exec rake markdown:validate_real_world
+      - name: Standard Ruby
+        if: matrix.ruby == '4.0'
+        uses: standardrb/standard-ruby-action@v1

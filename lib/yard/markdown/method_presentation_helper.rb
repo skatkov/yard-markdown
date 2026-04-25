@@ -11,7 +11,7 @@ module YARD
       def formatted_method_heading(method_object)
         name = method_object.name
         signature = method_signature(method_object)
-        signature = " #{signature}" if name.end_with?(']')
+        signature = " #{signature}" if name.end_with?("]")
         "#{name}#{signature}"
       end
 
@@ -20,13 +20,13 @@ module YARD
       # @param method_object [YARD::CodeObjects::MethodObject] Method being rendered.
       # @return [String] Parenthesized method signature.
       def method_signature(method_object)
-        return '()' if method_object.parameters.nil?
+        return "()" if method_object.parameters.nil?
 
         rendered = method_object.parameters.map do |name, default|
-          default.nil? || default.empty? ? name : "#{name} = #{default}"
+          (default.nil? || default.empty?) ? name : "#{name} = #{default}"
         end
 
-        "(#{rendered.join(', ')})"
+        "(#{rendered.join(", ")})"
       end
 
       # Returns the access marker for an attribute.
@@ -35,14 +35,14 @@ module YARD
       # @return [String] Access mode marker such as `R`, `W`, or `RW`.
       def attribute_access(attribute)
         info = attribute.attr_info || {}
-        return 'RW' if info[:read] && info[:write]
-        return 'R' if info[:read]
-        return 'W' if info[:write]
+        return "RW" if info[:read] && info[:write]
+        return "R" if info[:read]
+        return "W" if info[:write]
 
-        return 'RW' if attribute.reader? && attribute.writer?
-        return 'R' if attribute.reader?
+        return "RW" if attribute.reader? && attribute.writer?
+        return "R" if attribute.reader?
 
-        'W'
+        "W"
       end
     end
   end

@@ -64,7 +64,7 @@ def run_command_with_analysis(command, label:)
 
   details = ["#{label} failed output checks (log: #{log_path})"]
   details << "exit status: #{status.exitstatus}" unless status.success?
-  details << "errors: #{combined_analysis[:errors].first(5).join(' | ')}" unless combined_analysis[:errors].empty?
+  details << "errors: #{combined_analysis[:errors].first(5).join(" | ")}" unless combined_analysis[:errors].empty?
   raise details.join("\n")
 end
 
@@ -113,7 +113,6 @@ def ensure_clean_generated_file(path)
   raise "#{path} is out of date. Run `bundle exec rake types:generate` and commit the updated file."
 end
 
-
 namespace :examples do
   desc "Generate basic example documentation using yard-markdown plugin"
   task :generate do
@@ -133,28 +132,28 @@ namespace :examples do
 end
 
 namespace :real_world do
-  REPOS_DIR = "tmp/real-world/repos"
-  RSPEC_REPO = "#{REPOS_DIR}/rspec-core"
-  SIDEKIQ_REPO = "#{REPOS_DIR}/sidekiq"
+  repos_dir = "tmp/real-world/repos"
+  rspec_repo = "#{repos_dir}/rspec-core"
+  sidekiq_repo = "#{repos_dir}/sidekiq"
 
   desc "Checkout rspec-core repository"
   task :checkout_rspec do
-    checkout_repo("https://github.com/rspec/rspec-core.git", RSPEC_REPO, ref: "v3.13.2")
+    checkout_repo("https://github.com/rspec/rspec-core.git", rspec_repo, ref: "v3.13.2")
   end
 
   desc "Checkout sidekiq repository"
   task :checkout_sidekiq do
-    checkout_repo("https://github.com/sidekiq/sidekiq.git", SIDEKIQ_REPO, ref: "v7.3.10")
+    checkout_repo("https://github.com/sidekiq/sidekiq.git", sidekiq_repo, ref: "v7.3.10")
   end
 
   desc "Generate markdown docs for rspec-core"
   task rspec: :checkout_rspec do
-    generate_markdown_docs("#{RSPEC_REPO}/lib", "tmp/real-world/rspec-core")
+    generate_markdown_docs("#{rspec_repo}/lib", "tmp/real-world/rspec-core")
   end
 
   desc "Generate markdown docs for sidekiq"
   task sidekiq: :checkout_sidekiq do
-    generate_markdown_docs("#{SIDEKIQ_REPO}/lib", "tmp/real-world/sidekiq")
+    generate_markdown_docs("#{sidekiq_repo}/lib", "tmp/real-world/sidekiq")
   end
 
   desc "Generate markdown docs for rspec-core and sidekiq"

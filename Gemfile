@@ -17,6 +17,7 @@ gem "redcarpet"
 
 # gem "ruby-lsp"
 gem "yard"
-gem "irb"
 gem "yard-lint"
 gem "sord"
+
+gem "standard"
