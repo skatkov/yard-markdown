@@ -2,9 +2,14 @@
 
 module YARD
   module Markdown
+    # Computes anchor ids that match the generated Markdown headings.
     module ArefHelper
       include AnchorComponentHelper
 
+      # Returns the primary anchor id for a documented object.
+      #
+      # @param object [YARD::CodeObjects::Base] Object being rendered.
+      # @return [String] Anchor id for the object's heading.
       def aref(object)
         type = object.type
 

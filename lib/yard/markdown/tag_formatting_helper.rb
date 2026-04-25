@@ -2,7 +2,12 @@
 
 module YARD
   module Markdown
+    # Formats YARD tags into Markdown list items and fenced examples.
     module TagFormattingHelper
+      # Renders all tags for an object as Markdown.
+      #
+      # @param object [YARD::CodeObjects::Base] Object whose tags are being rendered.
+      # @return [String] Markdown representation of the object's tags.
       def render_tags(object)
         lines = []
         regular_tags = object.tags.reject { |tag| tag.tag_name == 'example' }
@@ -24,6 +29,10 @@ module YARD
         lines.join("\n")
       end
 
+      # Formats a non-example YARD tag as a Markdown list item body.
+      #
+      # @param tag [YARD::Tags::Tag] Non-example tag being converted into list item text.
+      # @return [String] Markdown representation of the tag.
       def format_tag(tag)
         parts = ["**@#{tag.tag_name}**"]
         parts << "`#{tag.name}`" unless tag.name.to_s.lstrip.empty?
@@ -35,6 +44,10 @@ module YARD
         parts.join(' ')
       end
 
+      # Normalizes tag type declarations into printable strings.
+      #
+      # @param types [Array<Object>, Hash, nil] Raw tag types from YARD.
+      # @return [Array<String>] Cleaned type strings.
       def normalized_tag_types(types)
         values = if types.instance_of?(Hash)
                    types.map { |name, value| format_hash_tag_type(name, value) }
@@ -45,6 +58,11 @@ module YARD
         values.map(&:to_s).map(&:strip).reject(&:empty?)
       end
 
+      # Formats a hash-style tag type entry.
+      #
+      # @param name [#rstrip] Type name to format.
+      # @param value [Object] Associated type detail.
+      # @return [String, nil] Formatted type entry, or nil when blank.
       def format_hash_tag_type(name, value)
         key = name.rstrip
         return nil if key.empty?
