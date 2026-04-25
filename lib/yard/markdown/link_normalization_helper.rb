@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'pathname'
-
 module YARD
   module Markdown
     # Rewrites generated Markdown links so they point at Markdown output.
@@ -31,12 +29,12 @@ module YARD
         markdown.gsub(%r{\[(.+?)\]\((?!https?://|mailto:|#)([^)\n]+)\)}) do
           label = Regexp.last_match(1)
           target = Regexp.last_match(2)
-          path = target.sub(/[?#].*\z/, '')
+          path = target.sub(/[?#].*\z/, "")
           suffix = target[path.length..]
           rewritten_path = resolve_local_link_target(path, current_dir)
 
           if rewritten_path.nil?
-            "`#{label.tr('`', '')}`"
+            "`#{label.tr("`", "")}`"
           else
             "[#{label}](#{rewritten_path}#{suffix})"
           end
@@ -49,15 +47,15 @@ module YARD
       # @param current_dir [Pathname] Directory for the current output file.
       # @return [YARD::CodeObjects::Base, nil] Matched registry object, if any.
       def resolve_registry_object(path, current_dir)
-        cleaned = path.sub(%r{\A(?:(?:\.\./)+|\./)}, '')
+        cleaned = path.sub(%r{\A(?:(?:\.\./)+|\./)}, "")
         candidates = [path]
 
         if constant_reference_path?(cleaned)
-          current_parts = current_dir.to_s.split('/').reject { |part| part.empty? || part == '.' }
-          target_parts = cleaned.split('/')
+          current_parts = current_dir.to_s.split("/").reject { |part| part.empty? || part == "." }
+          target_parts = cleaned.split("/")
 
           current_parts.length.downto(0) do |depth|
-            candidates << (current_parts.first(depth) + target_parts).join('::')
+            candidates << (current_parts.first(depth) + target_parts).join("::")
           end
         end
 
@@ -77,7 +75,7 @@ module YARD
       # @param current_dir [Pathname] Directory for the current output file.
       # @return [String, nil] Relative Markdown path, or nil when unresolved.
       def resolve_local_link_target(path, current_dir)
-        normalized = path.sub(%r{\A/+}, '')
+        normalized = path.sub(%r{\A/+}, "")
 
         obj = resolve_registry_object(normalized, current_dir)
         if obj
@@ -86,11 +84,11 @@ module YARD
         end
 
         if normalized.match?(/\.html\z/i)
-          normalized = normalized.sub(/\.html\z/i, '.md')
+          normalized = normalized.sub(/\.html\z/i, ".md")
         elsif File.extname(normalized).empty?
           return nil if unresolved_identifier_target?(normalized)
 
-          normalized = "#{normalized}.md" if normalized.include?('/')
+          normalized = "#{normalized}.md" if normalized.include?("/")
         end
 
         relative_output_path(current_dir, normalized)
@@ -112,8 +110,8 @@ module YARD
       # @param path [String] Link target to inspect.
       # @return [Boolean] True when the target should be treated as unresolved.
       def unresolved_identifier_target?(path)
-        cleaned = path.sub(%r{\A(?:(?:\.\./)+|\./)}, '')
-        return true if cleaned.start_with?(':') || cleaned.match?(/\A\d/)
+        cleaned = path.sub(%r{\A(?:(?:\.\./)+|\./)}, "")
+        return true if cleaned.start_with?(":") || cleaned.match?(/\A\d/)
 
         cleaned.match?(/\A[a-z_]\w*\z/)
       end
@@ -125,10 +123,10 @@ module YARD
       # @return [String] Relative path suitable for a Markdown link.
       def relative_output_path(current_dir, target_path)
         target = target_path.to_s
-        return target if target.start_with?('../')
+        return target if target.start_with?("../")
 
         Pathname.new(target).relative_path_from(current_dir).to_s
-      rescue StandardError
+      rescue
         target
       end
 

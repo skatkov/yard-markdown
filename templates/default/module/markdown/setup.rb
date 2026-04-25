@@ -1,33 +1,34 @@
 # frozen_string_literal: true
 
-require 'pathname'
-require 'rdoc'
+require "rdoc"
 
-include Helpers::ModuleHelper
-include YARD::Markdown::AnchorComponentHelper
-include YARD::Markdown::ArefHelper
-include YARD::Markdown::CollectionRenderingHelper
-include YARD::Markdown::DocumentationHelper
-include YARD::Markdown::HeadingHelper
-include YARD::Markdown::LinkNormalizationHelper
-include YARD::Markdown::MethodPresentationHelper
-include YARD::Markdown::ObjectListingHelper
-include YARD::Markdown::RelationshipSectionHelper
-include YARD::Markdown::SectionAssemblyHelper
-include YARD::Markdown::TagFormattingHelper
+class_eval do
+  include YARD::Templates::Helpers::ModuleHelper
+  include YARD::Markdown::AnchorComponentHelper
+  include YARD::Markdown::ArefHelper
+  include YARD::Markdown::CollectionRenderingHelper
+  include YARD::Markdown::DocumentationHelper
+  include YARD::Markdown::HeadingHelper
+  include YARD::Markdown::LinkNormalizationHelper
+  include YARD::Markdown::MethodPresentationHelper
+  include YARD::Markdown::ObjectListingHelper
+  include YARD::Markdown::RelationshipSectionHelper
+  include YARD::Markdown::SectionAssemblyHelper
+  include YARD::Markdown::TagFormattingHelper
+end
 
 # Registers the sections rendered for a namespace markdown page.
 #
 # @return [void]
 def init
   sections :header,
-           :relationships,
-           :docstring_section,
-           :tags_section,
-           :constants_section,
-           :attributes_section,
-           :public_class_methods_section,
-           :public_instance_methods_section
+    :relationships,
+    :docstring_section,
+    :tags_section,
+    :constants_section,
+    :attributes_section,
+    :public_class_methods_section,
+    :public_instance_methods_section
 end
 
 # Renders the template and normalizes markdown for top-level page output.
@@ -89,7 +90,7 @@ end
 # @return [String] Markdown constants section, or an empty string.
 def constants_section
   constants = constant_listing(object).reject { |item| hidden_object?(item) }
-  return '' unless constants.any?
+  return "" unless constants.any?
 
   render_section_content(render_constants(constants, Array(object.groups)))
 end
@@ -99,7 +100,7 @@ end
 # @return [String] Markdown attributes section, or an empty string.
 def attributes_section
   attrs = attr_listing(object).reject { |item| hidden_object?(item) }
-  return '' unless attrs.any?
+  return "" unless attrs.any?
 
   render_section_content(render_attributes(attrs, Array(object.groups)))
 end
@@ -109,9 +110,9 @@ end
 # @return [String] Markdown public class methods section, or an empty string.
 def public_class_methods_section
   methods = public_class_methods(object)
-  return '' unless methods.any?
+  return "" unless methods.any?
 
-  render_section_content(render_methods('Public Class Methods', methods, Array(object.groups)))
+  render_section_content(render_methods("Public Class Methods", methods, Array(object.groups)))
 end
 
 # Renders the public instance methods section when methods are present.
@@ -119,7 +120,7 @@ end
 # @return [String] Markdown public instance methods section, or an empty string.
 def public_instance_methods_section
   methods = public_instance_methods(object)
-  return '' unless methods.any?
+  return "" unless methods.any?
 
-  render_section_content(render_methods('Public Instance Methods', methods, Array(object.groups)))
+  render_section_content(render_methods("Public Instance Methods", methods, Array(object.groups)))
 end

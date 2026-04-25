@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class YARD::TestListingHelper < Minitest::Test
   cover YARD::Markdown::ObjectListingHelper
@@ -32,7 +32,7 @@ class YARD::TestListingHelper < Minitest::Test
       end
     RUBY
 
-    assert_equal %w[Salmon::MAX_SPEED Salmon::@@population], template.constant_listing(YARD::Registry.at('Salmon')).map(&:path)
+    assert_equal %w[Salmon::MAX_SPEED Salmon::@@population], template.constant_listing(YARD::Registry.at("Salmon")).map(&:path)
   end
 
   def test_public_method_lists_filter_scope_and_hide_nodoc_members
@@ -55,10 +55,10 @@ class YARD::TestListingHelper < Minitest::Test
       end
     RUBY
 
-    object = YARD::Registry.at('Salmon')
+    object = YARD::Registry.at("Salmon")
 
-    assert_equal ['Salmon.spawn'], template.public_class_methods(object).map(&:path)
-    assert_equal ['Salmon#swim'], template.public_instance_methods(object).map(&:path)
+    assert_equal ["Salmon.spawn"], template.public_class_methods(object).map(&:path)
+    assert_equal ["Salmon#swim"], template.public_instance_methods(object).map(&:path)
   end
 
   def test_public_method_lists_are_sorted_by_method_name
@@ -73,7 +73,7 @@ class YARD::TestListingHelper < Minitest::Test
       end
     RUBY
 
-    assert_equal ['Salmon#alpha', 'Salmon#zebra'], template.public_instance_methods(YARD::Registry.at('Salmon')).map(&:path)
+    assert_equal ["Salmon#alpha", "Salmon#zebra"], template.public_instance_methods(YARD::Registry.at("Salmon")).map(&:path)
   end
 
   def test_public_method_lists_exclude_inherited_and_private_methods
@@ -95,7 +95,7 @@ class YARD::TestListingHelper < Minitest::Test
       end
     RUBY
 
-    assert_equal ['Salmon#visible_public'], template.public_instance_methods(YARD::Registry.at('Salmon')).map(&:path)
+    assert_equal ["Salmon#visible_public"], template.public_instance_methods(YARD::Registry.at("Salmon")).map(&:path)
   end
 
   def test_public_method_lists_prune_aliases
@@ -109,7 +109,7 @@ class YARD::TestListingHelper < Minitest::Test
       end
     RUBY
 
-    assert_equal ['Salmon#swim'], template.public_instance_methods(YARD::Registry.at('Salmon')).map(&:path)
+    assert_equal ["Salmon#swim"], template.public_instance_methods(YARD::Registry.at("Salmon")).map(&:path)
   end
 
   def test_public_method_lists_exclude_attribute_accessors
@@ -120,27 +120,27 @@ class YARD::TestListingHelper < Minitest::Test
       end
     RUBY
 
-    assert_equal [], template.public_instance_methods(YARD::Registry.at('Salmon')).map(&:path)
+    assert_equal [], template.public_instance_methods(YARD::Registry.at("Salmon")).map(&:path)
   end
 
   def test_hidden_object_recognizes_nodoc_after_leading_whitespace_only
-    assert helper.hidden_object?(DocstringObject.new(docstring: '   :nodoc: hidden'))
-    refute helper.hidden_object?(DocstringObject.new(docstring: 'details :nodoc:'))
+    assert helper.hidden_object?(DocstringObject.new(docstring: "   :nodoc: hidden"))
+    refute helper.hidden_object?(DocstringObject.new(docstring: "details :nodoc:"))
   end
 
   def test_sort_listing_orders_by_scope_then_case_insensitive_name
     list = [
-      ListObject.new(scope: :instance, name: 'alpha'),
-      ListObject.new(scope: :class, name: 'zebra'),
-      ListObject.new(scope: :class, name: 'Beta'),
-      ListObject.new(scope: :class, name: 'alpha')
+      ListObject.new(scope: :instance, name: "alpha"),
+      ListObject.new(scope: :class, name: "zebra"),
+      ListObject.new(scope: :class, name: "Beta"),
+      ListObject.new(scope: :class, name: "alpha")
     ]
 
     assert_equal [
-      ListObject.new(scope: :class, name: 'alpha'),
-      ListObject.new(scope: :class, name: 'Beta'),
-      ListObject.new(scope: :class, name: 'zebra'),
-      ListObject.new(scope: :instance, name: 'alpha')
+      ListObject.new(scope: :class, name: "alpha"),
+      ListObject.new(scope: :class, name: "Beta"),
+      ListObject.new(scope: :class, name: "zebra"),
+      ListObject.new(scope: :instance, name: "alpha")
     ], helper.sort_listing(list)
   end
 
@@ -153,7 +153,7 @@ class YARD::TestListingHelper < Minitest::Test
       end
     RUBY
 
-    assert_equal %i[alpha beta], template.attr_listing(YARD::Registry.at('Salmon')).map { |item| item.name(false) }
+    assert_equal %i[alpha beta], template.attr_listing(YARD::Registry.at("Salmon")).map { |item| item.name(false) }
   end
 
   def test_attr_listing_includes_class_scope_attributes
@@ -166,9 +166,9 @@ class YARD::TestListingHelper < Minitest::Test
       end
     RUBY
 
-    attrs = template.attr_listing(YARD::Registry.at('Salmon'))
+    attrs = template.attr_listing(YARD::Registry.at("Salmon"))
 
-    assert_equal ['Salmon.config'], attrs.map(&:path)
+    assert_equal ["Salmon.config"], attrs.map(&:path)
   end
 
   def test_attr_listing_keeps_write_only_attributes
@@ -179,7 +179,7 @@ class YARD::TestListingHelper < Minitest::Test
       end
     RUBY
 
-    assert_equal ['Salmon#captured='], template.attr_listing(YARD::Registry.at('Salmon')).map(&:path)
+    assert_equal ["Salmon#captured="], template.attr_listing(YARD::Registry.at("Salmon")).map(&:path)
   end
 
   def test_attr_listing_does_not_include_inherited_attributes_when_embed_mixins_are_empty
@@ -194,7 +194,7 @@ class YARD::TestListingHelper < Minitest::Test
       end
     RUBY
 
-    assert_equal ['Salmon#top_speed'], template.attr_listing(YARD::Registry.at('Salmon')).map(&:path)
+    assert_equal ["Salmon#top_speed"], template.attr_listing(YARD::Registry.at("Salmon")).map(&:path)
   end
 
   def test_attr_listing_includes_mixin_attributes_when_embed_mixins_match
@@ -210,9 +210,9 @@ class YARD::TestListingHelper < Minitest::Test
     RUBY
 
     template = build_template
-    template.options.embed_mixins = ['Swimmer']
+    template.options.embed_mixins = ["Swimmer"]
 
-    assert_equal [:speed], template.attr_listing(YARD::Registry.at('Fish')).map { |item| item.name(false) }
+    assert_equal [:speed], template.attr_listing(YARD::Registry.at("Fish")).map { |item| item.name(false) }
   end
 
   def test_attr_listing_keeps_collecting_matching_mixins_when_embed_mixins_are_enabled
@@ -233,9 +233,9 @@ class YARD::TestListingHelper < Minitest::Test
     RUBY
 
     template = build_template
-    template.options.embed_mixins = ['Swimmer', 'Floater']
+    template.options.embed_mixins = ["Swimmer", "Floater"]
 
-    assert_equal %i[depth speed], template.attr_listing(YARD::Registry.at('Fish')).map { |item| item.name(false) }
+    assert_equal %i[depth speed], template.attr_listing(YARD::Registry.at("Fish")).map { |item| item.name(false) }
   end
 
   def test_attr_listing_skips_proxy_ancestors_when_embed_mixins_are_enabled
@@ -243,9 +243,9 @@ class YARD::TestListingHelper < Minitest::Test
     YARD.parse_string("class Fish < MissingBase\n  attr_reader :speed\nend\n")
 
     template = build_template
-    template.options.embed_mixins = ['MissingBase']
+    template.options.embed_mixins = ["MissingBase"]
 
-    assert_equal [], template.attr_listing(YARD::Registry.at('Fish'))
+    assert_equal [], template.attr_listing(YARD::Registry.at("Fish"))
   end
 
   def test_attr_listing_ignores_entries_pruned_to_nothing

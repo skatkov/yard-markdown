@@ -80,7 +80,7 @@ module YARD
       # @param object [YARD::CodeObjects::Base] Listed object whose docstring may start with `:nodoc:`.
       # @return [Boolean] True when the object should be hidden.
       def hidden_object?(object)
-        object.docstring.lstrip.start_with?(':nodoc:')
+        object.docstring.lstrip.start_with?(":nodoc:")
       end
     end
   end

@@ -37,7 +37,7 @@ module YARD
       # @param object [YARD::CodeObjects::Base] Object being rendered.
       # @return [String] Heading text with embedded anchor tags.
       def heading_with_anchors(heading, object)
-        "#{heading} #{anchor_tags_for(object).join(' ')}"
+        "#{heading} #{anchor_tags_for(object).join(" ")}"
       end
 
       # Builds an HTML anchor tag for a generated id.

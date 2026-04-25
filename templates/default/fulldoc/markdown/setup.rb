@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
-require 'csv'
+require "csv"
 
-include Helpers::ModuleHelper
-
-include YARD::Markdown::ArefHelper
-include YARD::Markdown::ObjectListingHelper
+class_eval do
+  include YARD::Templates::Helpers::ModuleHelper
+  include YARD::Markdown::ArefHelper
+  include YARD::Markdown::ObjectListingHelper
+end
 
 # Prepares the markdown serializer and renders each object page.
 #
@@ -16,11 +17,11 @@ def init
   options.delete(:objects)
   options.delete(:files)
 
-  options.serializer.extension = 'md'
+  options.serializer.extension = "md"
 
   objects.each do |object|
     Templates::Engine.with_serializer(object, options.serializer) { serialize(object) }
-  rescue StandardError => e
+  rescue => e
     path = options.serializer.serialized_path(object)
     log.error "Exception occurred while generating '#{path}'"
     log.backtrace(e)
@@ -34,7 +35,7 @@ end
 # @param object [YARD::CodeObjects::NamespaceObject] Object whose page will be serialized.
 # @return [String] Rendered markdown for the object.
 def serialize(object)
-  T('module').run(options.merge(object: object))
+  T("module").run(options.merge(object: object))
 end
 
 # Writes the CSV search index for all rendered objects.
@@ -44,16 +45,16 @@ end
 def serialize_index(objects)
   filepath = "#{options.serializer.basepath}/index.csv"
 
-  CSV.open(filepath, 'wb') do |csv|
+  CSV.open(filepath, "wb") do |csv|
     csv << %w[name type path]
 
     objects.each do |object|
       next if object.name == :root
 
       if object.type == :class
-        csv << [object.path, 'Class', options.serializer.serialized_path(object)]
+        csv << [object.path, "Class", options.serializer.serialized_path(object)]
       elsif object.type == :module
-        csv << [object.path, 'Module', options.serializer.serialized_path(object)]
+        csv << [object.path, "Module", options.serializer.serialized_path(object)]
       end
 
       constants = constant_listing(object)
@@ -61,8 +62,8 @@ def serialize_index(objects)
         constants.each do |cnst|
           csv << [
             "#{object.path}.#{cnst.name(false)}",
-            'Constant',
-            (options.serializer.serialized_path(object) + '#' + aref(cnst))
+            "Constant",
+            (options.serializer.serialized_path(object) + "#" + aref(cnst))
           ]
         end
       end
@@ -71,8 +72,8 @@ def serialize_index(objects)
         insmeths.each do |item|
           csv << [
             "#{object.path}.#{item.name(false)}",
-            'Method',
-            options.serializer.serialized_path(object) + '#' + aref(item)
+            "Method",
+            options.serializer.serialized_path(object) + "#" + aref(item)
           ]
         end
       end
@@ -81,8 +82,8 @@ def serialize_index(objects)
         pubmeths.each do |item|
           csv << [
             "#{object.path}.#{item.name(false)}",
-            'Method',
-            options.serializer.serialized_path(object) + '#' + aref(item)
+            "Method",
+            options.serializer.serialized_path(object) + "#" + aref(item)
           ]
         end
       end
@@ -92,8 +93,8 @@ def serialize_index(objects)
       attrs.each do |item|
         csv << [
           "#{object.path}.#{item.name(false)}",
-          'Attribute',
-          options.serializer.serialized_path(object) + '#' + aref(item)
+          "Attribute",
+          options.serializer.serialized_path(object) + "#" + aref(item)
         ]
       end
     end

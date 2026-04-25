@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class YARD::TestRelationshipSectionHelper < Minitest::Test
   cover YARD::Markdown::RelationshipSectionHelper
@@ -10,13 +10,13 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
   end
 
   def test_render_section_content_skips_blank_content
-    assert_equal '', helper.render_section_content(" \n")
+    assert_equal "", helper.render_section_content(" \n")
   end
 
   def test_render_section_content_uses_to_s_for_non_string_objects
     content = Class.new do
       def to_s
-        'hello'
+        "hello"
       end
     end.new
 
@@ -45,7 +45,7 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
 
     assert_equal(
       "**Inherits:** `Fish`\n**Extended by:** `Alpha`, `Zebra`\n**Includes:** `Alpha`, `Zebra`",
-      helper.object_relationships(YARD::Registry.at('Salmon'))
+      helper.object_relationships(YARD::Registry.at("Salmon"))
     )
   end
 
@@ -66,7 +66,7 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
 
     assert_equal(
       "**Inherits:** `Object`\n**Extended by:** `Zebra`\n**Includes:** `Alpha`",
-      helper.object_relationships(YARD::Registry.at('Salmon'))
+      helper.object_relationships(YARD::Registry.at("Salmon"))
     )
   end
 
@@ -87,7 +87,7 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
 
     assert_equal(
       "**Extended by:** `Zebra`\n**Includes:** `Alpha`",
-      helper.object_relationships(YARD::Registry.at('Salmon'))
+      helper.object_relationships(YARD::Registry.at("Salmon"))
     )
   end
 
@@ -115,13 +115,13 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
       include YARD::Markdown::RelationshipSectionHelper
 
       def run_verifier(items)
-        items.reject { |item| item.path == 'Zebra' }
+        items.reject { |item| item.path == "Zebra" }
       end
     end.new
 
     assert_equal(
       "**Inherits:** `Fish`\n**Extended by:** `Alpha`\n**Includes:** `Alpha`",
-      filtered_helper.object_relationships(YARD::Registry.at('Salmon'))
+      filtered_helper.object_relationships(YARD::Registry.at("Salmon"))
     )
   end
 
@@ -141,7 +141,7 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
 
     assert_equal(
       "**Inherits:** `Fish`\n**Includes:** `Alpha`",
-      helper.object_relationships(YARD::Registry.at('Salmon'))
+      helper.object_relationships(YARD::Registry.at("Salmon"))
     )
   end
 
@@ -181,7 +181,7 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
 
     assert_equal(
       "**Inherits:** `Fish`\n**Extended by:** `Alpha`, `Zebra`",
-      sortable_helper.object_relationships(YARD::Registry.at('Salmon'))
+      sortable_helper.object_relationships(YARD::Registry.at("Salmon"))
     )
   end
 

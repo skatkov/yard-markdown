@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rdoc'
+require "rdoc"
 
 module YARD
   module Markdown
@@ -13,9 +13,9 @@ module YARD
       def documented_text(object)
         text = rdoc_to_md(object.docstring)
         return text unless text.empty?
-        return '' unless object.tags.empty?
+        return "" unless object.tags.empty?
 
-        'Not documented.'
+        "Not documented."
       end
 
       # Converts an RDoc-formatted docstring to Markdown.
