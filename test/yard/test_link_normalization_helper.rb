@@ -78,6 +78,17 @@ class YARD::TestLinkNormalizationHelper < Minitest::Test
     assert_equal "Line 1\n", helper.finalize_markdown("Line 1", 'docs/current.md')
   end
 
+  def test_normalize_local_links_leaves_external_and_anchor_links_unchanged
+    input = [
+      '[http](http://example.com)',
+      '[https](https://example.com)',
+      '[mail](mailto:test@example.com)',
+      '[section](#overview)'
+    ].join("\n")
+
+    assert_equal input, helper.normalize_local_links(input, 'docs/current.md')
+  end
+
   def test_finalize_markdown_trims_edges_and_collapses_all_excess_blank_lines
     helper.options = Options.new(serializer: Serializer.new(mapping: {}))
 
