@@ -28,12 +28,12 @@ module YARD
         object.inheritance_tree(true).each do |superclass|
           next if !options.embed_mixins.empty? && !options.embed_mixins_match?(superclass)
 
-        %i[class instance].each do |scope|
-          superclass.attributes.fetch(scope).each do |_name, rw|
-            attr = prune_method_listing([rw.fetch(:read), rw.fetch(:write)].compact, false).first
-            attrs << attr
+          %i[class instance].each do |scope|
+            superclass.attributes.fetch(scope).each do |_name, rw|
+              attr = prune_method_listing([rw.fetch(:read), rw.fetch(:write)].compact, false).first
+              attrs << attr if attr
+            end
           end
-        end
 
           break if options.embed_mixins.empty?
         end
