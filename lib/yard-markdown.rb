@@ -3,6 +3,7 @@
 require "yard"
 require_relative "yard/markdown/anchor_component_helper"
 require_relative "yard/markdown/aref_helper"
+require_relative "yard/markdown/collection_rendering_helper"
 require_relative "yard/markdown/documentation_helper"
 require_relative "yard/markdown/heading_helper"
 require_relative "yard/markdown/link_normalization_helper"
