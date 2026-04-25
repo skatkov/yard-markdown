@@ -40,15 +40,15 @@ the user.
   No `expressions:` filters, no `coverage_criteria:` tweaks.
 - You may not use `send` or `__send__` to invoke private methods
   in tests just to satisfy mutant.
-- You may not stub or mock the system under test (`Age`).
+- You may not stub or mock the system under test.
 
 ## Done
 
-You are done when both of these are green and don't return any offenses:
+You are done when all of these commands are green and don't return any offenses:
 
 ```
 SIMPLECOV=1 bundle exec rake test
 bundle exec mutant run
 bundle exec rake markdown:validate_real_world
-yard-lint lib/
+yard-lint
 ```
