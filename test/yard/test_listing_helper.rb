@@ -7,6 +7,12 @@ class YARD::TestListingHelper < Minitest::Test
 
   DocstringObject = Struct.new(:docstring, keyword_init: true)
   ListObject = Struct.new(:scope, :name, keyword_init: true)
+  TreeObject = Struct.new(:superclasses, keyword_init: true) do
+    def inheritance_tree(_include_mixins)
+      superclasses
+    end
+  end
+  FakeSuperclass = Struct.new(:attributes, keyword_init: true)
 
   def test_constant_listing_includes_constants_and_classvariables
     YARD::Registry.clear
@@ -240,6 +246,25 @@ class YARD::TestListingHelper < Minitest::Test
     template.options.embed_mixins = ['MissingBase']
 
     assert_equal [], template.attr_listing(YARD::Registry.at('Fish'))
+  end
+
+  def test_attr_listing_ignores_entries_pruned_to_nothing
+    superclass = FakeSuperclass.new(attributes: {
+      class: {},
+      instance: {
+        speed: {
+          read: Object.new,
+          write: nil
+        }
+      }
+    })
+
+    template = build_template
+    def template.prune_method_listing(_list, _included = nil)
+      []
+    end
+
+    assert_equal [], template.attr_listing(TreeObject.new(superclasses: [superclass]))
   end
 
   private
