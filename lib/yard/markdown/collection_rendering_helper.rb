@@ -2,7 +2,13 @@
 
 module YARD
   module Markdown
+    # Renders grouped Markdown sections for constants, attributes, and methods.
     module CollectionRenderingHelper
+      # Renders the constants section for an object page.
+      #
+      # @param constants [Array<YARD::CodeObjects::Base>] Constant objects collected for the current page.
+      # @param group_order [Array<String>, nil] Preferred ordering for group headings.
+      # @return [String] Markdown for the constants section.
       def render_constants(constants, group_order)
         lines = ['## Constants']
         grouped_constants = grouped_items(constants.sort_by { |item| item.name }, group_order)
@@ -27,6 +33,11 @@ module YARD
         lines.join("\n")
       end
 
+      # Renders the attributes section for an object page.
+      #
+      # @param attrs [Array<YARD::CodeObjects::MethodObject>] Attributes to render.
+      # @param group_order [Array<String>, nil] Preferred ordering for group headings.
+      # @return [String] Markdown for the attributes section.
       def render_attributes(attrs, group_order)
         lines = ['## Attributes']
         grouped_attrs = grouped_items(attrs, group_order)
@@ -51,6 +62,12 @@ module YARD
         lines.join("\n")
       end
 
+      # Renders a method section for an object page.
+      #
+      # @param section_title [String] Section title to render.
+      # @param methods [Array<YARD::CodeObjects::MethodObject>] Method objects collected for the current section.
+      # @param group_order [Array<String>, nil] Preferred ordering for group headings.
+      # @return [String] Markdown for the method section.
       def render_methods(section_title, methods, group_order)
         lines = ["## #{section_title}"]
         grouped_methods = grouped_items(methods, group_order)

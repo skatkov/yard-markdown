@@ -7,6 +7,9 @@ include Helpers::ModuleHelper
 include YARD::Markdown::ArefHelper
 include YARD::Markdown::ObjectListingHelper
 
+# Prepares the markdown serializer and renders each object page.
+#
+# @return [void]
 def init
   options.objects = objects = run_verifier(options.objects).reject { |item| item.name == :root }
 
@@ -26,10 +29,18 @@ def init
   serialize_index(objects)
 end
 
+# Renders the markdown template for a single namespace object.
+#
+# @param object [YARD::CodeObjects::NamespaceObject] Object whose page will be serialized.
+# @return [String] Rendered markdown for the object.
 def serialize(object)
   T('module').run(options.merge(object: object))
 end
 
+# Writes the CSV search index for all rendered objects.
+#
+# @param objects [Array<YARD::CodeObjects::NamespaceObject>] Verified objects included in the generated documentation.
+# @return [void]
 def serialize_index(objects)
   filepath = "#{options.serializer.basepath}/index.csv"
 
