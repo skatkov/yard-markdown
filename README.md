@@ -63,6 +63,12 @@ Validate generated markdown in sample docs:
 bundle exec rake markdown:validate_examples
 ```
 
+Regenerate the checked-in RBS types derived from YARD docs:
+
+```bash
+bundle exec rake types:generate
+```
+
 There is also a real-world validation harness for repositories with substantial YARD documentation (`rspec-core`, `sidekiq`):
 
 ```bash
@@ -72,5 +78,7 @@ bundle exec rake markdown:validate_real_world
 This task validates generated markdown against CommonMark + GFM rendering, and reports unresolved local links found in upstream source comments while still validating local anchor/link structure.
 
 GitHub Actions CI now runs this task on every push/PR, so `sidekiq` and other real-world fixture gems are verified continuously.
+
+CI also regenerates `sig/yard/markdown.rbs` with `sord` and fails if the checked-in RBS file is out of date.
 
 For reproducible checks, the task clones pinned tags (`rspec-core` `v3.13.2`, `sidekiq` `v7.3.10`) into `tmp/real-world/repos` before generating output.

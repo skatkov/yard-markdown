@@ -20,7 +20,7 @@ module YARD
 
       # Converts an RDoc-formatted docstring to Markdown.
       #
-      # @param docstring [#to_s] Raw docstring content.
+      # @param docstring [Object] Raw docstring content.
       # @return [String] Markdown-rendered docstring content.
       def rdoc_to_md(docstring)
         RDoc::Markup::ToMarkdown.new.convert(docstring).rstrip
