@@ -67,15 +67,23 @@ class YARD::TestLinkNormalizationHelper < Minitest::Test
     YARD.parse_string("class Fish\nend\n")
     helper.options = Options.new(serializer: Serializer.new(mapping: {'Fish' => 'Fish.md'}))
 
-    input = ["Line 1  ", '', '', '[Fish](Fish)', '[bad](memoized)']
+    input = ["Line 1  ", '', '', '[Fish](Fish)', '[bad](memoized)', '[quoted](broken"link)']
 
-    assert_equal "Line 1\n\n[Fish](../Fish.md)\n`bad`\n", helper.finalize_markdown(input, 'docs/current.md')
+    assert_equal "Line 1\n\n[Fish](../Fish.md)\n`bad`\n`quoted`\n", helper.finalize_markdown(input, 'docs/current.md')
   end
 
   def test_finalize_markdown_accepts_string_input
     helper.options = Options.new(serializer: Serializer.new(mapping: {}))
 
     assert_equal "Line 1\n", helper.finalize_markdown("Line 1", 'docs/current.md')
+  end
+
+  def test_finalize_markdown_trims_edges_and_collapses_all_excess_blank_lines
+    helper.options = Options.new(serializer: Serializer.new(mapping: {}))
+
+    input = ['', '', 'Line 1', '', '', '', 'Line 2', '', '', '', 'Line 3', '', '']
+
+    assert_equal "Line 1\n\nLine 2\n\nLine 3\n", helper.finalize_markdown(input, 'docs/current.md')
   end
 
   private

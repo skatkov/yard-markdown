@@ -8,6 +8,7 @@ require_relative "yard/markdown/heading_helper"
 require_relative "yard/markdown/link_normalization_helper"
 require_relative "yard/markdown/method_presentation_helper"
 require_relative "yard/markdown/object_listing_helper"
+require_relative "yard/markdown/relationship_section_helper"
 require_relative "yard/markdown/section_assembly_helper"
 require_relative "yard/markdown/tag_formatting_helper"
 
