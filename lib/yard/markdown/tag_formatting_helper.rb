@@ -60,7 +60,7 @@ module YARD
 
       # Formats a hash-style tag type entry.
       #
-      # @param name [#rstrip] Type name to format.
+      # @param name [String] Type name to format.
       # @param value [Object] Associated type detail.
       # @return [String, nil] Formatted type entry, or nil when blank.
       def format_hash_tag_type(name, value)

@@ -17,6 +17,8 @@ end
 
 task default: %i[test stree:write]
 
+TYPES_OUTPUT_PATH = "sig/yard/markdown.rbs"
+
 def shell_escape(path)
   Shellwords.escape(path)
 end
@@ -82,6 +84,33 @@ def checkout_repo(url, destination, ref: nil)
   command += " --branch #{shell_escape(ref)}" if ref
   command += " #{shell_escape(url)} #{shell_escape(destination)}"
   run_command_with_analysis(command, label: "git_clone_#{destination}")
+end
+
+def generate_types(output_path = TYPES_OUTPUT_PATH)
+  FileUtils.mkdir_p(File.dirname(output_path))
+
+  command = [
+    "sord gen",
+    "--rbs",
+    "--no-sord-comments",
+    "--replace-unresolved-with-untyped",
+    "--replace-errors-with-untyped",
+    shell_escape(output_path)
+  ].join(" ")
+
+  run_command_with_analysis(command, label: "sord_generate")
+end
+
+def ensure_clean_generated_file(path)
+  command = "git status --short -- #{shell_escape(path)}"
+  stdout, stderr, status = Open3.capture3(command)
+  combined_output = [stdout, stderr].reject(&:empty?).join("\n")
+
+  raise "Unable to verify generated types for #{path}" unless status.success?
+  return if combined_output.strip.empty?
+
+  puts combined_output
+  raise "#{path} is out of date. Run `bundle exec rake types:generate` and commit the updated file."
 end
 
 
@@ -151,5 +180,17 @@ namespace :markdown do
       file_count = validator.validate!
       puts "Validated #{file_count} markdown files in #{dir} (unresolved local links: #{validator.unresolved_links})"
     end
+  end
+end
+
+namespace :types do
+  desc "Generate checked-in RBS types from YARD documentation"
+  task :generate do
+    generate_types
+  end
+
+  desc "Verify checked-in RBS types are up to date"
+  task check: :generate do
+    ensure_clean_generated_file(TYPES_OUTPUT_PATH)
   end
 end

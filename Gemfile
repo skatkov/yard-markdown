@@ -19,4 +19,4 @@ gem "redcarpet"
 gem "yard"
 gem "irb"
 gem "yard-lint"
-
+gem "sord"

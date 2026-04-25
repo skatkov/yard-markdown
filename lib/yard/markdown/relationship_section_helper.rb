@@ -6,7 +6,7 @@ module YARD
     module RelationshipSectionHelper
       # Returns section content with the expected trailing spacing.
       #
-      # @param content [#to_s] Section content to render.
+      # @param content [Object] Section content to render.
       # @return [String] Section content followed by blank-line spacing.
       def render_section_content(content)
         text = content.to_s.strip

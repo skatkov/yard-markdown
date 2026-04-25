@@ -8,7 +8,7 @@ module YARD
     module AnchorComponentHelper
       # Encodes a value so it can be embedded safely in an HTML anchor id.
       #
-      # @param value [#to_s] Raw anchor fragment to encode.
+      # @param value [Object] Raw anchor fragment to encode.
       # @return [String] Anchor-safe identifier fragment.
       def anchor_component(value)
         value.to_s.each_char.map do |char|
