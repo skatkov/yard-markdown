@@ -27,5 +27,7 @@ jobs:
           bundler-cache: true
       - name: test
         run: bundle exec rake test
+      - name: yard-lint
+        run: bundle exec yard-lint
       - name: validate real-world markdown
         run: bundle exec rake markdown:validate_real_world
