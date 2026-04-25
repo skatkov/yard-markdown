@@ -6,7 +6,7 @@ module YARD
   module Markdown
     module LinkNormalizationHelper
       def finalize_markdown(content, current_path)
-        output = content.instance_of?(Array) ? content.join("\n") : content.to_str
+        output = content.instance_of?(Array) ? content.join("\n") : content
         output = output.lines.map(&:rstrip).join("\n")
         output = normalize_local_links(output, current_path)
         output = normalize_malformed_local_links(output)

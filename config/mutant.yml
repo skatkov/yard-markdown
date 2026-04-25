@@ -19,5 +19,6 @@ matcher:
     - YARD::Markdown::LinkNormalizationHelper#
     - YARD::Markdown::MethodPresentationHelper#
     - YARD::Markdown::ObjectListingHelper#
+    - YARD::Markdown::RelationshipSectionHelper#
     - YARD::Markdown::SectionAssemblyHelper#
     - YARD::Markdown::TagFormattingHelper#

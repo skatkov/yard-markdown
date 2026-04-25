@@ -11,6 +11,7 @@ include YARD::Markdown::HeadingHelper
 include YARD::Markdown::LinkNormalizationHelper
 include YARD::Markdown::MethodPresentationHelper
 include YARD::Markdown::ObjectListingHelper
+include YARD::Markdown::RelationshipSectionHelper
 include YARD::Markdown::SectionAssemblyHelper
 include YARD::Markdown::TagFormattingHelper
 
@@ -78,28 +79,6 @@ def public_instance_methods_section
   return '' unless methods.any?
 
   render_section_content(render_methods('Public Instance Methods', methods, Array(object.groups)))
-end
-
-def render_section_content(content)
-  text = content.to_s.strip
-  return '' if text.empty?
-
-  "#{text}\n\n"
-end
-
-def object_relationships(object)
-  lines = []
-
-  lines << "**Inherits:** `#{object.superclass.path}`" if object.is_a?(CodeObjects::ClassObject) && object.superclass
-
-  [[:class, 'Extended by'], [:instance, 'Includes']].each do |scope, label|
-    mixins = run_verifier(object.mixins(scope)).sort_by { |item| item.path }
-    next if mixins.empty?
-
-    lines << "**#{label}:** #{mixins.map { |mixin| "`#{mixin.path}`" }.join(', ')}"
-  end
-
-  lines.join("\n")
 end
 
 def render_constants(constants, group_order)
