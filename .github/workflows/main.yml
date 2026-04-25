@@ -42,4 +42,4 @@ jobs:
         if: matrix.ruby == '4.0'
         run: |
           git fetch origin main
-          bundle exec mutant --since origin/main
+          bundle exec mutant run --fail-fast --since origin/main
