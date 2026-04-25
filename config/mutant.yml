@@ -12,14 +12,4 @@ requires:
 
 matcher:
   subjects:
-    - YARD::Markdown::AnchorComponentHelper#
-    - YARD::Markdown::ArefHelper#
-    - YARD::Markdown::CollectionRenderingHelper#
-    - YARD::Markdown::DocumentationHelper#
-    - YARD::Markdown::HeadingHelper#
-    - YARD::Markdown::LinkNormalizationHelper#
-    - YARD::Markdown::MethodPresentationHelper#
-    - YARD::Markdown::ObjectListingHelper#
-    - YARD::Markdown::RelationshipSectionHelper#
-    - YARD::Markdown::SectionAssemblyHelper#
-    - YARD::Markdown::TagFormattingHelper#
+    - YARD::Markdown*
