@@ -13,7 +13,7 @@ class YARD::TestLinkNormalizationHelper < Minitest::Test
 
   Options = Struct.new(:serializer, keyword_init: true)
 
-  def test_constant_reference_path_recognizes_namespaced_constants
+  def test_link_path_helpers_classify_targets_and_compute_relative_paths
     assert helper.constant_reference_path?("A")
     assert helper.constant_reference_path?("RSpec::Core")
     assert helper.constant_reference_path?("::RSpec::Core")
@@ -21,9 +21,7 @@ class YARD::TestLinkNormalizationHelper < Minitest::Test
     refute helper.constant_reference_path?("")
     refute helper.constant_reference_path?("RSpec::core")
     refute helper.constant_reference_path?("rspec/core")
-  end
 
-  def test_unresolved_identifier_target_recognizes_bare_local_identifiers
     assert helper.unresolved_identifier_target?("a")
     assert helper.unresolved_identifier_target?("memoized")
     assert helper.unresolved_identifier_target?("./memoized")
@@ -34,9 +32,7 @@ class YARD::TestLinkNormalizationHelper < Minitest::Test
     refute helper.unresolved_identifier_target?("Memoized")
     refute helper.unresolved_identifier_target?("path/to/file")
     refute helper.unresolved_identifier_target?("memoized.rb")
-  end
 
-  def test_relative_output_path_handles_existing_parent_relative_paths_and_fallbacks
     assert_equal "../Fish.md", helper.relative_output_path(Pathname.new("docs"), Pathname.new("../Fish.md"))
     assert_equal "Fish.md", helper.relative_output_path(Pathname.new("/docs"), Pathname.new("Fish.md"))
   end
@@ -88,62 +84,25 @@ class YARD::TestLinkNormalizationHelper < Minitest::Test
     assert_nil helper.resolve_registry_object("Fish#swim", Pathname.new("Ocean"))
   end
 
-  def test_resolve_local_link_target_prefers_registry_objects
+  def test_resolve_local_link_target_prefers_registry_objects_and_rewrites_paths
     YARD::Registry.clear
     YARD.parse_string("module Ocean\n  class Salmon\n  end\nend\n")
 
     helper.options = Options.new(serializer: Serializer.new(mapping: {"Ocean::Salmon" => "Ocean/Salmon.md"}))
 
     assert_equal "Salmon.md", helper.resolve_local_link_target("Salmon", Pathname.new("Ocean"))
-  end
-
-  def test_resolve_local_link_target_normalizes_dot_segments_in_paths
     assert_equal "Fish.md", helper.resolve_local_link_target("docs/../Fish.html", Pathname.new("."))
-  end
-
-  def test_resolve_local_link_target_normalizes_dot_segments_for_non_html_paths
     assert_equal "Fish.txt", helper.resolve_local_link_target("docs/../Fish.txt", Pathname.new("."))
-  end
-
-  def test_resolve_local_link_target_makes_paths_relative_to_current_dir
     assert_equal "../docs/Fish.md", helper.resolve_local_link_target("docs/Fish.html", Pathname.new("guides"))
-  end
-
-  def test_resolve_local_link_target_rewrites_html_case_insensitively
     assert_equal "docs/Fish.md", helper.resolve_local_link_target("docs/Fish.HTML", Pathname.new("."))
-  end
-
-  def test_resolve_local_link_target_strips_leading_dot_slash
     assert_equal "docs/Fish.md", helper.resolve_local_link_target("./docs/Fish.html", Pathname.new("."))
-  end
-
-  def test_resolve_local_link_target_strips_multiple_leading_slashes
     assert_equal "docs/Fish.md", helper.resolve_local_link_target("//docs/Fish.html", Pathname.new("."))
-  end
-
-  def test_resolve_local_link_target_drops_unresolved_identifiers
     assert_nil helper.resolve_local_link_target("memoized", Pathname.new("."))
-  end
-
-  def test_resolve_local_link_target_appends_markdown_extension_for_nested_extensionless_paths
     assert_equal "docs/Fish.md", helper.resolve_local_link_target("docs/Fish", Pathname.new("."))
-  end
-
-  def test_resolve_local_link_target_keeps_bare_non_identifier_targets_without_extension
     assert_equal "README", helper.resolve_local_link_target("README", Pathname.new("."))
   end
 
-  def test_finalize_markdown_rewrites_local_links_and_normalizes_spacing
-    YARD::Registry.clear
-    YARD.parse_string("class Fish\nend\n")
-    helper.options = Options.new(serializer: Serializer.new(mapping: {"Fish" => "Fish.md"}))
-
-    input = ["Line 1  ", "", "", "[Fish](Fish)", "[bad](memoized)", '[quoted](broken"link)']
-
-    assert_equal "Line 1\n\n[Fish](../Fish.md)\n`bad`\n`quoted`\n", helper.finalize_markdown(input, "docs/current.md")
-  end
-
-  def test_normalize_local_links_leaves_external_and_anchor_links_unchanged
+  def test_normalize_local_links_handles_external_targets_suffixes_and_unresolved_labels
     input = [
       "[http](http://example.com)",
       "[https](https://example.com)",
@@ -152,9 +111,7 @@ class YARD::TestLinkNormalizationHelper < Minitest::Test
     ].join("\n")
 
     assert_equal input, helper.normalize_local_links(input, "docs/current.md")
-  end
 
-  def test_normalize_local_links_rewrites_local_targets_and_preserves_suffixes
     YARD::Registry.clear
     YARD.parse_string("class Fish\nend\n")
     helper.options = Options.new(serializer: Serializer.new(mapping: {"Fish" => "Fish.md"}))
@@ -170,16 +127,22 @@ class YARD::TestLinkNormalizationHelper < Minitest::Test
       "[Empty query](../Fish.md?)",
       "[Empty fragment](../Fish.md#)"
     ].join("\n"), helper.normalize_local_links(input, "docs/current.md")
-  end
 
-  def test_normalize_local_links_strips_backticks_from_unresolved_labels
     assert_equal "`bad`", helper.normalize_local_links("[`bad`](memoized)", "docs/current.md")
   end
 
-  def test_finalize_markdown_accepts_string_input_and_collapses_excess_blank_lines
+  def test_finalize_markdown_accepts_string_input_and_normalizes_links_and_spacing
     helper.options = Options.new(serializer: Serializer.new(mapping: {}))
 
     assert_equal "Line 1\n", helper.finalize_markdown("Line 1", "docs/current.md")
+
+    YARD::Registry.clear
+    YARD.parse_string("class Fish\nend\n")
+    helper.options = Options.new(serializer: Serializer.new(mapping: {"Fish" => "Fish.md"}))
+
+    input = ["Line 1  ", "", "", "[Fish](Fish)", "[bad](memoized)", '[quoted](broken"link)']
+
+    assert_equal "Line 1\n\n[Fish](../Fish.md)\n`bad`\n`quoted`\n", helper.finalize_markdown(input, "docs/current.md")
 
     helper.options = Options.new(serializer: Serializer.new(mapping: {}))
 
