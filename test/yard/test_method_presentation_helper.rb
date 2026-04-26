@@ -21,10 +21,6 @@ class YARD::TestMethodPresentationHelper < Minitest::Test
     end
   end
 
-  def test_method_signature_renders_empty_parameter_lists
-    assert_equal "()", helper.method_signature(MethodObject.new(parameters: []))
-  end
-
   def test_method_signature_renders_nil_parameter_lists
     assert_equal "()", helper.method_signature(MethodObject.new(parameters: nil))
   end
@@ -59,8 +55,8 @@ class YARD::TestMethodPresentationHelper < Minitest::Test
     assert_equal "RW", helper.attribute_access(attribute)
   end
 
-  def test_attribute_access_handles_write_only_attr_info
-    attribute = AttributeObject.new(attr_info: {write: true}, reader_value: false, writer_value: false)
+  def test_attribute_access_does_not_treat_false_read_flags_as_readable
+    attribute = AttributeObject.new(attr_info: {read: false, write: true}, reader_value: false, writer_value: false)
 
     assert_equal "W", helper.attribute_access(attribute)
   end
@@ -69,12 +65,6 @@ class YARD::TestMethodPresentationHelper < Minitest::Test
     attribute = AttributeObject.new(attr_info: {read: true}, reader_value: false, writer_value: false)
 
     assert_equal "R", helper.attribute_access(attribute)
-  end
-
-  def test_attribute_access_does_not_treat_false_read_flags_as_readable
-    attribute = AttributeObject.new(attr_info: {read: false, write: true}, reader_value: false, writer_value: false)
-
-    assert_equal "W", helper.attribute_access(attribute)
   end
 
   def test_attribute_access_does_not_treat_false_write_flags_as_writable

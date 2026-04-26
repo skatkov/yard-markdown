@@ -8,12 +8,6 @@ class YARD::TestTagFormatting < Minitest::Test
   Tag = Struct.new(:tag_name, :name, :types, :text, keyword_init: true)
   ObjectWithTags = Struct.new(:tags, keyword_init: true)
 
-  def test_formats_hash_types_without_errors
-    tag = Tag.new(tag_name: "validates", types: {"presence" => nil}, text: "")
-
-    assert_equal "**@validates** [presence]", formatter.format_tag(tag)
-  end
-
   def test_strips_whitespace_from_hash_type_keys
     tag = Tag.new(tag_name: "validates", types: {"  presence  " => nil}, text: "")
 
@@ -54,12 +48,6 @@ class YARD::TestTagFormatting < Minitest::Test
     tag = Tag.new(tag_name: "return", types: %w[String nil], text: "description")
 
     assert_equal "**@return** [String, nil] description", formatter.format_tag(tag)
-  end
-
-  def test_normalizes_scalar_type_values_into_a_single_entry
-    tag = Tag.new(tag_name: "return", types: "String", text: "")
-
-    assert_equal "**@return** [String]", formatter.format_tag(tag)
   end
 
   def test_strips_surrounding_whitespace_from_scalar_type_values

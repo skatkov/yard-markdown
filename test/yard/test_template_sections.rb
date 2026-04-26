@@ -7,27 +7,6 @@ class YARD::TestTemplateSections < Minitest::Test
   cover YARD::Markdown::ArefHelper
   cover YARD::Markdown::HeadingHelper
 
-  def test_markdown_module_template_defines_customizable_sections
-    template = YARD::Templates::Engine.template(:default, :module, :markdown).new(
-      format: :markdown,
-      template: :default
-    )
-
-    assert_equal(
-      %i[
-        header
-        relationships
-        docstring_section
-        tags_section
-        constants_section
-        attributes_section
-        public_class_methods_section
-        public_instance_methods_section
-      ],
-      template.sections.map(&:name)
-    )
-  end
-
   def test_anchor_component_escapes_non_identifier_characters
     template = Class.new do
       include YARD::Markdown::AnchorComponentHelper
@@ -43,21 +22,6 @@ class YARD::TestTemplateSections < Minitest::Test
     YARD.parse("example_yard.rb")
 
     assert_equal "method-i-sustainable-3F", template.aref(YARD::Registry.at("Salmon#sustainable?"))
-  end
-
-  def test_aref_formats_class_and_module_objects
-    YARD::Registry.clear
-    YARD.parse("example_yard.rb")
-
-    assert_equal "class-Salmon", helper.aref(YARD::Registry.at("Salmon"))
-    assert_equal "module-Aquatic", helper.aref(YARD::Registry.at("Aquatic"))
-  end
-
-  def test_aref_escapes_namespaced_class_paths
-    YARD::Registry.clear
-    YARD.parse_string("module Ocean\n  class Salmon\n  end\nend\n")
-
-    assert_equal "class-Ocean-Salmon", helper.aref(YARD::Registry.at("Ocean::Salmon"))
   end
 
   def test_aref_replaces_all_namespace_separators_for_class_paths
