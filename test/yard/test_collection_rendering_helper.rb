@@ -40,7 +40,7 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
     MARKDOWN
   end
 
-  def test_render_constants_honors_explicit_group_order
+  def test_renderers_honor_explicit_group_order
     YARD::Registry.clear
     YARD.parse_string(<<~RUBY)
       class Salmon
@@ -54,13 +54,45 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
       end
     RUBY
 
-    constants = [YARD::Registry.at("Salmon::ALPHA"), YARD::Registry.at("Salmon::BETA")]
-    output = helper.render_constants(constants, ["Beta", "Alpha"])
+    assert helper.render_constants([YARD::Registry.at("Salmon::ALPHA"), YARD::Registry.at("Salmon::BETA")], ["Beta", "Alpha"]).index("### Beta") <
+      helper.render_constants([YARD::Registry.at("Salmon::ALPHA"), YARD::Registry.at("Salmon::BETA")], ["Beta", "Alpha"]).index("### Alpha")
 
-    assert output.index("### Beta") < output.index("### Alpha")
+    YARD::Registry.clear
+    YARD.parse_string(<<~RUBY)
+      class Salmon
+        # @!group Beta
+        attr_reader :beta
+        # @!endgroup
+
+        # @!group Alpha
+        attr_reader :alpha
+        # @!endgroup
+      end
+    RUBY
+
+    assert helper.render_attributes([YARD::Registry.at("Salmon#alpha"), YARD::Registry.at("Salmon#beta")], ["Beta", "Alpha"]).index("### Beta") <
+      helper.render_attributes([YARD::Registry.at("Salmon#alpha"), YARD::Registry.at("Salmon#beta")], ["Beta", "Alpha"]).index("### Alpha")
+
+    YARD::Registry.clear
+    YARD.parse_string(<<~RUBY)
+      class Salmon
+        # @!group Beta
+        def beta
+        end
+        # @!endgroup
+
+        # @!group Alpha
+        def alpha
+        end
+        # @!endgroup
+      end
+    RUBY
+
+    assert helper.render_methods("Public Instance Methods", [YARD::Registry.at("Salmon#alpha"), YARD::Registry.at("Salmon#beta")], ["Beta", "Alpha"]).index("### Beta") <
+      helper.render_methods("Public Instance Methods", [YARD::Registry.at("Salmon#alpha"), YARD::Registry.at("Salmon#beta")], ["Beta", "Alpha"]).index("### Alpha")
   end
 
-  def test_render_constants_uses_general_heading_when_mixed_with_named_groups
+  def test_renderers_use_general_heading_when_mixed_with_named_groups
     YARD::Registry.clear
     YARD.parse_string(<<~RUBY)
       class Salmon
@@ -72,8 +104,41 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
       end
     RUBY
 
-    constants = [YARD::Registry.at("Salmon::ALPHA"), YARD::Registry.at("Salmon::BETA")]
-    output = helper.render_constants(constants, ["Named"])
+    output = helper.render_constants([YARD::Registry.at("Salmon::ALPHA"), YARD::Registry.at("Salmon::BETA")], ["Named"])
+
+    assert_includes output, "### Named"
+    assert_includes output, "### General"
+
+    YARD::Registry.clear
+    YARD.parse_string(<<~RUBY)
+      class Salmon
+        # @!group Named
+        attr_reader :beta
+        # @!endgroup
+
+        attr_reader :alpha
+      end
+    RUBY
+
+    output = helper.render_attributes([YARD::Registry.at("Salmon#alpha"), YARD::Registry.at("Salmon#beta")], ["Named"])
+
+    assert_includes output, "### Named"
+    assert_includes output, "### General"
+
+    YARD::Registry.clear
+    YARD.parse_string(<<~RUBY)
+      class Salmon
+        # @!group Named
+        def beta
+        end
+        # @!endgroup
+
+        def alpha
+        end
+      end
+    RUBY
+
+    output = helper.render_methods("Public Instance Methods", [YARD::Registry.at("Salmon#alpha"), YARD::Registry.at("Salmon#beta")], ["Named"])
 
     assert_includes output, "### Named"
     assert_includes output, "### General"
@@ -120,27 +185,7 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
     assert_match(/True for farmed salmon\n\n#### `wild` \[R\]/, output)
   end
 
-  def test_render_attributes_honors_explicit_group_order
-    YARD::Registry.clear
-    YARD.parse_string(<<~RUBY)
-      class Salmon
-        # @!group Beta
-        attr_reader :beta
-        # @!endgroup
-
-        # @!group Alpha
-        attr_reader :alpha
-        # @!endgroup
-      end
-    RUBY
-
-    attrs = [YARD::Registry.at("Salmon#alpha"), YARD::Registry.at("Salmon#beta")]
-    output = helper.render_attributes(attrs, ["Beta", "Alpha"])
-
-    assert output.index("### Beta") < output.index("### Alpha")
-  end
-
-  def test_render_attributes_omits_group_headings_when_all_items_are_ungrouped
+  def test_renderers_omit_group_headings_when_all_items_are_ungrouped
     YARD::Registry.clear
     YARD.parse_string(<<~RUBY)
       class Salmon
@@ -152,6 +197,19 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
 
     refute_includes output, "### General"
     assert_includes output, "### `alpha` [R]"
+
+    YARD::Registry.clear
+    YARD.parse_string(<<~RUBY)
+      class Salmon
+        def alpha
+        end
+      end
+    RUBY
+
+    output = helper.render_methods("Public Instance Methods", [YARD::Registry.at("Salmon#alpha")], [])
+
+    refute_includes output, "### General"
+    assert_includes output, "### `alpha()`"
   end
 
   def test_render_attributes_renders_docstrings_without_extra_spacing
@@ -176,25 +234,6 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
 
       Alpha documentation.
     MARKDOWN
-  end
-
-  def test_render_attributes_uses_general_heading_when_mixed_with_named_groups
-    YARD::Registry.clear
-    YARD.parse_string(<<~RUBY)
-      class Salmon
-        # @!group Named
-        attr_reader :beta
-        # @!endgroup
-
-        attr_reader :alpha
-      end
-    RUBY
-
-    attrs = [YARD::Registry.at("Salmon#alpha"), YARD::Registry.at("Salmon#beta")]
-    output = helper.render_attributes(attrs, ["Named"])
-
-    assert_includes output, "### Named"
-    assert_includes output, "### General"
   end
 
   def test_render_methods_renders_grouped_method_sections
@@ -224,28 +263,6 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
     MARKDOWN
   end
 
-  def test_render_methods_honors_explicit_group_order
-    YARD::Registry.clear
-    YARD.parse_string(<<~RUBY)
-      class Salmon
-        # @!group Beta
-        def beta
-        end
-        # @!endgroup
-
-        # @!group Alpha
-        def alpha
-        end
-        # @!endgroup
-      end
-    RUBY
-
-    methods = [YARD::Registry.at("Salmon#alpha"), YARD::Registry.at("Salmon#beta")]
-    output = helper.render_methods("Public Instance Methods", methods, ["Beta", "Alpha"])
-
-    assert output.index("### Beta") < output.index("### Alpha")
-  end
-
   def test_render_methods_separates_multiple_items_within_same_group
     YARD::Registry.clear
     YARD.parse_string(<<~RUBY)
@@ -269,42 +286,6 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
 
       #### `beta()` <a id="method-i-beta"></a> <a id="beta-instance_method"></a>
     MARKDOWN
-  end
-
-  def test_render_methods_omits_group_headings_when_all_items_are_ungrouped
-    YARD::Registry.clear
-    YARD.parse_string(<<~RUBY)
-      class Salmon
-        def alpha
-        end
-      end
-    RUBY
-
-    output = helper.render_methods("Public Instance Methods", [YARD::Registry.at("Salmon#alpha")], [])
-
-    refute_includes output, "### General"
-    assert_includes output, "### `alpha()`"
-  end
-
-  def test_render_methods_uses_general_heading_when_mixed_with_named_groups
-    YARD::Registry.clear
-    YARD.parse_string(<<~RUBY)
-      class Salmon
-        # @!group Named
-        def beta
-        end
-        # @!endgroup
-
-        def alpha
-        end
-      end
-    RUBY
-
-    methods = [YARD::Registry.at("Salmon#alpha"), YARD::Registry.at("Salmon#beta")]
-    output = helper.render_methods("Public Instance Methods", methods, ["Named"])
-
-    assert_includes output, "### Named"
-    assert_includes output, "### General"
   end
 
   private

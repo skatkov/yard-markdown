@@ -104,12 +104,6 @@ class YARD::TestTagFormatting < Minitest::Test
     assert_equal "**@example**\n```ruby\n\n```", formatter.render_tags(object)
   end
 
-  def test_renders_regular_tags_as_bulleted_items
-    object = ObjectWithTags.new(tags: [Tag.new(tag_name: "return", types: "String", text: "description")])
-
-    assert_equal "- **@return** [String] description", formatter.render_tags(object)
-  end
-
   def test_separates_regular_tags_from_example_blocks
     object = ObjectWithTags.new(tags: [
       Tag.new(tag_name: "return", types: "String", text: "description"),

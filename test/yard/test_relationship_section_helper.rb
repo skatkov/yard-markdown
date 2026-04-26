@@ -5,21 +5,15 @@ require "test_helper"
 class YARD::TestRelationshipSectionHelper < Minitest::Test
   cover YARD::Markdown::RelationshipSectionHelper
 
-  def test_render_section_content_trims_and_terminates_content
-    assert_equal "hello\n\n", helper.render_section_content("  hello\n")
-  end
-
-  def test_render_section_content_skips_blank_content
-    assert_equal "", helper.render_section_content(" \n")
-  end
-
-  def test_render_section_content_uses_to_s_for_non_string_objects
+  def test_render_section_content_normalizes_blank_string_and_non_string_input
     content = Class.new do
       def to_s
         "hello"
       end
     end.new
 
+    assert_equal "hello\n\n", helper.render_section_content("  hello\n")
+    assert_equal "", helper.render_section_content(" \n")
     assert_equal "hello\n\n", helper.render_section_content(content)
   end
 
