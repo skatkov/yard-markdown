@@ -5,6 +5,16 @@ require "test_helper"
 class YARD::TestMethodPresentationHelper < Minitest::Test
   cover YARD::Markdown::MethodPresentationHelper
 
+  FakeAttribute = Struct.new(:attr_info, :reader_value, :writer_value, keyword_init: true) do
+    def reader?
+      reader_value
+    end
+
+    def writer?
+      writer_value
+    end
+  end
+
   def test_method_signature_and_heading_handle_nil_defaults_and_operator_spacing
     assert_equal "()", helper.method_signature(build_method(parameters: nil))
     assert_equal "(name, limit = 10)", helper.method_signature(build_method(parameters: [["name", nil], ["limit", "10"]]))
@@ -49,14 +59,7 @@ class YARD::TestMethodPresentationHelper < Minitest::Test
   end
 
   def build_attribute(attr_info:, reader:, writer:)
-    method_object = YARD::CodeObjects::MethodObject.new(namespace, :speed, :instance)
-    mod = Module.new do
-      define_method(:attr_info) { attr_info }
-      define_method(:reader?) { reader }
-      define_method(:writer?) { writer }
-    end
-    method_object.singleton_class.prepend(mod)
-    method_object
+    FakeAttribute.new(attr_info: attr_info, reader_value: reader, writer_value: writer)
   end
 
   def parsed_attribute(source, path)
