@@ -7,7 +7,7 @@ class YARD::TestSectionAssemblyHelper < Minitest::Test
 
   GroupedItem = Struct.new(:group, :name, keyword_init: true)
 
-  def test_grouped_items_uses_declared_group_order_then_remaining_groups_then_nil
+  def test_grouped_items_orders_declared_missing_and_default_groups
     items = [
       GroupedItem.new(group: "beta", name: "b1"),
       GroupedItem.new(group: nil, name: "n1"),
@@ -20,79 +20,45 @@ class YARD::TestSectionAssemblyHelper < Minitest::Test
       ["alpha", [items[2]]],
       [nil, [items[1]]]
     ], helper.grouped_items(items, ["beta"])
-  end
-
-  def test_grouped_items_ignores_missing_names_from_group_order
-    items = [
-      GroupedItem.new(group: "beta", name: "b1"),
-      GroupedItem.new(group: "alpha", name: "a1")
-    ]
 
     assert_equal [
-      ["beta", [items[0]]],
-      ["alpha", [items[1]]]
-    ], helper.grouped_items(items, ["missing", "beta"])
-  end
+      ["beta", [GroupedItem.new(group: "beta", name: "b1")]],
+      ["alpha", [GroupedItem.new(group: "alpha", name: "a1")]]
+    ], helper.grouped_items([
+      GroupedItem.new(group: "beta", name: "b1"),
+      GroupedItem.new(group: "alpha", name: "a1")
+    ], ["missing", "beta"])
 
-  def test_grouped_items_handles_missing_group_order
-    items = [
+    assert_equal [
+      ["alpha", [GroupedItem.new(group: "alpha", name: "a1")]],
+      ["beta", [GroupedItem.new(group: "beta", name: "b1")]],
+      [nil, [GroupedItem.new(group: nil, name: "n1")]]
+    ], helper.grouped_items([
       GroupedItem.new(group: "beta", name: "b1"),
       GroupedItem.new(group: "alpha", name: "a1"),
       GroupedItem.new(group: nil, name: "n1")
-    ]
-
-    assert_equal [
-      ["alpha", [items[1]]],
-      ["beta", [items[0]]],
-      [nil, [items[2]]]
-    ], helper.grouped_items(items, nil)
+    ], nil)
   end
 
-  def test_append_lines_skips_blank_content
+  def test_append_lines_handles_blank_content_and_separator_rules
     lines = ["existing"]
-
     helper.append_lines(lines, " \n")
-
     assert_equal ["existing"], lines
-  end
 
-  def test_append_lines_inserts_separator_when_requested
     lines = ["existing"]
-
     helper.append_lines(lines, "first\nsecond")
-
     assert_equal ["existing", "", "first", "second"], lines
-  end
 
-  def test_append_lines_does_not_duplicate_existing_separator_lines
     lines = ["existing", ""]
-
     helper.append_lines(lines, "first\nsecond")
-
     assert_equal ["existing", "", "first", "second"], lines
-  end
 
-  def test_append_lines_appends_without_separator_when_disabled
     lines = ["existing"]
-
     helper.append_lines(lines, "first\nsecond", separated: false)
-
     assert_equal ["existing", "first", "second"], lines
-  end
 
-  def test_append_lines_handles_empty_line_arrays_without_inserting_separator
     lines = []
-
-    helper.append_lines(lines, "first\nsecond")
-
-    assert_equal ["first", "second"], lines
-  end
-
-  def test_append_lines_preserves_blank_lines_in_content
-    lines = []
-
     helper.append_lines(lines, "first\n\nsecond")
-
     assert_equal ["first", "", "second"], lines
   end
 

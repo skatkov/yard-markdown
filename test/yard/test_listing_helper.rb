@@ -14,7 +14,7 @@ class YARD::TestListingHelper < Minitest::Test
   end
   FakeSuperclass = Struct.new(:attributes, keyword_init: true)
 
-  def test_constant_listing_includes_constants_and_classvariables
+  def test_basic_listing_helpers_include_direct_members_and_sort_values
     YARD::Registry.clear
     YARD.parse_string(<<~RUBY)
       module Swimmer
@@ -33,102 +33,9 @@ class YARD::TestListingHelper < Minitest::Test
     RUBY
 
     assert_equal %w[Salmon::MAX_SPEED Salmon::@@population], template.constant_listing(YARD::Registry.at("Salmon")).map(&:path)
-  end
-
-  def test_public_method_lists_filter_scope_and_hide_nodoc_members
-    YARD::Registry.clear
-    YARD.parse_string(<<~RUBY)
-      class Salmon
-        # :nodoc:
-        def self.hidden
-        end
-
-        def self.spawn
-        end
-
-        # :nodoc:
-        def sink
-        end
-
-        def swim
-        end
-      end
-    RUBY
-
-    object = YARD::Registry.at("Salmon")
-
-    assert_equal ["Salmon.spawn"], template.public_class_methods(object).map(&:path)
-    assert_equal ["Salmon#swim"], template.public_instance_methods(object).map(&:path)
-  end
-
-  def test_public_method_lists_are_sorted_by_method_name
-    YARD::Registry.clear
-    YARD.parse_string(<<~RUBY)
-      class Salmon
-        def zebra
-        end
-
-        def alpha
-        end
-      end
-    RUBY
-
-    assert_equal ["Salmon#alpha", "Salmon#zebra"], template.public_instance_methods(YARD::Registry.at("Salmon")).map(&:path)
-  end
-
-  def test_public_method_lists_exclude_inherited_and_private_methods
-    YARD::Registry.clear
-    YARD.parse_string(<<~RUBY)
-      class Fish
-        def inherited_public
-        end
-      end
-
-      class Salmon < Fish
-        def visible_public
-        end
-
-        private
-
-        def hidden_private
-        end
-      end
-    RUBY
-
-    assert_equal ["Salmon#visible_public"], template.public_instance_methods(YARD::Registry.at("Salmon")).map(&:path)
-  end
-
-  def test_public_method_lists_prune_aliases
-    YARD::Registry.clear
-    YARD.parse_string(<<~RUBY)
-      class Salmon
-        def swim
-        end
-
-        alias paddle swim
-      end
-    RUBY
-
-    assert_equal ["Salmon#swim"], template.public_instance_methods(YARD::Registry.at("Salmon")).map(&:path)
-  end
-
-  def test_public_method_lists_exclude_attribute_accessors
-    YARD::Registry.clear
-    YARD.parse_string(<<~RUBY)
-      class Salmon
-        attr_accessor :speed
-      end
-    RUBY
-
-    assert_equal [], template.public_instance_methods(YARD::Registry.at("Salmon")).map(&:path)
-  end
-
-  def test_hidden_object_recognizes_nodoc_after_leading_whitespace_only
     assert helper.hidden_object?(DocstringObject.new(docstring: "   :nodoc: hidden"))
     refute helper.hidden_object?(DocstringObject.new(docstring: "details :nodoc:"))
-  end
 
-  def test_sort_listing_orders_by_scope_then_case_insensitive_name
     list = [
       ListObject.new(scope: :instance, name: "alpha"),
       ListObject.new(scope: :class, name: "zebra"),
@@ -144,45 +51,53 @@ class YARD::TestListingHelper < Minitest::Test
     ], helper.sort_listing(list)
   end
 
-  def test_attr_listing_returns_sorted_attributes
+  def test_public_method_lists_filter_sort_and_prune_members
     YARD::Registry.clear
     YARD.parse_string(<<~RUBY)
-      class Salmon
-        attr_accessor :beta
-        attr_reader :alpha
+      class Fish
+        def inherited_public
+        end
       end
-    RUBY
 
-    assert_equal %i[alpha beta], template.attr_listing(YARD::Registry.at("Salmon")).map { |item| item.name(false) }
-  end
+      class Salmon < Fish
+        # :nodoc:
+        def self.hidden
+        end
 
-  def test_attr_listing_includes_class_scope_attributes
-    YARD::Registry.clear
-    YARD.parse_string(<<~RUBY)
-      class Salmon
-        class << self
-          attr_accessor :config
+        def self.spawn
+        end
+
+        attr_accessor :speed
+
+        def zebra
+        end
+
+        def alpha
+        end
+
+        def swim
+        end
+
+        alias paddle swim
+
+        # :nodoc:
+        def sink
+        end
+
+        private
+
+        def hidden_private
         end
       end
     RUBY
 
-    attrs = template.attr_listing(YARD::Registry.at("Salmon"))
+    object = YARD::Registry.at("Salmon")
 
-    assert_equal ["Salmon.config"], attrs.map(&:path)
+    assert_equal ["Salmon.spawn"], template.public_class_methods(object).map(&:path)
+    assert_equal ["Salmon#alpha", "Salmon#swim", "Salmon#zebra"], template.public_instance_methods(object).map(&:path)
   end
 
-  def test_attr_listing_keeps_write_only_attributes
-    YARD::Registry.clear
-    YARD.parse_string(<<~RUBY)
-      class Salmon
-        attr_writer :captured
-      end
-    RUBY
-
-    assert_equal ["Salmon#captured="], template.attr_listing(YARD::Registry.at("Salmon")).map(&:path)
-  end
-
-  def test_attr_listing_does_not_include_inherited_attributes_when_embed_mixins_are_empty
+  def test_attr_listing_handles_direct_attributes_and_default_inheritance_rules
     YARD::Registry.clear
     YARD.parse_string(<<~RUBY)
       class Fish
@@ -190,14 +105,20 @@ class YARD::TestListingHelper < Minitest::Test
       end
 
       class Salmon < Fish
-        attr_reader :top_speed
+        attr_accessor :beta
+        attr_reader :alpha
+        attr_writer :captured
+
+        class << self
+          attr_accessor :config
+        end
       end
     RUBY
 
-    assert_equal ["Salmon#top_speed"], template.attr_listing(YARD::Registry.at("Salmon")).map(&:path)
+    assert_equal ["Salmon.config", "Salmon#alpha", "Salmon#beta", "Salmon#captured="], template.attr_listing(YARD::Registry.at("Salmon")).map(&:path)
   end
 
-  def test_attr_listing_includes_mixin_attributes_when_embed_mixins_match
+  def test_attr_listing_handles_embed_mixins_proxy_ancestors_and_pruned_entries
     YARD::Registry.clear
     YARD.parse_string(<<~RUBY)
       module Swimmer
@@ -209,13 +130,11 @@ class YARD::TestListingHelper < Minitest::Test
       end
     RUBY
 
-    template = build_template
-    template.options.embed_mixins = ["Swimmer"]
+    mixin_template = build_template
+    mixin_template.options.embed_mixins = ["Swimmer"]
 
-    assert_equal [:speed], template.attr_listing(YARD::Registry.at("Fish")).map { |item| item.name(false) }
-  end
+    assert_equal [:speed], mixin_template.attr_listing(YARD::Registry.at("Fish")).map { |item| item.name(false) }
 
-  def test_attr_listing_keeps_collecting_matching_mixins_when_embed_mixins_are_enabled
     YARD::Registry.clear
     YARD.parse_string(<<~RUBY)
       module Swimmer
@@ -232,23 +151,19 @@ class YARD::TestListingHelper < Minitest::Test
       end
     RUBY
 
-    template = build_template
-    template.options.embed_mixins = ["Swimmer", "Floater"]
+    mixin_template = build_template
+    mixin_template.options.embed_mixins = ["Swimmer", "Floater"]
 
-    assert_equal %i[depth speed], template.attr_listing(YARD::Registry.at("Fish")).map { |item| item.name(false) }
-  end
+    assert_equal %i[depth speed], mixin_template.attr_listing(YARD::Registry.at("Fish")).map { |item| item.name(false) }
 
-  def test_attr_listing_skips_proxy_ancestors_when_embed_mixins_are_enabled
     YARD::Registry.clear
     YARD.parse_string("class Fish < MissingBase\n  attr_reader :speed\nend\n")
 
-    template = build_template
-    template.options.embed_mixins = ["MissingBase"]
+    mixin_template = build_template
+    mixin_template.options.embed_mixins = ["MissingBase"]
 
-    assert_equal [], template.attr_listing(YARD::Registry.at("Fish"))
-  end
+    assert_equal [], mixin_template.attr_listing(YARD::Registry.at("Fish"))
 
-  def test_attr_listing_ignores_entries_pruned_to_nothing
     superclass = FakeSuperclass.new(attributes: {
       class: {},
       instance: {
@@ -259,12 +174,12 @@ class YARD::TestListingHelper < Minitest::Test
       }
     })
 
-    template = build_template
-    def template.prune_method_listing(_list, _included = nil)
+    pruned_template = build_template
+    def pruned_template.prune_method_listing(_list, _included = nil)
       []
     end
 
-    assert_equal [], template.attr_listing(TreeObject.new(superclasses: [superclass]))
+    assert_equal [], pruned_template.attr_listing(TreeObject.new(superclasses: [superclass]))
   end
 
   private

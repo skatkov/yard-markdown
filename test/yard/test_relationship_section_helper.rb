@@ -5,27 +5,20 @@ require "test_helper"
 class YARD::TestRelationshipSectionHelper < Minitest::Test
   cover YARD::Markdown::RelationshipSectionHelper
 
-  def test_render_section_content_trims_and_terminates_content
-    assert_equal "hello\n\n", helper.render_section_content("  hello\n")
-  end
-
-  def test_render_section_content_skips_blank_content
-    assert_equal "", helper.render_section_content(" \n")
-  end
-
-  def test_render_section_content_uses_to_s_for_non_string_objects
+  def test_render_section_content_normalizes_blank_string_and_non_string_input
     content = Class.new do
       def to_s
         "hello"
       end
     end.new
 
+    assert_equal "hello\n\n", helper.render_section_content("  hello\n")
+    assert_equal "", helper.render_section_content(" \n")
     assert_equal "hello\n\n", helper.render_section_content(content)
   end
 
-  def test_object_relationships_renders_inheritance_and_sorted_mixins
-    YARD::Registry.clear
-    YARD.parse_string(<<~RUBY)
+  def test_object_relationships_handle_class_and_module_variants
+    parse_source(<<~RUBY)
       module Zebra
       end
 
@@ -47,11 +40,8 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
       "**Inherits:** `Fish`\n**Extended by:** `Alpha`, `Zebra`\n**Includes:** `Alpha`, `Zebra`",
       helper.object_relationships(YARD::Registry.at("Salmon"))
     )
-  end
 
-  def test_object_relationships_includes_default_object_inheritance_for_classes
-    YARD::Registry.clear
-    YARD.parse_string(<<~RUBY)
+    parse_source(<<~RUBY)
       module Zebra
       end
 
@@ -68,11 +58,8 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
       "**Inherits:** `Object`\n**Extended by:** `Zebra`\n**Includes:** `Alpha`",
       helper.object_relationships(YARD::Registry.at("Salmon"))
     )
-  end
 
-  def test_object_relationships_omits_inheritance_for_modules
-    YARD::Registry.clear
-    YARD.parse_string(<<~RUBY)
+    parse_source(<<~RUBY)
       module Zebra
       end
 
@@ -89,11 +76,27 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
       "**Extended by:** `Zebra`\n**Includes:** `Alpha`",
       helper.object_relationships(YARD::Registry.at("Salmon"))
     )
+
+    parse_source(<<~RUBY)
+      module Alpha
+      end
+
+      class Fish
+      end
+
+      class Salmon < Fish
+        include Alpha
+      end
+    RUBY
+
+    assert_equal(
+      "**Inherits:** `Fish`\n**Includes:** `Alpha`",
+      helper.object_relationships(YARD::Registry.at("Salmon"))
+    )
   end
 
-  def test_object_relationships_uses_verifier_filtered_mixins
-    YARD::Registry.clear
-    YARD.parse_string(<<~RUBY)
+  def test_object_relationships_honor_verifier_and_sort_mixins_by_path
+    parse_source(<<~RUBY)
       module Zebra
       end
 
@@ -123,31 +126,8 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
       "**Inherits:** `Fish`\n**Extended by:** `Alpha`\n**Includes:** `Alpha`",
       filtered_helper.object_relationships(YARD::Registry.at("Salmon"))
     )
-  end
 
-  def test_object_relationships_skips_empty_mixin_scopes_without_stopping_later_scopes
-    YARD::Registry.clear
-    YARD.parse_string(<<~RUBY)
-      module Alpha
-      end
-
-      class Fish
-      end
-
-      class Salmon < Fish
-        include Alpha
-      end
-    RUBY
-
-    assert_equal(
-      "**Inherits:** `Fish`\n**Includes:** `Alpha`",
-      helper.object_relationships(YARD::Registry.at("Salmon"))
-    )
-  end
-
-  def test_object_relationships_sorts_mixins_by_path
-    YARD::Registry.clear
-    YARD.parse_string(<<~RUBY)
+    parse_source(<<~RUBY)
       module Zebra
       end
 
@@ -195,5 +175,10 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
         items
       end
     end.new
+  end
+
+  def parse_source(source)
+    YARD::Registry.clear
+    YARD.parse_string(source)
   end
 end
