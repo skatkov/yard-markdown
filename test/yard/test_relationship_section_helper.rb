@@ -153,6 +153,7 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
         def mixin.<=>(other)
           other.path <=> path
         end
+
         def mixin.to_s
           "not-the-path"
         end

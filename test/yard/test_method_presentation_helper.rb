@@ -37,7 +37,7 @@ class YARD::TestMethodPresentationHelper < Minitest::Test
     end.new
   end
 
-  def build_method(name: "call", parameters:, string_name: false)
+  def build_method(parameters:, name: "call", string_name: false)
     method_object = YARD::CodeObjects::MethodObject.new(namespace, name.to_sym, :instance)
     method_object.parameters = parameters
     return method_object unless string_name
