@@ -143,20 +143,21 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
       end
     RUBY
 
-    sortable_mixin_class = Struct.new(:path) do
-      include Comparable
-
-      def <=>(other)
-        other.path <=> path
-      end
-    end
-
     sortable_helper = Class.new do
       include YARD::Markdown::RelationshipSectionHelper
     end.new
 
     sortable_helper.define_singleton_method(:run_verifier) do |items|
-      items.map { |item| sortable_mixin_class.new(item.path) }
+      items.map { |item|
+        mixin = YARD::CodeObjects::ModuleObject.new(YARD::Registry.root, item.path.to_sym)
+        def mixin.<=>(other)
+          other.path <=> path
+        end
+        def mixin.to_s
+          "not-the-path"
+        end
+        mixin
+      }
     end
 
     assert_equal(
