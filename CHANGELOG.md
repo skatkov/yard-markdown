@@ -5,6 +5,8 @@ This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 
 ## Unreleased
 
+## 0.7.1
+
 ### Fixed
 - Preserve fenced code blocks in YARD docstrings so generated Markdown examples render correctly.
 
