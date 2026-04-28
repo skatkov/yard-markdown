@@ -19,21 +19,21 @@ gem install yard-markdown
 
 Run `yardoc --format=markdown` to generate markdown documentation.
 
-## Note on RDoc support
+## FAQ
+
+### Note on RDoc support
 It seems important to note, that yard claims to have support for RDoc. That support is certainly present, but output for rdoc is dramatically different. A lot of useful information seems lost in the process.
 
 If you know how to improve that, please get in touch or submit a patch.
 
 So in meantime, there is work going on a competing gem for RDoc and it's called [rdoc-markdown gem](https://github.com/skatkov/rdoc-markdown/).
 
-## Note on index.csv file
+### Note on index.csv file
 This gem emits index of all markdown files in a index.csv file.
 
 There are decent tools that offer search through structured plain-text files. But my expectation is that nobody will use CSV as an actual search index, but rather import it into something that performs this function better.
 
 In my personal use-case, I use SQLite. All other databases seem to have a good support for CSV imports.
-
-## FAQ
 
 ### Yard doesn't load plugin properly? 
 so you need to load plugin through `~/.yard/config`:
