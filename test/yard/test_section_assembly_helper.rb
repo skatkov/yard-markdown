@@ -5,39 +5,76 @@ require "test_helper"
 class YARD::TestSectionAssemblyHelper < Minitest::Test
   cover YARD::Markdown::SectionAssemblyHelper
 
-  GroupedItem = Struct.new(:group, :name, keyword_init: true)
-
   def test_grouped_items_orders_declared_missing_and_default_groups
-    items = [
-      GroupedItem.new(group: "beta", name: "b1"),
-      GroupedItem.new(group: nil, name: "n1"),
-      GroupedItem.new(group: "alpha", name: "a1"),
-      GroupedItem.new(group: "beta", name: "b2")
-    ]
+    parse_source(<<~RUBY)
+      class Fish
+        # @!group beta
+        def b1
+        end
+        # @!endgroup
+
+        def n1
+        end
+
+        # @!group alpha
+        def a1
+        end
+        # @!endgroup
+
+        # @!group beta
+        def b2
+        end
+        # @!endgroup
+      end
+    RUBY
 
     assert_equal [
-      ["beta", [items[0], items[3]]],
-      ["alpha", [items[2]]],
-      [nil, [items[1]]]
-    ], helper.grouped_items(items, ["beta"])
+      ["beta", %w[Fish#b1 Fish#b2]],
+      ["alpha", %w[Fish#a1]],
+      [nil, %w[Fish#n1]]
+    ], grouped_paths(methods(%w[b1 n1 a1 b2]), ["beta"])
+
+    parse_source(<<~RUBY)
+      class Fish
+        # @!group beta
+        def b1
+        end
+        # @!endgroup
+
+        # @!group alpha
+        def a1
+        end
+        # @!endgroup
+      end
+    RUBY
 
     assert_equal [
-      ["beta", [GroupedItem.new(group: "beta", name: "b1")]],
-      ["alpha", [GroupedItem.new(group: "alpha", name: "a1")]]
-    ], helper.grouped_items([
-      GroupedItem.new(group: "beta", name: "b1"),
-      GroupedItem.new(group: "alpha", name: "a1")
-    ], ["missing", "beta"])
+      ["beta", %w[Fish#b1]],
+      ["alpha", %w[Fish#a1]]
+    ], grouped_paths(methods(%w[b1 a1]), ["missing", "beta"])
+
+    parse_source(<<~RUBY)
+      class Fish
+        # @!group beta
+        def b1
+        end
+        # @!endgroup
+
+        # @!group alpha
+        def a1
+        end
+        # @!endgroup
+
+        def n1
+        end
+      end
+    RUBY
 
     assert_equal [
-      ["alpha", [GroupedItem.new(group: "alpha", name: "a1")]],
-      ["beta", [GroupedItem.new(group: "beta", name: "b1")]],
-      [nil, [GroupedItem.new(group: nil, name: "n1")]]
-    ], helper.grouped_items([
-      GroupedItem.new(group: "beta", name: "b1"),
-      GroupedItem.new(group: "alpha", name: "a1"),
-      GroupedItem.new(group: nil, name: "n1")
-    ], nil)
+      ["alpha", %w[Fish#a1]],
+      ["beta", %w[Fish#b1]],
+      [nil, %w[Fish#n1]]
+    ], grouped_paths(methods(%w[b1 a1 n1]), nil)
   end
 
   def test_append_lines_handles_blank_content_and_separator_rules
@@ -68,5 +105,20 @@ class YARD::TestSectionAssemblyHelper < Minitest::Test
     @helper ||= Class.new do
       include YARD::Markdown::SectionAssemblyHelper
     end.new
+  end
+
+  def grouped_paths(items, group_order)
+    helper.grouped_items(items, group_order).map { |group, grouped_items|
+      [group, grouped_items.map(&:path)]
+    }
+  end
+
+  def methods(names)
+    names.map { |name| YARD::Registry.at("Fish##{name}") }
+  end
+
+  def parse_source(source)
+    YARD::Registry.clear
+    YARD.parse_string(source)
   end
 end

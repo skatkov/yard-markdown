@@ -5,15 +5,6 @@ require "test_helper"
 class YARD::TestListingHelper < Minitest::Test
   cover YARD::Markdown::ObjectListingHelper
 
-  DocstringObject = Struct.new(:docstring, keyword_init: true)
-  ListObject = Struct.new(:scope, :name, keyword_init: true)
-  TreeObject = Struct.new(:superclasses, keyword_init: true) do
-    def inheritance_tree(_include_mixins)
-      superclasses
-    end
-  end
-  FakeSuperclass = Struct.new(:attributes, keyword_init: true)
-
   def test_basic_listing_helpers_include_direct_members_and_sort_values
     YARD::Registry.clear
     YARD.parse_string(<<~RUBY)
@@ -33,22 +24,28 @@ class YARD::TestListingHelper < Minitest::Test
     RUBY
 
     assert_equal %w[Salmon::MAX_SPEED Salmon::@@population], template.constant_listing(YARD::Registry.at("Salmon")).map(&:path)
-    assert helper.hidden_object?(DocstringObject.new(docstring: "   :nodoc: hidden"))
-    refute helper.hidden_object?(DocstringObject.new(docstring: "details :nodoc:"))
+    hidden = YARD::CodeObjects::ClassObject.new(YARD::Registry.root, :Hidden)
+    hidden.docstring = "   :nodoc: hidden"
+    visible = YARD::CodeObjects::ClassObject.new(YARD::Registry.root, :Visible)
+    visible.docstring = "details :nodoc:"
 
+    assert helper.hidden_object?(hidden)
+    refute helper.hidden_object?(visible)
+
+    namespace = YARD::CodeObjects::ClassObject.new(YARD::Registry.root, :SortTarget)
     list = [
-      ListObject.new(scope: :instance, name: "alpha"),
-      ListObject.new(scope: :class, name: "zebra"),
-      ListObject.new(scope: :class, name: "Beta"),
-      ListObject.new(scope: :class, name: "alpha")
+      YARD::CodeObjects::MethodObject.new(namespace, :alpha, :instance),
+      YARD::CodeObjects::MethodObject.new(namespace, :zebra, :class),
+      YARD::CodeObjects::MethodObject.new(namespace, :Beta, :class),
+      YARD::CodeObjects::MethodObject.new(namespace, :alpha, :class)
     ]
 
     assert_equal [
-      ListObject.new(scope: :class, name: "alpha"),
-      ListObject.new(scope: :class, name: "Beta"),
-      ListObject.new(scope: :class, name: "zebra"),
-      ListObject.new(scope: :instance, name: "alpha")
-    ], helper.sort_listing(list)
+      "SortTarget.alpha",
+      "SortTarget.Beta",
+      "SortTarget.zebra",
+      "SortTarget#alpha"
+    ], helper.sort_listing(list).map(&:path)
   end
 
   def test_public_method_lists_filter_sort_and_prune_members
@@ -164,22 +161,15 @@ class YARD::TestListingHelper < Minitest::Test
 
     assert_equal [], mixin_template.attr_listing(YARD::Registry.at("Fish"))
 
-    superclass = FakeSuperclass.new(attributes: {
-      class: {},
-      instance: {
-        speed: {
-          read: Object.new,
-          write: nil
-        }
-      }
-    })
+    YARD::Registry.clear
+    YARD.parse_string("class Fish\n  attr_reader :speed\nend\n")
 
     pruned_template = build_template
     def pruned_template.prune_method_listing(_list, _included = nil)
       []
     end
 
-    assert_equal [], pruned_template.attr_listing(TreeObject.new(superclasses: [superclass]))
+    assert_equal [], pruned_template.attr_listing(YARD::Registry.at("Fish"))
   end
 
   private

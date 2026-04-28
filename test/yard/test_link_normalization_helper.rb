@@ -5,13 +5,27 @@ require "test_helper"
 class YARD::TestLinkNormalizationHelper < Minitest::Test
   cover YARD::Markdown::LinkNormalizationHelper
 
-  Serializer = Struct.new(:mapping, keyword_init: true) do
+  class Serializer
+    def initialize(mapping:)
+      @mapping = mapping
+    end
+
     def serialized_path(object)
       mapping.fetch(object.path)
     end
+
+    private
+
+    attr_reader :mapping
   end
 
-  Options = Struct.new(:serializer, keyword_init: true)
+  class Options
+    def initialize(serializer:)
+      @serializer = serializer
+    end
+
+    attr_reader :serializer
+  end
 
   def test_link_path_helpers_classify_targets_and_compute_relative_paths
     assert helper.constant_reference_path?("A")
