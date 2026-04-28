@@ -5,6 +5,9 @@ This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 
 ## Unreleased
 
+### Fixed
+- Preserve fenced code blocks in YARD docstrings so generated Markdown examples render correctly.
+
 ## 0.7.0
 ## Added
 - Adding yard-lint and all method documentation
@@ -14,4 +17,3 @@ This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 ## Changed
 - Refactoring and simplification of teamplate, mostly driven by mutantion testing
 - Improve documentation for entire project
-

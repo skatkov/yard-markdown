@@ -13,6 +13,48 @@ class YARD::TestDocumentationHelper < Minitest::Test
     assert_equal "Not documented.", helper.documented_text(DocumentedObject.new(docstring: "", tags: []))
   end
 
+  def test_rdoc_to_md_preserves_fenced_code_blocks
+    docstring = <<~DOC.rstrip
+      Before *bold*.
+
+      ```ruby
+      Sandbox.sandboxed do |config|
+        config.before(:context) { RSpec.current_example = nil }
+      end
+      ```
+
+      ```
+      second_block
+      ```
+
+      ```
+      ```
+
+      After.
+    DOC
+
+    expected = <<~MARKDOWN.rstrip
+      Before **bold**.
+
+      ```ruby
+      Sandbox.sandboxed do |config|
+        config.before(:context) { RSpec.current_example = nil }
+      end
+      ```
+
+      ```
+      second_block
+      ```
+
+      ```
+      ```
+
+      After.
+    MARKDOWN
+
+    assert_equal expected, helper.rdoc_to_md(docstring)
+  end
+
   private
 
   def helper

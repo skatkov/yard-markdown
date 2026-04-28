@@ -23,7 +23,19 @@ module YARD
       # @param docstring [Object] Raw docstring content.
       # @return [String] Markdown-rendered docstring content.
       def rdoc_to_md(docstring)
-        RDoc::Markup::ToMarkdown.new.convert(docstring).rstrip
+        fenced_code_blocks = []
+        placeholder = "YARD_MARKDOWN_FENCED_CODE_BLOCK_%d"
+        content = docstring.gsub(/^```[^\n]*\n.*?^```[ \t]*$/m) do |block|
+          fenced_code_blocks << block
+          format(placeholder, fenced_code_blocks.length - 1)
+        end
+
+        markdown = RDoc::Markup::ToMarkdown.new.convert(content).rstrip
+        fenced_code_blocks.each_with_index do |block, index|
+          markdown = markdown.sub(format(placeholder, index), block)
+        end
+
+        markdown
       end
     end
   end
