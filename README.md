@@ -12,15 +12,6 @@ It's a pitty that rdoc and yard can't output a proper markdown file. I would lik
 - Mimick yard html layout where it makes sense to maintain familiarity
 
 ## Usage
-Yard doesn't load plugin by default, so you need to load plugin through `~/.yard/config`:
-
-```yaml
-!!!yaml
-load_plugins: true
-autoload_plugins:
-  - markdown
-```
-
 Install a plugin
 ```
 gem install yard-markdown
@@ -41,6 +32,18 @@ This gem emits index of all markdown files in a index.csv file.
 There are decent tools that offer search through structured plain-text files. But my expectation is that nobody will use CSV as an actual search index, but rather import it into something that performs this function better.
 
 In my personal use-case, I use SQLite. All other databases seem to have a good support for CSV imports.
+
+## FAQ
+
+### Yard doesn't load plugin properly? 
+so you need to load plugin through `~/.yard/config`:
+
+```yaml
+!!!yaml
+load_plugins: true
+autoload_plugins:
+  - markdown
+```
 
 ## Testing
 Unit tests verify renderer behavior, index links, and anchor consistency for both YARD-style and RDoc-style sources.
