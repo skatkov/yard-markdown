@@ -11,6 +11,7 @@ gem "minitest", "~> 5.0"
 gem "minitest-strict"
 gem "mutant"
 gem "mutant-minitest"
+gem "simplecov", require: false
 gem "mutex_m"
 gem "commonmarker"
 gem "redcarpet"

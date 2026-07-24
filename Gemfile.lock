@@ -96,6 +96,7 @@ GEM
       rubocop-ast (>= 1.47.1, < 2.0)
     ruby-progressbar (1.13.0)
     securerandom (0.4.1)
+    simplecov (1.0.2)
     sorbet-runtime (0.6.13163)
     sord (7.1.0)
       commander (~> 5.0)
@@ -145,6 +146,7 @@ DEPENDENCIES
   mutex_m
   rake (~> 13.0)
   redcarpet
+  simplecov
   sord
   standard
   yard

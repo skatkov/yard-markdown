@@ -1,15 +1,20 @@
-You are working in a Ruby project that uses mutation testing.
+You are working in a Ruby project that uses line, branch, and mutation coverage.
 
-## Goal
+## First check
 
-Achieve 100% mutation coverage. Verify with:
+Always run SimpleCov before Mutant. Line and branch coverage are cheaper to
+measure and catch many missing tests first:
 
 ```
-bundle exec mutant run
+bundle exec rake test
 ```
 
-When iterating, prefer `--fail-fast` so you address one surviving
-mutant at a time:
+Both line and branch coverage must remain at 100%, including per-file coverage.
+
+## Mutation coverage
+
+After SimpleCov passes, achieve 100% mutation coverage. When iterating, prefer
+`--fail-fast` so you address one surviving mutant at a time:
 
 ```
 bundle exec mutant run --fail-fast
@@ -30,14 +35,9 @@ the user.
 
 ## Constraints
 
-- Line coverage must stay at 100%. Verify with:
-
-  ```
-  SIMPLECOV=1 bundle exec rake test
-  ```
-
 - You may not skip mutants by configuring mutant to ignore them.
   No `expressions:` filters, no `coverage_criteria:` tweaks.
+- You may not weaken the SimpleCov line, branch, or per-file minimums.
 - You may not use `send` or `__send__` to invoke private methods
   in tests just to satisfy mutant.
 - You may not stub or mock the system under test.
@@ -47,8 +47,8 @@ the user.
 You are done when all of these commands are green and don't return any offenses:
 
 ```
-SIMPLECOV=1 bundle exec rake test
-bundle exec mutant run
+bundle exec rake test
 bundle exec rake markdown:validate_real_world
-yard-lint
+bundle exec yard-lint
+bundle exec mutant run
 ```
