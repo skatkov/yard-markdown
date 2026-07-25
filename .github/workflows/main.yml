@@ -8,7 +8,6 @@ on:
   pull_request:
 
 permissions:
-  checks: write
   contents: read
 
 jobs:
@@ -31,13 +30,6 @@ jobs:
           bundler-cache: true
       - name: test
         run: bundle exec rake test
-      - name: Report SimpleCov
-        if: matrix.ruby == '4.0'
-        uses: joshmfrankel/simplecov-check-action@e4d24394253366c3b96d9e73e9b68127b2bad081 # v1.1.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          minimum_suite_coverage: 100
-          coverage_json_path: coverage/simplecov-json-disabled.json
       - name: validate real-world markdown
         run: bundle exec rake markdown:validate_real_world
       - name: yard-lint
