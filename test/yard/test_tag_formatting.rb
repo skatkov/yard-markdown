@@ -50,13 +50,9 @@ class YARD::TestTagFormatting < Minitest::Test
   end
 
   def build_object(tags: [])
-    object = YARD::CodeObjects::ClassObject.new(YARD::Registry.root, next_name)
+    YARD::Registry.clear
+    object = YARD::CodeObjects::ClassObject.new(YARD::Registry.root, "TaggedObject")
     tags.each { |item| object.add_tag(item) }
     object
-  end
-
-  def next_name
-    self.class.instance_variable_set(:@next_name, self.class.instance_variable_get(:@next_name).to_i + 1)
-    "TaggedObject#{self.class.instance_variable_get(:@next_name)}"
   end
 end
