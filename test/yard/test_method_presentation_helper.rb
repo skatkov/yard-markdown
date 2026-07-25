@@ -5,16 +5,6 @@ require "test_helper"
 class YARD::TestMethodPresentationHelper < Minitest::Test
   cover YARD::Markdown::MethodPresentationHelper
 
-  FakeAttribute = Struct.new(:attr_info, :reader_value, :writer_value, keyword_init: true) do
-    def reader?
-      reader_value
-    end
-
-    def writer?
-      writer_value
-    end
-  end
-
   def test_method_signature_and_heading_handle_nil_defaults_and_operator_spacing
     assert_equal "()", helper.method_signature(build_method(parameters: nil))
     assert_equal "(name, limit = 10)", helper.method_signature(build_method(parameters: [["name", nil], ["limit", "10"]]))
@@ -23,20 +13,10 @@ class YARD::TestMethodPresentationHelper < Minitest::Test
     assert_equal "call(index)", helper.formatted_method_heading(build_method(name: "call", parameters: [["index", nil]], string_name: true))
   end
 
-  def test_attribute_access_prefers_attr_info_over_reader_writer_predicates
+  def test_attribute_access_reads_attr_info
     assert_equal "RW", helper.attribute_access(parsed_attribute("attr_accessor :speed", "Fish#speed"))
-    assert_equal "W", helper.attribute_access(build_attribute(attr_info: {read: false, write: true}, reader: false, writer: false))
-    assert_equal "R", helper.attribute_access(build_attribute(attr_info: {read: true}, reader: false, writer: false))
-    assert_equal "R", helper.attribute_access(build_attribute(attr_info: {read: true, write: false}, reader: false, writer: false))
-    assert_equal "W", helper.attribute_access(build_attribute(attr_info: {write: true}, reader: true, writer: false))
-    assert_equal "R", helper.attribute_access(build_attribute(attr_info: {write: false}, reader: true, writer: false))
-  end
-
-  def test_attribute_access_falls_back_to_reader_writer_predicates
-    assert_equal "RW", helper.attribute_access(build_attribute(attr_info: nil, reader: true, writer: true))
-    assert_equal "R", helper.attribute_access(build_attribute(attr_info: nil, reader: true, writer: false))
-    assert_equal "W", helper.attribute_access(build_attribute(attr_info: nil, reader: false, writer: true))
-    assert_equal "W", helper.attribute_access(build_attribute(attr_info: nil, reader: false, writer: false))
+    assert_equal "R", helper.attribute_access(parsed_attribute("attr_reader :speed", "Fish#speed"))
+    assert_equal "W", helper.attribute_access(parsed_attribute("attr_writer :speed", "Fish#speed="))
   end
 
   private
@@ -56,10 +36,6 @@ class YARD::TestMethodPresentationHelper < Minitest::Test
       name
     end
     method_object
-  end
-
-  def build_attribute(attr_info:, reader:, writer:)
-    FakeAttribute.new(attr_info: attr_info, reader_value: reader, writer_value: writer)
   end
 
   def parsed_attribute(source, path)

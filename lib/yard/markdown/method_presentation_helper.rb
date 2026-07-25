@@ -34,13 +34,9 @@ module YARD
       # @param attribute [YARD::CodeObjects::MethodObject] Attribute reader or writer.
       # @return [String] Access mode marker such as `R`, `W`, or `RW`.
       def attribute_access(attribute)
-        info = attribute.attr_info || {}
-        return "RW" if info[:read] && info[:write]
-        return "R" if info[:read]
-        return "W" if info[:write]
-
-        return "RW" if attribute.reader? && attribute.writer?
-        return "R" if attribute.reader?
+        read, write = attribute.attr_info.fetch_values(:read, :write)
+        return "RW" if read && write
+        return "R" if read
 
         "W"
       end
