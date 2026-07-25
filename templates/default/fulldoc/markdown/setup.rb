@@ -57,45 +57,19 @@ def serialize_index(objects)
         csv << [object.path, "Module", options.serializer.serialized_path(object)]
       end
 
-      constants = constant_listing(object)
-      if constants.size.positive?
-        constants.each do |cnst|
-          csv << [
-            "#{object.path}.#{cnst.name(false)}",
-            "Constant",
-            (options.serializer.serialized_path(object) + "#" + aref(cnst))
-          ]
-        end
-      end
-
-      if (insmeths = public_instance_methods(object)).size > 0
-        insmeths.each do |item|
+      [
+        ["Constant", constant_listing(object)],
+        ["Method", public_instance_methods(object)],
+        ["Method", public_class_methods(object)],
+        ["Attribute", attr_listing(object)]
+      ].each do |type, items|
+        items.each do |item|
           csv << [
             "#{object.path}.#{item.name(false)}",
-            "Method",
+            type,
             options.serializer.serialized_path(object) + "#" + aref(item)
           ]
         end
-      end
-
-      if (pubmeths = public_class_methods(object)).size > 0
-        pubmeths.each do |item|
-          csv << [
-            "#{object.path}.#{item.name(false)}",
-            "Method",
-            options.serializer.serialized_path(object) + "#" + aref(item)
-          ]
-        end
-      end
-
-      next unless (attrs = attr_listing(object)).size > 0
-
-      attrs.each do |item|
-        csv << [
-          "#{object.path}.#{item.name(false)}",
-          "Attribute",
-          options.serializer.serialized_path(object) + "#" + aref(item)
-        ]
       end
     end
   end
