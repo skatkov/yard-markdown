@@ -9,13 +9,8 @@ module YARD
       # @param object [YARD::CodeObjects::Base] Object whose tags are being rendered.
       # @return [String] Markdown representation of the object's tags.
       def render_tags(object)
-        lines = []
-        regular_tags = object.tags.reject { |tag| tag.tag_name == "example" }
-        example_tags = object.tags.select { |tag| tag.tag_name == "example" }
-
-        regular_tags.each do |tag|
-          lines << "- #{format_tag(tag)}"
-        end
+        example_tags, regular_tags = object.tags.partition { |tag| tag.tag_name == "example" }
+        lines = regular_tags.map { |tag| "- #{format_tag(tag)}" }
 
         example_tags.each do |tag|
           lines << nil unless lines.empty?
