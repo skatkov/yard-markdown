@@ -36,19 +36,9 @@ end
 # @return [String] Rendered markdown output.
 def run(opts = nil, sects = sections, start_at = 0, break_first = false, &block)
   output = super
-  return output unless top_level_render?(sects, start_at, break_first)
+  return output unless !break_first && start_at.zero? && sects == sections
 
   finalize_markdown(output, options.serializer.serialized_path(object))
-end
-
-# Returns whether this invocation is rendering the full top-level page.
-#
-# @param sects [Array<Symbol>] Section names requested for rendering.
-# @param start_at [Integer] Starting index within `sects`.
-# @param break_first [Boolean] Whether rendering stops after the first section.
-# @return [Boolean] True when the whole page is being rendered in one pass.
-def top_level_render?(sects, start_at, break_first)
-  !break_first && start_at.zero? && sects == sections
 end
 
 # Renders the page heading for the current object.
