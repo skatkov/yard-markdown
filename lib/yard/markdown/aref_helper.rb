@@ -1,10 +1,20 @@
 # frozen_string_literal: true
 
+# Namespace for YARD extensions used by this gem.
 module YARD
+  # Shared helpers for rendering YARD objects as Markdown.
   module Markdown
     # Computes anchor ids that match the generated Markdown headings.
     module ArefHelper
-      include AnchorComponentHelper
+      # Encodes a value so it can be embedded safely in an HTML anchor id.
+      #
+      # @param value [Object] Raw anchor fragment to encode.
+      # @return [String] Anchor-safe identifier fragment.
+      def anchor_component(value)
+        value.to_s.each_char.map do |char|
+          char.match?(/[A-Za-z0-9_-]/) ? char : format("-%X", char.ord)
+        end.join
+      end
 
       # Returns the primary anchor id for a documented object.
       #

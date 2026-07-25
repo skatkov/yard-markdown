@@ -3,16 +3,11 @@
 require "test_helper"
 
 class YARD::TestTemplateSections < Minitest::Test
-  cover YARD::Markdown::AnchorComponentHelper
   cover YARD::Markdown::ArefHelper
   cover YARD::Markdown::HeadingHelper
 
   def test_anchor_component_escapes_non_identifier_characters
-    template = Class.new do
-      include YARD::Markdown::AnchorComponentHelper
-    end.new
-
-    assert_equal "sustainable-3F", template.anchor_component("sustainable?")
+    assert_equal "sustainable-3F", helper.anchor_component("sustainable?")
   end
 
   def test_aref_formats_supported_yard_object_types

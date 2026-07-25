@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "yard"
-require_relative "yard/markdown/anchor_component_helper"
 require_relative "yard/markdown/aref_helper"
 require_relative "yard/markdown/collection_rendering_helper"
 require_relative "yard/markdown/documentation_helper"

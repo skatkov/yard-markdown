@@ -4,7 +4,6 @@ require "rdoc"
 
 class_eval do
   include YARD::Templates::Helpers::ModuleHelper
-  include YARD::Markdown::AnchorComponentHelper
   include YARD::Markdown::ArefHelper
   include YARD::Markdown::CollectionRenderingHelper
   include YARD::Markdown::DocumentationHelper
