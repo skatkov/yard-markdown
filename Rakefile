@@ -15,7 +15,7 @@ Rake::TestTask.new(:test) do |t|
   t.test_files = FileList["test/**/test_*.rb"]
 end
 
-task default: %i[test stree:write]
+task default: :test
 
 def shell_escape(path)
   Shellwords.escape(path)
