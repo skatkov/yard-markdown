@@ -10,23 +10,12 @@ module YARD
       # @param group_order [Array<String>, nil] Preferred ordering for named groups.
       # @return [Array<Array>] Ordered pairs of group names and grouped items.
       def grouped_items(items, group_order)
-        grouped = Hash.new { |hash, key| hash[key] = [] }
-        items.each { |item| grouped[item.group] << item }
+        groups = items.group_by(&:group)
+        names = groups.keys
+        order = Array(group_order)
+        ordered_names = (order & names) + (names.compact - order).sort + ([nil] & names)
 
-        ordered = []
-
-        Array(group_order).each do |name|
-          next unless grouped.key?(name)
-
-          ordered << [name, grouped.delete(name)]
-        end
-
-        grouped.keys.compact.sort.each do |name|
-          ordered << [name, grouped.delete(name)]
-        end
-
-        ordered << [nil, grouped.delete(nil)] if grouped.key?(nil)
-        ordered
+        ordered_names.map { |name| [name, groups.fetch(name)] }
       end
 
       # Appends non-empty content to a mutable list of lines.
