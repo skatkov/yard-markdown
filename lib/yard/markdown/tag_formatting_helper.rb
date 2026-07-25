@@ -41,29 +41,10 @@ module YARD
 
       # Normalizes tag type declarations into printable strings.
       #
-      # @param types [Array<Object>, Hash, nil] Raw tag types from YARD.
+      # @param types [Array<Object>, nil] Raw tag types from YARD.
       # @return [Array<String>] Cleaned type strings.
       def normalized_tag_types(types)
-        values = if types.instance_of?(Hash)
-          types.map { |name, value| format_hash_tag_type(name, value) }
-        else
-          Array(types)
-        end
-
-        values.map(&:to_s).map(&:strip).reject(&:empty?)
-      end
-
-      # Formats a hash-style tag type entry.
-      #
-      # @param name [String] Type name to format.
-      # @param value [Object] Associated type detail.
-      # @return [String, nil] Formatted type entry, or nil when blank.
-      def format_hash_tag_type(name, value)
-        key = name.rstrip
-        return nil if key.empty?
-        return key if value.nil? || value == true || (value.respond_to?(:empty?) && value.empty?)
-
-        "#{key}: #{value}"
+        Array(types).map(&:to_s).map(&:strip).reject(&:empty?)
       end
     end
   end

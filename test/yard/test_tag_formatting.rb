@@ -5,15 +5,9 @@ require "test_helper"
 class YARD::TestTagFormatting < Minitest::Test
   cover YARD::Markdown::TagFormattingHelper
 
-  def test_format_tag_normalizes_hash_and_scalar_type_values
-    assert_equal "**@validates** [presence]", formatter.format_tag(tag(tag_name: "validates", types: {"  presence  " => nil}, text: ""))
-    assert_equal "**@option** [limit: required]", formatter.format_tag(tag(tag_name: "option", types: {"  limit  " => "required"}, text: ""))
-    assert_equal "**@option**", formatter.format_tag(tag(tag_name: "option", types: {"   " => "required"}, text: ""))
-    assert_equal "**@option** [limit]", formatter.format_tag(tag(tag_name: "option", types: {"limit" => ""}, text: ""))
-    assert_equal "**@option** [limit]", formatter.format_tag(tag(tag_name: "option", types: {"limit" => true}, text: ""))
-    assert_equal "**@option** [limit: 10]", formatter.format_tag(tag(tag_name: "option", types: {"limit" => 10}, text: ""))
+  def test_format_tag_normalizes_type_values
     assert_equal "**@return** [String, nil] description", formatter.format_tag(tag(tag_name: "return", types: %w[String nil], text: "description"))
-    assert_equal "**@return** [String]", formatter.format_tag(tag(tag_name: "return", types: "  String  ", text: ""))
+    assert_equal "**@return** [String]", formatter.format_tag(tag(tag_name: "return", types: ["  String  ", "", nil], text: ""))
   end
 
   def test_format_tag_handles_tag_names_and_text
