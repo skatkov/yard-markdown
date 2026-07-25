@@ -51,14 +51,10 @@ class YARD::TestTemplateSections < Minitest::Test
   private
 
   def helper
-    @helper ||= Class.new do
-      include YARD::Markdown::ArefHelper
-    end.new
+    @helper ||= Object.new.extend(YARD::Markdown::ArefHelper)
   end
 
   def heading_helper
-    @heading_helper ||= Class.new do
-      include YARD::Markdown::HeadingHelper
-    end.new
+    @heading_helper ||= Object.new.extend(YARD::Markdown::HeadingHelper)
   end
 end

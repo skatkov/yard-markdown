@@ -40,9 +40,7 @@ class YARD::TestTagFormatting < Minitest::Test
   private
 
   def formatter
-    @formatter ||= Class.new do
-      include YARD::Markdown::TagFormattingHelper
-    end.new
+    @formatter ||= Object.new.extend(YARD::Markdown::TagFormattingHelper)
   end
 
   def tag(tag_name:, text: nil, types: nil, name: nil)

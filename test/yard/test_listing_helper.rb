@@ -188,8 +188,6 @@ class YARD::TestListingHelper < Minitest::Test
   end
 
   def helper
-    @helper ||= Class.new do
-      include YARD::Markdown::ObjectListingHelper
-    end.new
+    @helper ||= Object.new.extend(YARD::Markdown::ObjectListingHelper)
   end
 end

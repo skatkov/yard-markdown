@@ -114,13 +114,10 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
       end
     RUBY
 
-    filtered_helper = Class.new do
-      include YARD::Markdown::RelationshipSectionHelper
-
-      def run_verifier(items)
-        items.reject { |item| item.path == "Zebra" }
-      end
-    end.new
+    filtered_helper = Object.new.extend(YARD::Markdown::RelationshipSectionHelper)
+    filtered_helper.define_singleton_method(:run_verifier) do |items|
+      items.reject { |item| item.path == "Zebra" }
+    end
 
     assert_equal(
       "**Inherits:** `Fish`\n**Extended by:** `Alpha`\n**Includes:** `Alpha`",
@@ -143,9 +140,7 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
       end
     RUBY
 
-    sortable_helper = Class.new do
-      include YARD::Markdown::RelationshipSectionHelper
-    end.new
+    sortable_helper = Object.new.extend(YARD::Markdown::RelationshipSectionHelper)
 
     sortable_helper.define_singleton_method(:run_verifier) do |items|
       items.map { |item|
@@ -170,13 +165,9 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
   private
 
   def helper
-    @helper ||= Class.new do
-      include YARD::Markdown::RelationshipSectionHelper
-
-      def run_verifier(items)
-        items
-      end
-    end.new
+    @helper ||= Object.new.extend(YARD::Markdown::RelationshipSectionHelper).tap do |object|
+      object.define_singleton_method(:run_verifier) { |items| items }
+    end
   end
 
   def parse_source(source)

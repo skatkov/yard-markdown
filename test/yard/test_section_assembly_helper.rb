@@ -102,9 +102,7 @@ class YARD::TestSectionAssemblyHelper < Minitest::Test
   private
 
   def helper
-    @helper ||= Class.new do
-      include YARD::Markdown::SectionAssemblyHelper
-    end.new
+    @helper ||= Object.new.extend(YARD::Markdown::SectionAssemblyHelper)
   end
 
   def grouped_paths(items, group_order)

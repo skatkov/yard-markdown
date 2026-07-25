@@ -154,10 +154,8 @@ class YARD::TestLinkNormalizationHelper < Minitest::Test
   private
 
   def helper
-    @helper ||= Class.new do
-      include YARD::Markdown::LinkNormalizationHelper
-
-      attr_accessor :options
-    end.new
+    @helper ||= Object.new.extend(YARD::Markdown::LinkNormalizationHelper).tap do |object|
+      object.singleton_class.attr_accessor :options
+    end
   end
 end

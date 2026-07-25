@@ -24,9 +24,7 @@ class YARD::TestMethodPresentationHelper < Minitest::Test
   private
 
   def helper
-    @helper ||= Class.new do
-      include YARD::Markdown::MethodPresentationHelper
-    end.new
+    @helper ||= Object.new.extend(YARD::Markdown::MethodPresentationHelper)
   end
 
   def build_method(parameters:, name: "call")

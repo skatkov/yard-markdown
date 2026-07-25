@@ -58,9 +58,7 @@ class YARD::TestDocumentationHelper < Minitest::Test
   private
 
   def helper
-    @helper ||= Class.new do
-      include YARD::Markdown::DocumentationHelper
-    end.new
+    @helper ||= Object.new.extend(YARD::Markdown::DocumentationHelper)
   end
 
   def build_object(docstring: "", tags: [])
