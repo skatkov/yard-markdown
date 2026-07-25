@@ -59,7 +59,6 @@ GEM
       erb
       psych (>= 4.0.0)
       tsort
-    redcarpet (3.6.1)
     regexp_parser (2.12.0)
     reline (0.6.3)
       io-console (~> 0.5)
@@ -125,7 +124,6 @@ DEPENDENCIES
   mutant-minitest
   mutex_m
   rake (~> 13.0)
-  redcarpet
   simplecov
   standard
   yard

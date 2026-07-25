@@ -14,7 +14,6 @@ gem "mutant-minitest"
 gem "simplecov", require: false
 gem "mutex_m"
 gem "commonmarker"
-gem "redcarpet"
 
 # gem "ruby-lsp"
 gem "yard"
