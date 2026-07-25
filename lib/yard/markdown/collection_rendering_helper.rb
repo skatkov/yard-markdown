@@ -10,27 +10,7 @@ module YARD
       # @param group_order [Array<String>, nil] Preferred ordering for group headings.
       # @return [String] Markdown for the constants section.
       def render_constants(constants, group_order)
-        lines = ["## Constants"]
-        grouped_constants = grouped_items(constants.sort_by { |item| item.name }, group_order)
-        uses_groups = grouped_constants.any? { |name, _items| !name.nil? }
-
-        grouped_constants.each do |group_name, items|
-          if uses_groups
-            lines << "### #{group_name || "General"}"
-            item_heading = "####"
-          else
-            item_heading = "###"
-          end
-
-          lines << items.map { |item|
-            item_lines = [heading_with_anchors("#{item_heading} `#{item.name}`", item)]
-            append_lines(item_lines, documented_text(item), separated: false)
-            append_lines(item_lines, render_tags(item), separated: false)
-            item_lines.join("\n")
-          }.join("\n\n")
-        end
-
-        lines.join("\n")
+        render_collection("Constants", constants.sort_by { |item| item.name }, group_order) { |item| "`#{item.name}`" }
       end
 
       # Renders the attributes section for an object page.
@@ -39,27 +19,7 @@ module YARD
       # @param group_order [Array<String>, nil] Preferred ordering for group headings.
       # @return [String] Markdown for the attributes section.
       def render_attributes(attrs, group_order)
-        lines = ["## Attributes"]
-        grouped_attrs = grouped_items(attrs, group_order)
-        uses_groups = grouped_attrs.any? { |name, _items| !name.nil? }
-
-        grouped_attrs.each do |group_name, items|
-          if uses_groups
-            lines << "### #{group_name || "General"}"
-            item_heading = "####"
-          else
-            item_heading = "###"
-          end
-
-          lines << items.map { |item|
-            item_lines = [heading_with_anchors("#{item_heading} `#{item.name}` [#{attribute_access(item)}]", item)]
-            append_lines(item_lines, documented_text(item), separated: false)
-            append_lines(item_lines, render_tags(item), separated: false)
-            item_lines.join("\n")
-          }.join("\n\n")
-        end
-
-        lines.join("\n")
+        render_collection("Attributes", attrs, group_order) { |item| "`#{item.name}` [#{attribute_access(item)}]" }
       end
 
       # Renders a method section for an object page.
@@ -69,20 +29,26 @@ module YARD
       # @param group_order [Array<String>, nil] Preferred ordering for group headings.
       # @return [String] Markdown for the method section.
       def render_methods(section_title, methods, group_order)
+        render_collection(section_title, methods, group_order) { |item| "`#{formatted_method_heading(item)}`" }
+      end
+
+      # Renders a grouped collection with a caller-provided item label.
+      #
+      # @param section_title [String] Section title to render.
+      # @param items [Array<YARD::CodeObjects::Base>] Objects to group and render.
+      # @param group_order [Array<String>, nil] Preferred ordering for group headings.
+      # @return [String] Markdown for the collection section.
+      def render_collection(section_title, items, group_order)
         lines = ["## #{section_title}"]
-        grouped_methods = grouped_items(methods, group_order)
-        uses_groups = grouped_methods.any? { |name, _items| !name.nil? }
+        groups = grouped_items(items, group_order)
+        uses_groups = groups.any? { |name, _items| !name.nil? }
+        item_heading = uses_groups ? "####" : "###"
 
-        grouped_methods.each do |group_name, items|
-          if uses_groups
-            lines << "### #{group_name || "General"}"
-            item_heading = "####"
-          else
-            item_heading = "###"
-          end
+        groups.each do |group_name, group_items|
+          lines << "### #{group_name || "General"}" if uses_groups
 
-          lines << items.map { |item|
-            item_lines = [heading_with_anchors("#{item_heading} `#{formatted_method_heading(item)}`", item)]
+          lines << group_items.map { |item|
+            item_lines = [heading_with_anchors("#{item_heading} #{yield(item)}", item)]
             append_lines(item_lines, documented_text(item), separated: false)
             append_lines(item_lines, render_tags(item), separated: false)
             item_lines.join("\n")
