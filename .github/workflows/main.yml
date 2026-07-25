@@ -43,9 +43,6 @@ jobs:
       - name: yard-lint
         if: matrix.ruby == '4.0'
         run: bundle exec yard-lint
-      - name: check generated RBS types
-        if: matrix.ruby == '4.0'
-        run: bundle exec rake types:check
       - name: Standard Ruby
         if: matrix.ruby == '4.0'
         uses: standardrb/standard-ruby-action@v1

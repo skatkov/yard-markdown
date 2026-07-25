@@ -10,15 +10,12 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.3)
-    commander (5.0.0)
-      highline (~> 3.0.0)
     commonmarker (2.8.1-arm64-darwin)
     commonmarker (2.8.1-x86_64-linux)
     csv (3.3.5)
     date (3.5.1)
     diff-lcs (2.0.0)
     erb (6.0.4)
-    highline (3.0.1)
     io-console (0.8.2)
     irb (1.18.0)
       pp (>= 0.6.0)
@@ -28,7 +25,6 @@ GEM
     json (2.19.4)
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
-    logger (1.7.0)
     minitest (5.27.0)
     minitest-strict (1.0.0)
       minitest (>= 5.21, < 7)
@@ -46,11 +42,6 @@ GEM
       mutex_m (~> 0.2)
     mutex_m (0.3.0)
     parallel (1.28.0)
-    parlour (9.1.2)
-      commander (~> 5.0)
-      parser
-      rainbow (~> 3.0)
-      sorbet-runtime (>= 0.5)
     parser (3.3.11.1)
       ast (~> 2.4.1)
       racc
@@ -64,10 +55,6 @@ GEM
     racc (1.8.1)
     rainbow (3.1.1)
     rake (13.4.2)
-    rbs (4.0.2)
-      logger
-      prism (>= 1.6.0)
-      tsort
     rdoc (7.2.0)
       erb
       psych (>= 4.0.0)
@@ -98,13 +85,6 @@ GEM
     securerandom (0.4.1)
     simplecov (1.0.2)
     sorbet-runtime (0.6.13163)
-    sord (7.1.0)
-      commander (~> 5.0)
-      parlour (~> 9.1)
-      parser
-      rbs (>= 3.0, < 5)
-      sorbet-runtime
-      yard
     standard (1.54.0)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.0)
@@ -147,7 +127,6 @@ DEPENDENCIES
   rake (~> 13.0)
   redcarpet
   simplecov
-  sord
   standard
   yard
   yard-lint
