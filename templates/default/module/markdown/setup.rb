@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# standard:disable Style/MixinUsage
 include YARD::Templates::Helpers::ModuleHelper
 include YARD::Markdown::CollectionRenderingHelper
 include YARD::Markdown::DocumentationHelper
@@ -10,6 +11,7 @@ include YARD::Markdown::ObjectListingHelper
 include YARD::Markdown::RelationshipSectionHelper
 include YARD::Markdown::SectionAssemblyHelper
 include YARD::Markdown::TagFormattingHelper
+# standard:enable Style/MixinUsage
 
 # Registers the sections rendered for a namespace markdown page.
 #

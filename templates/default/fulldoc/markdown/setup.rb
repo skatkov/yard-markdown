@@ -2,9 +2,11 @@
 
 require "csv"
 
+# standard:disable Style/MixinUsage
 include YARD::Templates::Helpers::ModuleHelper
 include YARD::Markdown::ArefHelper
 include YARD::Markdown::ObjectListingHelper
+# standard:enable Style/MixinUsage
 
 # Prepares the markdown serializer and renders each object page.
 #
