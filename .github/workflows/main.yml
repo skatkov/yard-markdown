@@ -11,6 +11,21 @@ permissions:
   contents: read
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: Lint
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "4.0"
+          bundler-cache: true
+      - name: yard-lint
+        run: bundle exec yard-lint
+      - name: Standard Ruby
+        run: bundle exec standardrb
+
   build:
     runs-on: ubuntu-latest
     name: Ruby ${{ matrix.ruby }}
@@ -32,14 +47,19 @@ jobs:
         run: bundle exec rake test
       - name: validate real-world markdown
         run: bundle exec rake markdown:validate_real_world
-      - name: yard-lint
-        if: matrix.ruby == '4.0'
-        run: bundle exec yard-lint
-      - name: Standard Ruby
-        if: matrix.ruby == '4.0'
-        uses: standardrb/standard-ruby-action@v1
+
+  mutant:
+    needs: build
+    runs-on: ubuntu-latest
+    name: Mutant
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "4.0"
+          bundler-cache: true
       - name: Run Mutant
-        if: matrix.ruby == '4.0'
         run: |
           git fetch origin main
           bundle exec mutant run --fail-fast --since origin/main
