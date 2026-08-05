@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.name = "yard-markdown"
-  spec.version = "0.7.2"
+  spec.version = "0.7.3"
   spec.authors = ["Stanislav (Stas) Katkov"]
   spec.email = ["yard-markdown@skatkov.com"]
 
