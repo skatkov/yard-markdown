@@ -30,7 +30,7 @@ class MarkdownValidator
   private
 
   def validate_file(file)
-    content = File.read(file)
+    content = File.read(file, encoding: Encoding::UTF_8)
 
     render_commonmark!(content, file)
     render_gfm!(content, file)
@@ -78,7 +78,7 @@ class MarkdownValidator
 
   def anchors_for(file)
     @anchors_cache[file] ||= begin
-      content = File.read(file)
+      content = File.read(file, encoding: Encoding::UTF_8)
       anchors = Set.new(content.scan(/<a\s+id="([^"]+)"/).flatten)
       headings = Hash.new(0)
 
