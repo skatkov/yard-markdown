@@ -1,17 +1,15 @@
 # frozen_string_literal: true
 
-class_eval do
-  include YARD::Templates::Helpers::ModuleHelper
-  include YARD::Markdown::CollectionRenderingHelper
-  include YARD::Markdown::DocumentationHelper
-  include YARD::Markdown::HeadingHelper
-  include YARD::Markdown::LinkNormalizationHelper
-  include YARD::Markdown::MethodPresentationHelper
-  include YARD::Markdown::ObjectListingHelper
-  include YARD::Markdown::RelationshipSectionHelper
-  include YARD::Markdown::SectionAssemblyHelper
-  include YARD::Markdown::TagFormattingHelper
-end
+include YARD::Markdown::TagFormattingHelper,
+  YARD::Markdown::SectionAssemblyHelper,
+  YARD::Markdown::RelationshipSectionHelper,
+  YARD::Markdown::ObjectListingHelper,
+  YARD::Markdown::MethodPresentationHelper,
+  YARD::Markdown::LinkNormalizationHelper,
+  YARD::Markdown::HeadingHelper,
+  YARD::Markdown::DocumentationHelper,
+  YARD::Markdown::CollectionRenderingHelper,
+  YARD::Templates::Helpers::ModuleHelper
 
 # Registers the sections rendered for a namespace markdown page.
 #
