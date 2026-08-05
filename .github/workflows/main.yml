@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   lint:
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     name: Lint
     steps:
       - uses: actions/checkout@v4
@@ -27,7 +27,7 @@ jobs:
         run: bundle exec standardrb
 
   build:
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     name: Ruby ${{ matrix.ruby }}
     strategy:
       matrix:
@@ -50,7 +50,7 @@ jobs:
 
   mutant:
     needs: build
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     name: Mutant
     steps:
       - uses: actions/checkout@v4
