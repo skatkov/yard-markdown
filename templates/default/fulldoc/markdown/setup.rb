@@ -2,11 +2,9 @@
 
 require "csv"
 
-class_eval do
-  include YARD::Templates::Helpers::ModuleHelper
-  include YARD::Markdown::ArefHelper
-  include YARD::Markdown::ObjectListingHelper
-end
+include YARD::Markdown::ObjectListingHelper,
+  YARD::Markdown::ArefHelper,
+  YARD::Templates::Helpers::ModuleHelper
 
 # Prepares the markdown serializer and renders each object page.
 #
