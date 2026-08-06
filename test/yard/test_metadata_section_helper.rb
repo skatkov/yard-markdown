@@ -161,27 +161,26 @@ class YARD::TestMetadataSectionHelper < Minitest::Test
       end
     RUBY
 
-    sortable_helper = Object.new.extend(YARD::Markdown::MetadataSectionHelper)
-    sortable_mixin = Struct.new(:path) do
-      def <=>(other)
+    salmon = YARD::Registry.at("Salmon")
+    salmon.mixins(:class).each do |mixin|
+      def mixin.<=>(other)
         other.path <=> path
       end
 
-      def to_s
+      def mixin.to_s
         "not-the-path"
       end
     end
-    sortable_helper.define_singleton_method(:run_verifier) { |items| items.map { |item| sortable_mixin.new(item.path) } }
 
     assert_equal(
       <<~MARKDOWN.strip,
         |  |  |
         | --- | --- |
         | **Inherits** | [Fish](Fish) |
-        | **Extended by** | Alpha, Zebra |
+        | **Extended by** | [Alpha](Alpha), [Zebra](Zebra) |
         | **Defined in** | (stdin) |
       MARKDOWN
-      sortable_helper.object_metadata(YARD::Registry.at("Salmon"))
+      helper.object_metadata(salmon)
     )
   end
 
