@@ -37,7 +37,14 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
     RUBY
 
     assert_equal(
-      "**Inherits:** `Fish`\n**Extended by:** `Alpha`, `Zebra`\n**Includes:** `Alpha`, `Zebra`",
+      <<~MARKDOWN.strip,
+        |  |  |
+        | --- | --- |
+        | **Inherits** | [Fish](Fish) |
+        | **Extended by** | [Alpha](Alpha), [Zebra](Zebra) |
+        | **Includes** | [Alpha](Alpha), [Zebra](Zebra) |
+        | **Defined in** | (stdin) |
+      MARKDOWN
       helper.object_relationships(YARD::Registry.at("Salmon"))
     )
 
@@ -55,7 +62,14 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
     RUBY
 
     assert_equal(
-      "**Inherits:** `Object`\n**Extended by:** `Zebra`\n**Includes:** `Alpha`",
+      <<~MARKDOWN.strip,
+        |  |  |
+        | --- | --- |
+        | **Inherits** | Object |
+        | **Extended by** | [Zebra](Zebra) |
+        | **Includes** | [Alpha](Alpha) |
+        | **Defined in** | (stdin) |
+      MARKDOWN
       helper.object_relationships(YARD::Registry.at("Salmon"))
     )
 
@@ -73,7 +87,13 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
     RUBY
 
     assert_equal(
-      "**Extended by:** `Zebra`\n**Includes:** `Alpha`",
+      <<~MARKDOWN.strip,
+        |  |  |
+        | --- | --- |
+        | **Extended by** | [Zebra](Zebra) |
+        | **Includes** | [Alpha](Alpha) |
+        | **Defined in** | (stdin) |
+      MARKDOWN
       helper.object_relationships(YARD::Registry.at("Salmon"))
     )
 
@@ -90,7 +110,13 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
     RUBY
 
     assert_equal(
-      "**Inherits:** `Fish`\n**Includes:** `Alpha`",
+      <<~MARKDOWN.strip,
+        |  |  |
+        | --- | --- |
+        | **Inherits** | [Fish](Fish) |
+        | **Includes** | [Alpha](Alpha) |
+        | **Defined in** | (stdin) |
+      MARKDOWN
       helper.object_relationships(YARD::Registry.at("Salmon"))
     )
   end
@@ -120,7 +146,14 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
     end
 
     assert_equal(
-      "**Inherits:** `Fish`\n**Extended by:** `Alpha`\n**Includes:** `Alpha`",
+      <<~MARKDOWN.strip,
+        |  |  |
+        | --- | --- |
+        | **Inherits** | [Fish](Fish) |
+        | **Extended by** | [Alpha](Alpha) |
+        | **Includes** | [Alpha](Alpha) |
+        | **Defined in** | (stdin) |
+      MARKDOWN
       filtered_helper.object_relationships(YARD::Registry.at("Salmon"))
     )
 
@@ -141,25 +174,60 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
     RUBY
 
     sortable_helper = Object.new.extend(YARD::Markdown::RelationshipSectionHelper)
+    sortable_mixin = Struct.new(:path) do
+      def <=>(other)
+        other.path <=> path
+      end
 
-    sortable_helper.define_singleton_method(:run_verifier) do |items|
-      items.map { |item|
-        mixin = YARD::CodeObjects::ModuleObject.new(YARD::Registry.root, item.path.to_sym)
-        def mixin.<=>(other)
-          other.path <=> path
-        end
-
-        def mixin.to_s
-          "not-the-path"
-        end
-        mixin
-      }
+      def to_s
+        "not-the-path"
+      end
     end
+    sortable_helper.define_singleton_method(:run_verifier) { |items| items.map { |item| sortable_mixin.new(item.path) } }
 
     assert_equal(
-      "**Inherits:** `Fish`\n**Extended by:** `Alpha`, `Zebra`",
+      <<~MARKDOWN.strip,
+        |  |  |
+        | --- | --- |
+        | **Inherits** | [Fish](Fish) |
+        | **Extended by** | Alpha, Zebra |
+        | **Defined in** | (stdin) |
+      MARKDOWN
       sortable_helper.object_relationships(YARD::Registry.at("Salmon"))
     )
+  end
+
+  def test_object_relationships_escape_unique_source_files_and_handle_empty_modules
+    source_less = YARD::CodeObjects::ModuleObject.new(YARD::Registry.root, :SourceLess)
+
+    assert_equal "", helper.object_relationships(source_less)
+
+    source_less.add_file("lib/a  b|c.rb", 1)
+    source_less.add_file("lib/a  b|c.rb", 2)
+    source_less.add_file("lib/line\nbreak.rb", 3)
+
+    assert_equal <<~'MARKDOWN'.strip, helper.object_relationships(source_less)
+      |  |  |
+      | --- | --- |
+      | **Defined in** | lib/a  b\|c.rb, lib/line break.rb |
+    MARKDOWN
+    assert_equal 'a\\\\b', helper.metadata_table_cell("a\\b")
+    assert_equal 'a\|b\|c', helper.metadata_table_cell("a|b|c")
+    assert_equal "a b c", helper.metadata_table_cell("a\nb\nc")
+  end
+
+  def test_metadata_reference_does_not_link_unresolved_or_hidden_namespaces
+    proxy = YARD::CodeObjects::Proxy.new(YARD::Registry.root, "External|Base")
+    hidden = YARD::CodeObjects::ModuleObject.new(YARD::Registry.root, :Hidden)
+    visible = YARD::CodeObjects::ModuleObject.new(YARD::Registry.root, :Visible)
+    def visible.to_s = "not-the-path"
+
+    hidden_helper = Object.new.extend(YARD::Markdown::RelationshipSectionHelper)
+    hidden_helper.define_singleton_method(:run_verifier) { |_items| [] }
+
+    assert_equal 'External\|Base', helper.metadata_reference(proxy)
+    assert_equal "Hidden", hidden_helper.metadata_reference(hidden)
+    assert_equal "[Visible](Visible)", helper.metadata_reference(visible)
   end
 
   private

@@ -1,6 +1,9 @@
 # Class Bird <a id="class-Bird"></a>
 
-**Inherits:** `Object`
+|  |  |
+| --- | --- |
+| **Inherits** | Object |
+| **Defined in** | example_rdoc.rb |
 
 The base class for all birds.
 

@@ -1,5 +1,9 @@
 # Module Aquatic <a id="module-Aquatic"></a>
 
+|  |  |
+| --- | --- |
+| **Defined in** | example_yard.rb |
+
 A mixin for aquatic creatures.
 
 ## Public Instance Methods
