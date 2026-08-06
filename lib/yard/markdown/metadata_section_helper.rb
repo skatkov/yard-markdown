@@ -27,7 +27,7 @@ module YARD
 
         return "" if rows.empty?
 
-        ["|  |  |", "| --- | --- |", rows.map { |label, value| "| **#{label}** | #{value} |" }].join("\n")
+        (["|  |  |", "| --- | --- |"] + rows.map { |label, value| "| **#{label}** | #{value} |" }).join("\n")
       end
 
       # Returns a table-safe namespace reference, linked when YARD will render it.
