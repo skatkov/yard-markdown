@@ -5,6 +5,10 @@ This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 
 ## Unreleased
 
+## 0.8.0
+
+- Adding metadata section
+
 ## 0.7.2
 
 ### Changed
