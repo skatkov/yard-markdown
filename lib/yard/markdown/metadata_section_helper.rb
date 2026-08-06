@@ -3,23 +3,12 @@
 module YARD
   module Markdown
     # Renders namespace metadata summaries.
-    module RelationshipSectionHelper
-      # Returns section content with the expected trailing spacing.
-      #
-      # @param content [Object] Section content to render.
-      # @return [String] Section content followed by blank-line spacing.
-      def render_section_content(content)
-        text = content.to_s.strip
-        return "" if text.empty?
-
-        "#{text}\n\n"
-      end
-
+    module MetadataSectionHelper
       # Returns inheritance, mixins, and source files for an object.
       #
       # @param object [YARD::CodeObjects::NamespaceObject] Object being rendered.
       # @return [String] Markdown table containing the object's metadata.
-      def object_relationships(object)
+      def object_metadata(object)
         rows = []
 
         if object.instance_of?(CodeObjects::ClassObject)

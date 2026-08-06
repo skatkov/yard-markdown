@@ -2,7 +2,7 @@
 
 include YARD::Markdown::TagFormattingHelper,
   YARD::Markdown::SectionAssemblyHelper,
-  YARD::Markdown::RelationshipSectionHelper,
+  YARD::Markdown::MetadataSectionHelper,
   YARD::Markdown::ObjectListingHelper,
   YARD::Markdown::MethodPresentationHelper,
   YARD::Markdown::LinkNormalizationHelper,
@@ -16,7 +16,7 @@ include YARD::Markdown::TagFormattingHelper,
 # @return [void]
 def init
   sections :header,
-    :relationships,
+    :metadata,
     :docstring_section,
     :tags_section,
     :constants_section,
@@ -48,11 +48,11 @@ def header
   render_section_content(heading_with_anchors("# #{object.type.to_s.capitalize} #{object.path}", object))
 end
 
-# Renders inheritance and mixin relationships for the current object.
+# Renders metadata for the current object.
 #
-# @return [String] Markdown relationships section.
-def relationships
-  render_section_content(object_relationships(object))
+# @return [String] Markdown metadata section.
+def metadata
+  render_section_content(object_metadata(object))
 end
 
 # Renders the object's docstring as markdown.

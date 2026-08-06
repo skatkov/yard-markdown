@@ -5,6 +5,18 @@ require "test_helper"
 class YARD::TestSectionAssemblyHelper < Minitest::Test
   cover YARD::Markdown::SectionAssemblyHelper
 
+  def test_render_section_content_normalizes_blank_string_and_non_string_input
+    content = Class.new do
+      def to_s
+        "hello"
+      end
+    end.new
+
+    assert_equal "hello\n\n", helper.render_section_content("  hello\n")
+    assert_equal "", helper.render_section_content(" \n")
+    assert_equal "hello\n\n", helper.render_section_content(content)
+  end
+
   def test_grouped_items_orders_declared_missing_and_default_groups
     parse_source(<<~RUBY)
       class Fish
