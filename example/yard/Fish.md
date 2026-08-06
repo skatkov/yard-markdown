@@ -1,6 +1,9 @@
 # Class Fish <a id="class-Fish"></a>
 
-**Inherits:** `Object`
+|  |  |
+| --- | --- |
+| **Inherits** | Object |
+| **Defined in** | example_yard.rb |
 
 The base class for all fish.
 

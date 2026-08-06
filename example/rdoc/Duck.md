@@ -1,8 +1,11 @@
 # Class Duck <a id="class-Duck"></a>
 
-**Inherits:** `Object`
-**Extended by:** `Animal`
-**Includes:** `Waterfowl`
+|  |  |
+| --- | --- |
+| **Inherits** | Object |
+| **Extended by** | Animal |
+| **Includes** | [Waterfowl](Waterfowl.md) |
+| **Defined in** | example_rdoc.rb |
 
 A duck is a Waterfowl Bird.
 

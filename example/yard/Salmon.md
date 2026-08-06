@@ -1,7 +1,10 @@
 # Class Salmon <a id="class-Salmon"></a>
 
-**Inherits:** `Fish`
-**Includes:** `Aquatic`
+|  |  |
+| --- | --- |
+| **Inherits** | [Fish](Fish.md) |
+| **Includes** | [Aquatic](Aquatic.md) |
+| **Defined in** | example_yard.rb |
 
 A salmon is an Aquatic Fish.
 
