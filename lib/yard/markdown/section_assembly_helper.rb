@@ -4,6 +4,17 @@ module YARD
   module Markdown
     # Assembles grouped content into ordered Markdown sections.
     module SectionAssemblyHelper
+      # Returns section content with the expected trailing spacing.
+      #
+      # @param content [Object] Section content to render.
+      # @return [String] Section content followed by blank-line spacing.
+      def render_section_content(content)
+        text = content.to_s.strip
+        return "" if text.empty?
+
+        "#{text}\n\n"
+      end
+
       # Groups items by their YARD group and orders them for rendering.
       #
       # @param items [Array<#group>] Renderable objects that expose a YARD group name.

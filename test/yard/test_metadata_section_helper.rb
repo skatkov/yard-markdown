@@ -2,22 +2,10 @@
 
 require "test_helper"
 
-class YARD::TestRelationshipSectionHelper < Minitest::Test
-  cover YARD::Markdown::RelationshipSectionHelper
+class YARD::TestMetadataSectionHelper < Minitest::Test
+  cover YARD::Markdown::MetadataSectionHelper
 
-  def test_render_section_content_normalizes_blank_string_and_non_string_input
-    content = Class.new do
-      def to_s
-        "hello"
-      end
-    end.new
-
-    assert_equal "hello\n\n", helper.render_section_content("  hello\n")
-    assert_equal "", helper.render_section_content(" \n")
-    assert_equal "hello\n\n", helper.render_section_content(content)
-  end
-
-  def test_object_relationships_handle_class_and_module_variants
+  def test_object_metadata_handles_class_and_module_variants
     parse_source(<<~RUBY)
       module Zebra
       end
@@ -45,7 +33,7 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
         | **Includes** | [Alpha](Alpha), [Zebra](Zebra) |
         | **Defined in** | (stdin) |
       MARKDOWN
-      helper.object_relationships(YARD::Registry.at("Salmon"))
+      helper.object_metadata(YARD::Registry.at("Salmon"))
     )
 
     parse_source(<<~RUBY)
@@ -70,7 +58,7 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
         | **Includes** | [Alpha](Alpha) |
         | **Defined in** | (stdin) |
       MARKDOWN
-      helper.object_relationships(YARD::Registry.at("Salmon"))
+      helper.object_metadata(YARD::Registry.at("Salmon"))
     )
 
     parse_source(<<~RUBY)
@@ -94,7 +82,7 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
         | **Includes** | [Alpha](Alpha) |
         | **Defined in** | (stdin) |
       MARKDOWN
-      helper.object_relationships(YARD::Registry.at("Salmon"))
+      helper.object_metadata(YARD::Registry.at("Salmon"))
     )
 
     parse_source(<<~RUBY)
@@ -117,11 +105,11 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
         | **Includes** | [Alpha](Alpha) |
         | **Defined in** | (stdin) |
       MARKDOWN
-      helper.object_relationships(YARD::Registry.at("Salmon"))
+      helper.object_metadata(YARD::Registry.at("Salmon"))
     )
   end
 
-  def test_object_relationships_honor_verifier_and_sort_mixins_by_path
+  def test_object_metadata_honors_verifier_and_sorts_mixins_by_path
     parse_source(<<~RUBY)
       module Zebra
       end
@@ -140,7 +128,7 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
       end
     RUBY
 
-    filtered_helper = Object.new.extend(YARD::Markdown::RelationshipSectionHelper)
+    filtered_helper = Object.new.extend(YARD::Markdown::MetadataSectionHelper)
     filtered_helper.define_singleton_method(:run_verifier) do |items|
       items.reject { |item| item.path == "Zebra" }
     end
@@ -154,7 +142,7 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
         | **Includes** | [Alpha](Alpha) |
         | **Defined in** | (stdin) |
       MARKDOWN
-      filtered_helper.object_relationships(YARD::Registry.at("Salmon"))
+      filtered_helper.object_metadata(YARD::Registry.at("Salmon"))
     )
 
     parse_source(<<~RUBY)
@@ -173,7 +161,7 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
       end
     RUBY
 
-    sortable_helper = Object.new.extend(YARD::Markdown::RelationshipSectionHelper)
+    sortable_helper = Object.new.extend(YARD::Markdown::MetadataSectionHelper)
     sortable_mixin = Struct.new(:path) do
       def <=>(other)
         other.path <=> path
@@ -193,20 +181,20 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
         | **Extended by** | Alpha, Zebra |
         | **Defined in** | (stdin) |
       MARKDOWN
-      sortable_helper.object_relationships(YARD::Registry.at("Salmon"))
+      sortable_helper.object_metadata(YARD::Registry.at("Salmon"))
     )
   end
 
-  def test_object_relationships_escape_unique_source_files_and_handle_empty_modules
+  def test_object_metadata_escapes_unique_source_files_and_handles_empty_modules
     source_less = YARD::CodeObjects::ModuleObject.new(YARD::Registry.root, :SourceLess)
 
-    assert_equal "", helper.object_relationships(source_less)
+    assert_equal "", helper.object_metadata(source_less)
 
     source_less.add_file("lib/a  b|c.rb", 1)
     source_less.add_file("lib/a  b|c.rb", 2)
     source_less.add_file("lib/line\nbreak.rb", 3)
 
-    assert_equal <<~'MARKDOWN'.strip, helper.object_relationships(source_less)
+    assert_equal <<~'MARKDOWN'.strip, helper.object_metadata(source_less)
       |  |  |
       | --- | --- |
       | **Defined in** | lib/a  b\|c.rb, lib/line break.rb |
@@ -222,7 +210,7 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
     visible = YARD::CodeObjects::ModuleObject.new(YARD::Registry.root, :Visible)
     def visible.to_s = "not-the-path"
 
-    hidden_helper = Object.new.extend(YARD::Markdown::RelationshipSectionHelper)
+    hidden_helper = Object.new.extend(YARD::Markdown::MetadataSectionHelper)
     hidden_helper.define_singleton_method(:run_verifier) { |_items| [] }
 
     assert_equal 'External\|Base', helper.metadata_reference(proxy)
@@ -233,7 +221,7 @@ class YARD::TestRelationshipSectionHelper < Minitest::Test
   private
 
   def helper
-    @helper ||= Object.new.extend(YARD::Markdown::RelationshipSectionHelper).tap do |object|
+    @helper ||= Object.new.extend(YARD::Markdown::MetadataSectionHelper).tap do |object|
       object.define_singleton_method(:run_verifier) { |items| items }
     end
   end
