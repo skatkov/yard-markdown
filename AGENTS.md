@@ -1,26 +1,25 @@
-You are working in a Ruby project that uses line, branch, and mutation coverage.
+You are working in a Ruby project that uses mutation testing, but also tracks line and branch coverage.
 
-## First check
+## Goal
 
-Always run SimpleCov before Mutant. Line and branch coverage are cheaper to
-measure and catch many missing tests first:
+Achieve 100% line, branch and mutation coverage. Always run simplecov before mutant testing. Use following commands:
 
 ```
-bundle exec rake test
+SIMPLECOV=1 bundle exec rspec
 ```
 
-Both line and branch coverage must remain at 100%, including per-file coverage.
+```
+bundle exec mutant run
+```
 
-## Mutation coverage
-
-After SimpleCov passes, achieve 100% mutation coverage. When iterating, prefer
-`--fail-fast` so you address one surviving mutant at a time:
+When iterating mutant coverage, prefer `--fail-fast` so you address one surviving
+mutant at a time:
 
 ```
 bundle exec mutant run --fail-fast
 ```
 
-## When you find an alive mutation
+## When you find coverage issue
 
 Decide which bucket it falls into:
 
@@ -33,22 +32,25 @@ Decide which bucket it falls into:
 Decide between A) and B) before changing anything. If unsure, ask
 the user.
 
+## What you may change
+
+- `lib/age.rb` -- the implementation. Multiple designs are valid.
+- `spec/age_spec.rb` -- the tests. Some existing tests are bad and
+  may be rewritten or replaced.
+
 ## Constraints
 
 - You may not skip mutants by configuring mutant to ignore them.
   No `expressions:` filters, no `coverage_criteria:` tweaks.
-- You may not weaken the SimpleCov line, branch, or per-file minimums.
 - You may not use `send` or `__send__` to invoke private methods
-  in tests just to satisfy mutant.
-- You may not stub or mock the system under test.
+  in tests just to satisfy coverage requirement.
+- You may not stub or mock the system under test (`Age`).
 
 ## Done
 
-You are done when all of these commands are green and don't return any offenses:
+You are done when both of these are green:
 
 ```
-bundle exec rake test
-bundle exec rake markdown:validate_real_world
-bundle exec yard-lint
+SIMPLECOV=1 bundle exec rspec
 bundle exec mutant run
 ```
