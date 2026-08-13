@@ -19,6 +19,12 @@ gem install yard-markdown
 
 Run `yardoc --format=markdown` to generate markdown documentation.
 
+Markdown files in the project tree are detected automatically, copied unchanged into the output, and listed in `index.csv`:
+
+```bash
+yardoc --format=markdown
+```
+
 ## FAQ
 
 ### Note on RDoc support

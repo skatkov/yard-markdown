@@ -11,11 +11,14 @@ include YARD::Markdown::ObjectListingHelper,
 # @return [void]
 def init
   options.objects = objects = run_verifier(options.objects).reject { |item| item.name == :root }
+  files = Array(options.files).select { |file| file.filename.match?(/\.(?:md|markdown)\z/i) }
 
   options.delete(:objects)
   options.delete(:files)
 
   options.serializer.extension = "md"
+
+  files.each { |file| options.serializer.serialize(file.filename, File.binread(file.filename)) }
 
   objects.each do |object|
     Templates::Engine.with_serializer(object, options.serializer) { serialize(object) }
@@ -25,7 +28,7 @@ def init
     log.backtrace(e)
   end
 
-  serialize_index(objects)
+  serialize_index(objects, files)
 end
 
 # Renders the markdown template for a single namespace object.
@@ -39,12 +42,15 @@ end
 # Writes the CSV search index for all rendered objects.
 #
 # @param objects [Array<YARD::CodeObjects::NamespaceObject>] Verified objects included in the generated documentation.
+# @param files [Array<YARD::CodeObjects::ExtraFileObject>] Markdown files included in the generated documentation.
 # @return [void]
-def serialize_index(objects)
+def serialize_index(objects, files)
   filepath = "#{options.serializer.basepath}/index.csv"
 
   CSV.open(filepath, "wb") do |csv|
     csv << %w[name type path]
+
+    files.each { |file| csv << [file.title, "File", file.filename] }
 
     objects.each do |object|
       next if object.name == :root

@@ -11,6 +11,7 @@ require_relative "yard/markdown/method_presentation_helper"
 require_relative "yard/markdown/object_listing_helper"
 require_relative "yard/markdown/section_assembly_helper"
 require_relative "yard/markdown/tag_formatting_helper"
+require_relative "yard/markdown/yardoc_extension"
 
 module YARD
   module Markdown
@@ -18,3 +19,4 @@ module YARD
 end
 
 YARD::Templates::Engine.register_template_path File.dirname(__FILE__) + "/../templates"
+YARD::CLI::Yardoc.prepend(YARD::Markdown::YardocExtension)
