@@ -45,6 +45,6 @@ the user.
 You are done when both of these are green:
 
 ```
-SIMPLECOV=1 bundle exec rspec
+SIMPLECOV=1 bundle exec rake test
 bundle exec mutant run
 ```
