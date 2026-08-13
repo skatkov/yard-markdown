@@ -5,7 +5,7 @@ You are working in a Ruby project that uses mutation testing, but also tracks li
 Achieve 100% line, branch and mutation coverage. Always run simplecov before mutant testing. Use following commands:
 
 ```
-SIMPLECOV=1 bundle exec rspec
+SIMPLECOV=1 bundle exec rake test
 ```
 
 ```
