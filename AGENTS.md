@@ -38,7 +38,7 @@ the user.
   No `expressions:` filters, no `coverage_criteria:` tweaks.
 - You may not use `send` or `__send__` to invoke private methods
   in tests just to satisfy coverage requirement.
-- You may not stub or mock the system under test (`Age`).
+- You may not stub or mock the system under test.
 
 ## Done
 
