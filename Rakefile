@@ -46,11 +46,13 @@ def run_command_with_analysis(command, label:, chdir: ".")
   raise details.join("\n")
 end
 
-def generate_markdown_docs(source, output_dir, root: ".")
+def generate_markdown_docs(source, output_dir, root: ".", exclude: nil)
   FileUtils.rm_rf(output_dir)
   FileUtils.mkdir_p(output_dir)
 
-  command = "yardoc --no-yardopts --no-stats --quiet --format markdown --load #{Shellwords.escape(File.expand_path("lib/yard-markdown.rb"))} --output-dir #{Shellwords.escape(File.expand_path(output_dir))} #{Shellwords.escape(source)}"
+  command = "yardoc --no-yardopts --no-stats --quiet --format markdown --load #{Shellwords.escape(File.expand_path("lib/yard-markdown.rb"))} --output-dir #{Shellwords.escape(File.expand_path(output_dir))}"
+  command += " --exclude #{Shellwords.escape(exclude)}" if exclude
+  command += " #{Shellwords.escape(source)}"
   run_command_with_analysis(command, label: "yardoc_#{output_dir}", chdir: root)
 end
 
@@ -73,12 +75,12 @@ namespace :examples do
 
   desc "Generate example documentation for code annotated with yard"
   task :yard do
-    generate_markdown_docs("example_yard.rb", "example/yard")
+    generate_markdown_docs("example_yard.rb", "example/yard", exclude: "\\Aexample/(?:yard|rdoc)/")
   end
 
   desc "Generate example documentation for code annotated with rdoc"
   task :rdoc do
-    generate_markdown_docs("example_rdoc.rb", "example/rdoc")
+    generate_markdown_docs("example_rdoc.rb", "example/rdoc", exclude: "\\Aexample/(?:yard|rdoc)/")
   end
 end
 
