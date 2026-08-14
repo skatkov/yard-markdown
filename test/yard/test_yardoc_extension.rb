@@ -19,29 +19,21 @@ class YARD::TestYardocExtension < Minitest::Test
       File.write(File.join(dir, "notes.txt"), "Not Markdown\n")
       File.write(File.join(dir, "IGNORED", "WEBSITE.md"), "# Website\n")
       File.write(File.join(dir, "REGEXP", "KEPT.md"), "# Kept\n")
+      File.write(File.join(dir, "REGEXP", "kept.md"), "# Kept\n")
       File.write(File.join(dir, "output", "Generated.md"), "# Generated\n")
 
       yardoc = YARD::CLI::Yardoc.new
-      regexp_exclusion = Class.new(Regexp) do
-        attr_reader :matched
-
-        def match?(file)
-          @matched = true
-          super
-        end
-      end.new("\\Aregexp/")
       parsed = Dir.chdir(dir) do
         yardoc.parse_arguments(
           "--no-save", "--no-stats", "--quiet", "--format", "markdown",
           "--exclude", "\\Aignored/", "--output-dir", "output"
         )
       end
-      yardoc.excluded << regexp_exclusion
+      yardoc.excluded << /KEPT/
       Dir.chdir(dir) { yardoc.run(nil) }
 
       assert parsed
-      assert regexp_exclusion.matched
-      assert_equal ["README.md", "REGEXP/KEPT.md", "docs/CHANGELOG.MARKDOWN"], yardoc.options.files.map(&:filename).sort
+      assert_equal ["README.md", "REGEXP/kept.md", "docs/CHANGELOG.MARKDOWN"], yardoc.options.files.map(&:filename).sort
       assert File.file?(File.join(dir, "output", "index.csv"))
     end
   end
