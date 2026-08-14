@@ -25,7 +25,7 @@ def run_command_with_analysis(command, label:)
 
   stdout, stderr, status = Open3.capture3(command)
   combined_output = [stdout, stderr].reject(&:empty?).join("\n")
-  log_path = File.join("tmp", "command-logs", "#{label.gsub(%r{[^a-zA-Z0-9_-]+}, "_")}.log")
+  log_path = File.join(__dir__, "tmp", "command-logs", "#{label.gsub(%r{[^a-zA-Z0-9_-]+}, "_")}.log")
 
   FileUtils.mkdir_p(File.dirname(log_path))
   File.write(log_path, combined_output)
