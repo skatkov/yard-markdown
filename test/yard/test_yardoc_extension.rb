@@ -11,25 +11,37 @@ class YARD::TestYardocExtension < Minitest::Test
     Dir.mktmpdir do |dir|
       FileUtils.mkdir_p(File.join(dir, "docs"))
       FileUtils.mkdir_p(File.join(dir, "IGNORED"))
+      FileUtils.mkdir_p(File.join(dir, "REGEXP"))
       FileUtils.mkdir_p(File.join(dir, "output"))
       File.write(File.join(dir, "README.md"), "# Readme\n")
       File.write(File.join(dir, "docs", "CHANGELOG.MARKDOWN"), "# Changelog\n")
       File.write(File.join(dir, "docs", "_NAVIGATION.md"), "# Navigation\n")
       File.write(File.join(dir, "notes.txt"), "Not Markdown\n")
       File.write(File.join(dir, "IGNORED", "WEBSITE.md"), "# Website\n")
+      File.write(File.join(dir, "REGEXP", "KEPT.md"), "# Kept\n")
       File.write(File.join(dir, "output", "Generated.md"), "# Generated\n")
 
       yardoc = YARD::CLI::Yardoc.new
+      regexp_exclusion = Class.new(Regexp) do
+        attr_reader :matched
+
+        def match?(file)
+          @matched = true
+          super
+        end
+      end.new("\\Aregexp/")
       parsed = Dir.chdir(dir) do
         yardoc.parse_arguments(
           "--no-save", "--no-stats", "--quiet", "--format", "markdown",
           "--exclude", "\\Aignored/", "--output-dir", "output"
         )
       end
+      yardoc.excluded << regexp_exclusion
       Dir.chdir(dir) { yardoc.run(nil) }
 
       assert parsed
-      assert_equal ["README.md", "docs/CHANGELOG.MARKDOWN"], yardoc.options.files.map(&:filename).sort
+      assert regexp_exclusion.matched
+      assert_equal ["README.md", "REGEXP/KEPT.md", "docs/CHANGELOG.MARKDOWN"], yardoc.options.files.map(&:filename).sort
       assert File.file?(File.join(dir, "output", "index.csv"))
     end
   end

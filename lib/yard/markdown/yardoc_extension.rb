@@ -13,7 +13,7 @@ module YARD
       def run_generate(checksums)
         if options.format == :markdown
           existing = options.files.map { |file| File.expand_path(file.filename) }
-          exclusions = excluded.map { |path| Regexp.new(path, Regexp::IGNORECASE) }
+          exclusions = excluded.map { |path| path.is_a?(Regexp) ? path : Regexp.new(path, Regexp::IGNORECASE) }
           output = File.expand_path(options.serializer.basepath)
           markdown_files = Dir.glob("**/*")
             .select { |file| file.match?(FILE_PATTERN) }
