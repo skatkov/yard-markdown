@@ -82,6 +82,10 @@ module YARD
           return relative_output_path(current_dir, object_path)
         end
 
+        alias_path = Pathname.new(normalized.sub(/\.html\z/i, "")).cleanpath.to_s
+        copied_path = options.copied_file_aliases[alias_path]
+        return relative_output_path(current_dir, copied_path) if copied_path
+
         if normalized.match?(/\.html\z/i)
           normalized = normalized.sub(/\.html\z/i, ".md")
         elsif File.extname(normalized).empty?

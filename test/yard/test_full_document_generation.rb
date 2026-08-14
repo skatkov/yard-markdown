@@ -14,7 +14,11 @@ class YARD::TestFullDocumentGeneration < Minitest::Test
       output_dir = File.join(dir, "doc")
       FileUtils.mkdir_p(File.join(dir, "lib"))
       FileUtils.mkdir_p(File.join(dir, "docs"))
-      File.write(File.join(dir, "lib", "fish.rb"), "class Fish\nend\n")
+      File.write(File.join(dir, "lib", "fish.rb"), <<~RUBY)
+        # See [README](README) and [changelog](docs/CHANGELOG.html).
+        class Fish
+        end
+      RUBY
       File.binwrite(File.join(dir, "README.md"), "# Readme\n\nPreserved exactly.")
       File.binwrite(File.join(dir, "docs", "CHANGELOG.MARKDOWN"), "# Changelog\n")
       File.write(File.join(dir, "notes.txt"), "Not Markdown\n")
@@ -32,6 +36,7 @@ class YARD::TestFullDocumentGeneration < Minitest::Test
       assert status.success?, [stdout, stderr].reject(&:empty?).join("\n")
       assert_equal "# Readme\n\nPreserved exactly.", File.binread(File.join(output_dir, "README.md"))
       assert_equal "# Changelog\n", File.binread(File.join(output_dir, "docs", "CHANGELOG.MARKDOWN"))
+      assert_includes File.read(File.join(output_dir, "Fish.md")), "[README](README.md) and [changelog](docs/CHANGELOG.MARKDOWN)"
       refute File.exist?(File.join(output_dir, "notes.txt"))
 
       rows = CSV.read(File.join(output_dir, "index.csv"), headers: true)
