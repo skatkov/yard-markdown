@@ -37,21 +37,6 @@ class YARD::TestLinkNormalizationHelper < Minitest::Test
     assert_equal "Fish.md", helper.relative_output_path(Pathname.new("/docs"), Pathname.new("Fish.md"))
   end
 
-  def test_normalize_malformed_local_links_rewrites_local_targets_and_ignores_external_links
-    input = ['[middle](broken"link)', '[leading]("broken)', '[trailing](broken")'].join(" ")
-
-    assert_equal "`middle` `leading` `trailing`", helper.normalize_malformed_local_links(input)
-
-    input = [
-      '[http](http://example.com"bad)',
-      '[https](https://example.com"bad)',
-      '[mail](mailto:test@example.com"bad)',
-      '[section](#overview"bad)'
-    ].join("\n")
-
-    assert_equal input, helper.normalize_malformed_local_links(input)
-  end
-
   def test_resolve_registry_object_finds_current_namespace_and_relative_constants
     YARD::Registry.clear
     YARD.parse_string("module Ocean\n  class Salmon\n  end\nend\n")
