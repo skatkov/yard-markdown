@@ -29,7 +29,7 @@ class YARD::TestLinkNormalizationHelper < Minitest::Test
     assert helper.unresolved_identifier_target?("../../memoized")
     assert helper.unresolved_identifier_target?(":memoized")
     assert helper.unresolved_identifier_target?("1memoized")
-    refute helper.unresolved_identifier_target?("Memoized")
+    assert helper.unresolved_identifier_target?("Memoized")
     refute helper.unresolved_identifier_target?("path/to/file")
     refute helper.unresolved_identifier_target?("memoized.rb")
 
@@ -98,8 +98,9 @@ class YARD::TestLinkNormalizationHelper < Minitest::Test
     assert_equal "docs/Fish.md", helper.resolve_local_link_target("./docs/Fish.html", Pathname.new("."))
     assert_equal "docs/Fish.md", helper.resolve_local_link_target("//docs/Fish.html", Pathname.new("."))
     assert_nil helper.resolve_local_link_target("memoized", Pathname.new("."))
+    assert_nil helper.resolve_local_link_target("Dataflow", Pathname.new("."))
     assert_equal "docs/Fish.md", helper.resolve_local_link_target("docs/Fish", Pathname.new("."))
-    assert_equal "README", helper.resolve_local_link_target("README", Pathname.new("."))
+    assert_nil helper.resolve_local_link_target("README", Pathname.new("."))
   end
 
   def test_normalize_local_links_handles_external_targets_suffixes_and_unresolved_labels

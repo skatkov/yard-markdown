@@ -205,6 +205,7 @@ class YARD::TestMetadataSectionHelper < Minitest::Test
 
   def test_metadata_reference_does_not_link_unresolved_or_hidden_namespaces
     proxy = YARD::CodeObjects::Proxy.new(YARD::Registry.root, "External|Base")
+    constant = YARD::CodeObjects::ConstantObject.new(YARD::Registry.root, :Error)
     hidden = YARD::CodeObjects::ModuleObject.new(YARD::Registry.root, :Hidden)
     visible = YARD::CodeObjects::ModuleObject.new(YARD::Registry.root, :Visible)
     def visible.to_s = "not-the-path"
@@ -213,6 +214,7 @@ class YARD::TestMetadataSectionHelper < Minitest::Test
     hidden_helper.define_singleton_method(:run_verifier) { |_items| [] }
 
     assert_equal 'External\|Base', helper.metadata_reference(proxy)
+    assert_equal "Error", helper.metadata_reference(constant)
     assert_equal "Hidden", hidden_helper.metadata_reference(hidden)
     assert_equal "[Visible](Visible)", helper.metadata_reference(visible)
   end

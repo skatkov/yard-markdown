@@ -36,7 +36,7 @@ module YARD
       # @return [String] Markdown link or plain table-cell text.
       def metadata_reference(target)
         label = metadata_table_cell(target.path)
-        return label unless target.is_a?(CodeObjects::Base) && run_verifier([target]).any?
+        return label unless target.is_a?(CodeObjects::NamespaceObject) && run_verifier([target]).any?
 
         "[#{label}](#{target.path})"
       end
