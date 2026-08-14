@@ -126,14 +126,6 @@ module YARD
       rescue
         target
       end
-
-      # Replaces malformed local Markdown links with inline code.
-      #
-      # @param markdown [String] Markdown content to normalize.
-      # @return [String] Markdown with malformed local links replaced.
-      def normalize_malformed_local_links(markdown)
-        markdown.gsub(%r{\[([^\]]+)\]\((?!https?://|mailto:|#)(?:[^)\n]*['"][^)\n]*)\)}, '`\1`')
-      end
     end
   end
 end
