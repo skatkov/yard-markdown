@@ -5,6 +5,8 @@ This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 
 ## Unreleased
 
+## 0.9.0
+
 - Detect Markdown files, copy them into generated documentation, and include them in `index.csv`.
 
 ## 0.8.0
