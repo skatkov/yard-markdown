@@ -17,7 +17,9 @@ class YARD::TestYardocExtension < Minitest::Test
       File.write(File.join(dir, "output", "Generated.md"), "# Generated\n")
 
       yardoc = YARD::CLI::Yardoc.new
-      parsed = Dir.chdir(dir) { yardoc.parse_arguments("--format", "markdown", "--output-dir", "output") }
+      parsed = Dir.chdir(dir) do
+        yardoc.parse_arguments("--no-save", "--no-stats", "--quiet", "--format", "markdown", "--output-dir", "output")
+      end
       Dir.chdir(dir) { yardoc.run(nil) }
 
       assert parsed
@@ -31,7 +33,7 @@ class YARD::TestYardocExtension < Minitest::Test
       File.write(File.join(dir, "CHANGELOG.md"), "# Changelog\n")
 
       yardoc = YARD::CLI::Yardoc.new
-      parsed = Dir.chdir(dir) { yardoc.parse_arguments("--format", "html") }
+      parsed = Dir.chdir(dir) { yardoc.parse_arguments("--no-save", "--no-stats", "--quiet", "--format", "html") }
       Dir.chdir(dir) { yardoc.run(nil) }
 
       assert parsed
@@ -39,18 +41,20 @@ class YARD::TestYardocExtension < Minitest::Test
     end
   end
 
-  def test_discovers_markdown_files_under_explicit_directory_roots
+  def test_discovers_project_markdown_files_when_source_files_are_explicit
     Dir.mktmpdir do |dir|
-      FileUtils.mkdir_p(File.join(dir, "docs"))
+      FileUtils.mkdir_p(File.join(dir, "lib"))
       File.write(File.join(dir, "ROOT.md"), "# Root\n")
-      File.write(File.join(dir, "docs", "GUIDE.md"), "# Guide\n")
+      File.write(File.join(dir, "lib", "example.rb"), "class Example\nend\n")
 
       yardoc = YARD::CLI::Yardoc.new
-      parsed = Dir.chdir(dir) { yardoc.parse_arguments("--format", "markdown", "docs") }
+      parsed = Dir.chdir(dir) do
+        yardoc.parse_arguments("--no-save", "--no-stats", "--quiet", "--format", "markdown", "lib/**/*.rb")
+      end
       Dir.chdir(dir) { yardoc.run(nil) }
 
       assert parsed
-      assert_equal ["docs/GUIDE.md"], yardoc.options.files.map(&:filename)
+      assert_equal ["ROOT.md"], yardoc.options.files.map(&:filename)
     end
   end
 end

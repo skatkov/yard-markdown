@@ -20,10 +20,10 @@ task default: :test
 COMMAND_WARNING_REGEX = /\bwarning:/i
 COMMAND_ERROR_REGEX = /\b(?:error|exception|fatal|loaderror)\b/i
 
-def run_command_with_analysis(command, label:)
+def run_command_with_analysis(command, label:, chdir: ".")
   puts command
 
-  stdout, stderr, status = Open3.capture3(command)
+  stdout, stderr, status = Open3.capture3(command, chdir: chdir)
   combined_output = [stdout, stderr].reject(&:empty?).join("\n")
   log_path = File.join("tmp", "command-logs", "#{label.gsub(%r{[^a-zA-Z0-9_-]+}, "_")}.log")
 
@@ -46,12 +46,12 @@ def run_command_with_analysis(command, label:)
   raise details.join("\n")
 end
 
-def generate_markdown_docs(source, output_dir)
+def generate_markdown_docs(source, output_dir, root: ".")
   FileUtils.rm_rf(output_dir)
   FileUtils.mkdir_p(output_dir)
 
-  command = "yardoc --no-stats --quiet --format markdown --load ./lib/yard-markdown.rb --output-dir #{Shellwords.escape(output_dir)} #{Shellwords.escape(source)}"
-  run_command_with_analysis(command, label: "yardoc_#{output_dir}")
+  command = "yardoc --no-yardopts --no-stats --quiet --format markdown --load #{Shellwords.escape(File.expand_path("lib/yard-markdown.rb"))} --output-dir #{Shellwords.escape(File.expand_path(output_dir))} #{Shellwords.escape(source)}"
+  run_command_with_analysis(command, label: "yardoc_#{output_dir}", chdir: root)
 end
 
 def checkout_repo(url, destination, ref: nil)
@@ -99,12 +99,12 @@ namespace :real_world do
 
   desc "Generate markdown docs for faraday"
   task faraday: :checkout_faraday do
-    generate_markdown_docs("#{faraday_repo}/lib", "tmp/real-world/faraday")
+    generate_markdown_docs("lib", "tmp/real-world/faraday", root: faraday_repo)
   end
 
   desc "Generate markdown docs for concurrent-ruby"
   task concurrent_ruby: :checkout_concurrent_ruby do
-    generate_markdown_docs("#{concurrent_ruby_repo}/lib", "tmp/real-world/concurrent-ruby")
+    generate_markdown_docs("lib", "tmp/real-world/concurrent-ruby", root: concurrent_ruby_repo)
   end
 
   desc "Generate markdown docs for faraday and concurrent-ruby"
