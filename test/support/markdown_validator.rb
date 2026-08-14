@@ -13,10 +13,10 @@ class MarkdownValidator
 
   attr_reader :unresolved_links
 
-  def initialize(root_dir, strict_links: true)
+  def initialize(root_dir, relaxed_files: [])
     @root_dir = File.expand_path(root_dir)
     @anchors_cache = {}
-    @strict_links = strict_links
+    @relaxed_files = relaxed_files.map { |file| File.expand_path(file, @root_dir) }
     @unresolved_links = 0
   end
 
@@ -36,7 +36,7 @@ class MarkdownValidator
     render_commonmark!(content, file)
     render_gfm!(content, file)
 
-    if @strict_links && content.match?(LOCAL_HTML_LINK_REGEX)
+    if !@relaxed_files.include?(file) && content.match?(LOCAL_HTML_LINK_REGEX)
       raise ValidationError, "local .html link found in #{relative_path(file)}"
     end
     raise ValidationError, "empty anchor link found in #{relative_path(file)}" if content.include?("[](#")
@@ -57,7 +57,7 @@ class MarkdownValidator
     end
 
     unless within_root?(target_file) && File.file?(target_file)
-      unless @strict_links
+      if @relaxed_files.include?(source_file)
         @unresolved_links += 1
         return
       end
@@ -70,7 +70,7 @@ class MarkdownValidator
     anchor = CGI.unescape(fragment)
     return if anchors_for(target_file).include?(anchor)
 
-    unless @strict_links
+    if @relaxed_files.include?(source_file)
       @unresolved_links += 1
       return
     end
