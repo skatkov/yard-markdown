@@ -11,7 +11,7 @@ include YARD::Markdown::ObjectListingHelper,
 # @return [void]
 def init
   options.objects = objects = run_verifier(options.objects).reject { |item| item.name == :root }
-  files = Array(options.files).select { |file| file.filename.match?(/\.(?:md|markdown)\z/i) }
+  files = Array(options.files).select { |file| file.filename.match?(YARD::Markdown::FILE_PATTERN) }
 
   options.delete(:objects)
   options.delete(:files)

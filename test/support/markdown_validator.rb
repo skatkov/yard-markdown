@@ -2,6 +2,7 @@
 
 require "cgi"
 require "commonmarker"
+require_relative "../../lib/yard/markdown"
 
 class MarkdownValidator
   ValidationError = Class.new(StandardError)
@@ -20,7 +21,7 @@ class MarkdownValidator
   end
 
   def validate!
-    files = Dir[File.join(@root_dir, "**/*.md")].sort
+    files = Dir[File.join(@root_dir, "**/*")].grep(YARD::Markdown::FILE_PATTERN).sort
     raise ValidationError, "No markdown files found in #{@root_dir}" if files.empty?
 
     files.each { |file| validate_file(file) }
