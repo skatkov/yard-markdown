@@ -84,33 +84,33 @@ end
 
 namespace :real_world do
   repos_dir = "tmp/real-world/repos"
-  rspec_repo = "#{repos_dir}/rspec-core"
-  sidekiq_repo = "#{repos_dir}/sidekiq"
+  faraday_repo = "#{repos_dir}/faraday"
+  concurrent_ruby_repo = "#{repos_dir}/concurrent-ruby"
 
-  desc "Checkout rspec-core repository"
-  task :checkout_rspec do
-    checkout_repo("https://github.com/rspec/rspec-core.git", rspec_repo, ref: "v3.13.2")
+  desc "Checkout faraday repository"
+  task :checkout_faraday do
+    checkout_repo("https://github.com/lostisland/faraday.git", faraday_repo, ref: "v2.14.3")
   end
 
-  desc "Checkout sidekiq repository"
-  task :checkout_sidekiq do
-    checkout_repo("https://github.com/sidekiq/sidekiq.git", sidekiq_repo, ref: "v7.3.10")
+  desc "Checkout concurrent-ruby repository"
+  task :checkout_concurrent_ruby do
+    checkout_repo("https://github.com/ruby-concurrency/concurrent-ruby.git", concurrent_ruby_repo, ref: "v1.3.8")
   end
 
-  desc "Generate markdown docs for rspec-core"
-  task rspec: :checkout_rspec do
-    generate_markdown_docs("#{rspec_repo}/lib", "tmp/real-world/rspec-core")
+  desc "Generate markdown docs for faraday"
+  task faraday: :checkout_faraday do
+    generate_markdown_docs("#{faraday_repo}/lib", "tmp/real-world/faraday")
   end
 
-  desc "Generate markdown docs for sidekiq"
-  task sidekiq: :checkout_sidekiq do
-    generate_markdown_docs("#{sidekiq_repo}/lib", "tmp/real-world/sidekiq")
+  desc "Generate markdown docs for concurrent-ruby"
+  task concurrent_ruby: :checkout_concurrent_ruby do
+    generate_markdown_docs("#{concurrent_ruby_repo}/lib", "tmp/real-world/concurrent-ruby")
   end
 
-  desc "Generate markdown docs for rspec-core and sidekiq"
+  desc "Generate markdown docs for faraday and concurrent-ruby"
   task :generate do
-    Rake::Task["real_world:rspec"].invoke
-    Rake::Task["real_world:sidekiq"].invoke
+    Rake::Task["real_world:faraday"].invoke
+    Rake::Task["real_world:concurrent_ruby"].invoke
   end
 end
 
@@ -123,9 +123,9 @@ namespace :markdown do
     end
   end
 
-  desc "Generate and validate markdown output for rspec-core and sidekiq"
+  desc "Generate and validate markdown output for faraday and concurrent-ruby"
   task validate_real_world: "real_world:generate" do
-    ["tmp/real-world/rspec-core", "tmp/real-world/sidekiq"].each do |dir|
+    ["tmp/real-world/faraday", "tmp/real-world/concurrent-ruby"].each do |dir|
       validator = MarkdownValidator.new(dir, strict_links: false)
       file_count = validator.validate!
       puts "Validated #{file_count} markdown files in #{dir} (unresolved local links: #{validator.unresolved_links})"
