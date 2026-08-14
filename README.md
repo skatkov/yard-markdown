@@ -86,7 +86,7 @@ There is also a real-world validation harness for repositories with substantial 
 bundle exec rake markdown:validate_real_world
 ```
 
-This task validates generated markdown against CommonMark + GFM rendering, and reports unresolved local links found in upstream source comments while still validating local anchor/link structure.
+This task validates every generated Markdown file against CommonMark and GFM. Generated files must have valid local links and anchors; unresolved links and anchors in byte-identical Markdown copied from upstream are reported instead of failing validation.
 
 GitHub Actions CI runs this task on every push/PR, so both real-world fixture gems are verified continuously.
 
