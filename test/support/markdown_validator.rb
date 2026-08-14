@@ -35,7 +35,9 @@ class MarkdownValidator
     render_commonmark!(content, file)
     render_gfm!(content, file)
 
-    raise ValidationError, "local .html link found in #{relative_path(file)}" if content.match?(LOCAL_HTML_LINK_REGEX)
+    if @strict_links && content.match?(LOCAL_HTML_LINK_REGEX)
+      raise ValidationError, "local .html link found in #{relative_path(file)}"
+    end
     raise ValidationError, "empty anchor link found in #{relative_path(file)}" if content.include?("[](#")
 
     content.scan(LOCAL_LINK_REGEX).flatten.each do |target|
