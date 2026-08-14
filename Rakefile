@@ -19,12 +19,11 @@ task default: :test
 
 COMMAND_WARNING_REGEX = /\bwarning:/i
 COMMAND_ERROR_REGEX = /\b(?:error|exception|fatal|loaderror)\b/i
-PLUGIN_PATH = File.expand_path("lib/yard-markdown.rb", __dir__)
 
-def run_command_with_analysis(command, label:, chdir: ".")
+def run_command_with_analysis(command, label:)
   puts command
 
-  stdout, stderr, status = Open3.capture3(command, chdir: chdir)
+  stdout, stderr, status = Open3.capture3(command)
   combined_output = [stdout, stderr].reject(&:empty?).join("\n")
   log_path = File.join("tmp", "command-logs", "#{label.gsub(%r{[^a-zA-Z0-9_-]+}, "_")}.log")
 
@@ -51,7 +50,7 @@ def generate_markdown_docs(source, output_dir)
   FileUtils.rm_rf(output_dir)
   FileUtils.mkdir_p(output_dir)
 
-  command = "yardoc --no-stats --quiet --format markdown --load #{Shellwords.escape(PLUGIN_PATH)} --output-dir #{Shellwords.escape(File.expand_path(output_dir))}"
+  command = "yardoc --no-stats --quiet --format markdown --load #{Shellwords.escape(File.expand_path("lib/yard-markdown.rb", __dir__))} --output-dir #{Shellwords.escape(File.expand_path(output_dir))}"
   command += " #{Shellwords.escape(source)}" if source
   run_command_with_analysis(command, label: "yardoc_#{output_dir}")
 end
@@ -101,14 +100,12 @@ namespace :real_world do
 
   desc "Generate markdown docs for faraday"
   task faraday: :checkout_faraday do
-    output_dir = File.expand_path("tmp/real-world/faraday")
-    Dir.chdir(faraday_repo) { generate_markdown_docs(nil, output_dir) }
+    Dir.chdir(faraday_repo) { generate_markdown_docs(nil, File.expand_path("tmp/real-world/faraday", __dir__)) }
   end
 
   desc "Generate markdown docs for sidekiq"
   task sidekiq: :checkout_sidekiq do
-    output_dir = File.expand_path("tmp/real-world/sidekiq")
-    Dir.chdir(sidekiq_repo) { generate_markdown_docs(nil, output_dir) }
+    Dir.chdir(sidekiq_repo) { generate_markdown_docs(nil, File.expand_path("tmp/real-world/sidekiq", __dir__)) }
   end
 
   desc "Generate markdown docs for faraday and sidekiq"
