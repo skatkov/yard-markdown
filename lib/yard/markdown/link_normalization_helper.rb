@@ -13,7 +13,6 @@ module YARD
         output = content.instance_of?(Array) ? content.join("\n") : content
         output = output.lines.map(&:rstrip).join("\n")
         output = normalize_local_links(output, current_path)
-        output = normalize_malformed_local_links(output)
         output = output.gsub(/\n{3,}/, "\n\n").strip
         "#{output}\n"
       end
@@ -88,7 +87,7 @@ module YARD
         elsif File.extname(normalized).empty?
           return nil if unresolved_identifier_target?(normalized)
 
-          normalized = "#{normalized}.md" if normalized.include?("/")
+          normalized = "#{normalized}.md"
         end
 
         relative_output_path(current_dir, normalized)
@@ -111,9 +110,7 @@ module YARD
       # @return [Boolean] True when the target should be treated as unresolved.
       def unresolved_identifier_target?(path)
         cleaned = path.sub(%r{\A(?:(?:\.\./)+|\./)}, "")
-        return true if cleaned.start_with?(":") || cleaned.match?(/\A\d/)
-
-        cleaned.match?(/\A[a-z_]\w*\z/)
+        File.extname(cleaned).empty? && !cleaned.include?("/")
       end
 
       # Computes a relative path from the current output directory.
