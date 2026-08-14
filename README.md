@@ -25,6 +25,14 @@ Markdown files in the project tree are detected automatically, copied unchanged 
 yardoc --format=markdown
 ```
 
+Markdown files whose basename starts with `_` are ignored automatically.
+
+Use YARD's `--exclude` option to omit a separate documentation tree:
+
+```bash
+yardoc --format=markdown --exclude '\Adocs/'
+```
+
 ## FAQ
 
 ### Note on RDoc support

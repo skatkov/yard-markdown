@@ -10,15 +10,21 @@ class YARD::TestYardocExtension < Minitest::Test
   def test_discovers_markdown_files_and_deduplicates_files_yard_already_found
     Dir.mktmpdir do |dir|
       FileUtils.mkdir_p(File.join(dir, "docs"))
+      FileUtils.mkdir_p(File.join(dir, "IGNORED"))
       FileUtils.mkdir_p(File.join(dir, "output"))
       File.write(File.join(dir, "README.md"), "# Readme\n")
       File.write(File.join(dir, "docs", "CHANGELOG.MARKDOWN"), "# Changelog\n")
+      File.write(File.join(dir, "docs", "_NAVIGATION.md"), "# Navigation\n")
       File.write(File.join(dir, "notes.txt"), "Not Markdown\n")
+      File.write(File.join(dir, "IGNORED", "WEBSITE.md"), "# Website\n")
       File.write(File.join(dir, "output", "Generated.md"), "# Generated\n")
 
       yardoc = YARD::CLI::Yardoc.new
       parsed = Dir.chdir(dir) do
-        yardoc.parse_arguments("--no-save", "--no-stats", "--quiet", "--format", "markdown", "--output-dir", "output")
+        yardoc.parse_arguments(
+          "--no-save", "--no-stats", "--quiet", "--format", "markdown",
+          "--exclude", "\\Aignored/", "--output-dir", "output"
+        )
       end
       Dir.chdir(dir) { yardoc.run(nil) }
 
