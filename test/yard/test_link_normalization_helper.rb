@@ -11,7 +11,7 @@ class YARD::TestLinkNormalizationHelper < Minitest::Test
     end
   end
 
-  Options = Struct.new(:serializer, keyword_init: true)
+  Options = Struct.new(:serializer, :copied_file_aliases, keyword_init: true)
 
   def test_link_path_helpers_classify_targets_and_compute_relative_paths
     assert helper.constant_reference_path?("A")
@@ -73,7 +73,14 @@ class YARD::TestLinkNormalizationHelper < Minitest::Test
     YARD::Registry.clear
     YARD.parse_string("module Ocean\n  class Salmon\n  end\nend\n")
 
-    helper.options = Options.new(serializer: Serializer.new(mapping: {"Ocean::Salmon" => "Ocean/Salmon.md"}))
+    helper.options = Options.new(
+      serializer: Serializer.new(mapping: {"Ocean::Salmon" => "Ocean/Salmon.md"}),
+      copied_file_aliases: {
+        "GUIDE" => "GUIDE.MARKDOWN",
+        "README" => "README.md",
+        "docs/CHANGELOG" => "docs/CHANGELOG.MARKDOWN"
+      }
+    )
 
     assert_equal "Salmon.md", helper.resolve_local_link_target("Salmon", Pathname.new("Ocean"))
     assert_equal "Fish.md", helper.resolve_local_link_target("docs/../Fish.html", Pathname.new("."))
@@ -82,10 +89,13 @@ class YARD::TestLinkNormalizationHelper < Minitest::Test
     assert_equal "docs/Fish.md", helper.resolve_local_link_target("docs/Fish.HTML", Pathname.new("."))
     assert_equal "docs/Fish.md", helper.resolve_local_link_target("./docs/Fish.html", Pathname.new("."))
     assert_equal "docs/Fish.md", helper.resolve_local_link_target("//docs/Fish.html", Pathname.new("."))
+    assert_equal "README.md", helper.resolve_local_link_target("README", Pathname.new("."))
+    assert_equal "README.md", helper.resolve_local_link_target("README.html", Pathname.new("."))
+    assert_equal "GUIDE.MARKDOWN", helper.resolve_local_link_target("docs/../GUIDE.HTML", Pathname.new("."))
+    assert_equal "../docs/CHANGELOG.MARKDOWN", helper.resolve_local_link_target("docs/CHANGELOG.html", Pathname.new("guides"))
     assert_nil helper.resolve_local_link_target("memoized", Pathname.new("."))
     assert_nil helper.resolve_local_link_target("Dataflow", Pathname.new("."))
     assert_equal "docs/Fish.md", helper.resolve_local_link_target("docs/Fish", Pathname.new("."))
-    assert_nil helper.resolve_local_link_target("README", Pathname.new("."))
   end
 
   def test_normalize_local_links_handles_external_targets_suffixes_and_unresolved_labels
@@ -100,7 +110,7 @@ class YARD::TestLinkNormalizationHelper < Minitest::Test
 
     YARD::Registry.clear
     YARD.parse_string("class Fish\nend\n")
-    helper.options = Options.new(serializer: Serializer.new(mapping: {"Fish" => "Fish.md"}))
+    helper.options = Options.new(serializer: Serializer.new(mapping: {"Fish" => "Fish.md"}), copied_file_aliases: {})
 
     input = [
       "[See fish](Fish?view=full#overview)",
@@ -118,19 +128,19 @@ class YARD::TestLinkNormalizationHelper < Minitest::Test
   end
 
   def test_finalize_markdown_accepts_string_input_and_normalizes_links_and_spacing
-    helper.options = Options.new(serializer: Serializer.new(mapping: {}))
+    helper.options = Options.new(serializer: Serializer.new(mapping: {}), copied_file_aliases: {})
 
     assert_equal "Line 1\n", helper.finalize_markdown("Line 1", "docs/current.md")
 
     YARD::Registry.clear
     YARD.parse_string("class Fish\nend\n")
-    helper.options = Options.new(serializer: Serializer.new(mapping: {"Fish" => "Fish.md"}))
+    helper.options = Options.new(serializer: Serializer.new(mapping: {"Fish" => "Fish.md"}), copied_file_aliases: {})
 
     input = ["Line 1  ", "", "", "[Fish](Fish)", "[bad](memoized)", '[quoted](broken"link)']
 
     assert_equal "Line 1\n\n[Fish](../Fish.md)\n`bad`\n`quoted`\n", helper.finalize_markdown(input, "docs/current.md")
 
-    helper.options = Options.new(serializer: Serializer.new(mapping: {}))
+    helper.options = Options.new(serializer: Serializer.new(mapping: {}), copied_file_aliases: {})
 
     input = ["", "", "Line 1", "", "", "", "Line 2", "", "", "", "Line 3", "", ""]
 

@@ -12,6 +12,10 @@ include YARD::Markdown::ObjectListingHelper,
 def init
   options.objects = objects = run_verifier(options.objects).reject { |item| item.name == :root }
   files = Array(options.files).select { |file| file.filename.match?(YARD::Markdown::FILE_PATTERN) }
+  options.copied_file_aliases = files.to_h do |file|
+    path = Pathname.new(file.filename).cleanpath.to_s
+    [path.sub(YARD::Markdown::FILE_PATTERN, ""), path]
+  end
 
   options.delete(:objects)
   options.delete(:files)
