@@ -47,5 +47,6 @@ You are done when both of these are green and don't return any issues:
 ```
 yard-lint .
 SIMPLECOV=1 bundle exec rake test
+bundle exec rake markdown:validate_real_world
 bundle exec mutant run
 ```
