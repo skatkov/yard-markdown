@@ -127,8 +127,15 @@ namespace :markdown do
 
   desc "Generate and validate markdown output for faraday and concurrent-ruby"
   task validate_real_world: "real_world:generate" do
-    ["tmp/real-world/faraday", "tmp/real-world/concurrent-ruby"].each do |dir|
-      validator = MarkdownValidator.new(dir, strict_links: false)
+    {
+      "tmp/real-world/faraday" => "tmp/real-world/repos/faraday",
+      "tmp/real-world/concurrent-ruby" => "tmp/real-world/repos/concurrent-ruby"
+    }.each do |dir, source_dir|
+      copied_files = Dir.glob("**/*", base: source_dir).grep(YARD::Markdown::FILE_PATTERN).select do |file|
+        output_file = File.join(dir, file)
+        File.file?(output_file) && FileUtils.compare_file(File.join(source_dir, file), output_file)
+      end
+      validator = MarkdownValidator.new(dir, relaxed_files: copied_files)
       file_count = validator.validate!
       puts "Validated #{file_count} markdown files in #{dir} (unresolved local links: #{validator.unresolved_links})"
     end
