@@ -80,7 +80,7 @@ Validate generated markdown in sample docs:
 bundle exec rake markdown:validate_examples
 ```
 
-There is also a real-world validation harness for repositories with substantial YARD documentation (`faraday`, `concurrent-ruby`):
+There is also a real-world validation harness for repositories with substantial YARD documentation (`faraday`, `sidekiq`):
 
 ```bash
 bundle exec rake markdown:validate_real_world
@@ -90,4 +90,4 @@ This task validates generated markdown against CommonMark + GFM rendering, and r
 
 GitHub Actions CI runs this task on every push/PR, so both real-world fixture gems are verified continuously.
 
-For reproducible checks, the task clones pinned tags (`faraday` `v2.14.3`, `concurrent-ruby` `v1.3.8`) into `tmp/real-world/repos` before generating output in `tmp/real-world/faraday` and `tmp/real-world/concurrent-ruby`.
+For reproducible checks, the task clones pinned tags (`faraday` `v2.14.3`, `sidekiq` `v7.3.10`) into `tmp/real-world/repos` and honors each repository's `.yardopts` before generating output in `tmp/real-world/faraday` and `tmp/real-world/sidekiq`.
