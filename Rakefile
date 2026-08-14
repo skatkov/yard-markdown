@@ -19,6 +19,7 @@ task default: :test
 
 COMMAND_WARNING_REGEX = /\bwarning:/i
 COMMAND_ERROR_REGEX = /\b(?:error|exception|fatal|loaderror)\b/i
+PLUGIN_PATH = File.expand_path("lib/yard-markdown.rb", __dir__)
 
 def run_command_with_analysis(command, label:, chdir: ".")
   puts command
@@ -46,14 +47,13 @@ def run_command_with_analysis(command, label:, chdir: ".")
   raise details.join("\n")
 end
 
-def generate_markdown_docs(source, output_dir, root: ".", exclude: nil)
+def generate_markdown_docs(source, output_dir)
   FileUtils.rm_rf(output_dir)
   FileUtils.mkdir_p(output_dir)
 
-  command = "yardoc --no-yardopts --no-stats --quiet --format markdown --load #{Shellwords.escape(File.expand_path("lib/yard-markdown.rb"))} --output-dir #{Shellwords.escape(File.expand_path(output_dir))}"
-  command += " --exclude #{Shellwords.escape(exclude)}" if exclude
-  command += " #{Shellwords.escape(source)}"
-  run_command_with_analysis(command, label: "yardoc_#{output_dir}", chdir: root)
+  command = "yardoc --no-stats --quiet --format markdown --load #{Shellwords.escape(PLUGIN_PATH)} --output-dir #{Shellwords.escape(File.expand_path(output_dir))}"
+  command += " #{Shellwords.escape(source)}" if source
+  run_command_with_analysis(command, label: "yardoc_#{output_dir}")
 end
 
 def checkout_repo(url, destination, ref: nil)
@@ -75,44 +75,46 @@ namespace :examples do
 
   desc "Generate example documentation for code annotated with yard"
   task :yard do
-    generate_markdown_docs("example_yard.rb", "example/yard", exclude: "\\Aexample/(?:yard|rdoc)/")
+    generate_markdown_docs("example_yard.rb", "example/yard")
   end
 
   desc "Generate example documentation for code annotated with rdoc"
   task :rdoc do
-    generate_markdown_docs("example_rdoc.rb", "example/rdoc", exclude: "\\Aexample/(?:yard|rdoc)/")
+    generate_markdown_docs("example_rdoc.rb", "example/rdoc")
   end
 end
 
 namespace :real_world do
   repos_dir = "tmp/real-world/repos"
   faraday_repo = "#{repos_dir}/faraday"
-  concurrent_ruby_repo = "#{repos_dir}/concurrent-ruby"
+  sidekiq_repo = "#{repos_dir}/sidekiq"
 
   desc "Checkout faraday repository"
   task :checkout_faraday do
     checkout_repo("https://github.com/lostisland/faraday.git", faraday_repo, ref: "v2.14.3")
   end
 
-  desc "Checkout concurrent-ruby repository"
-  task :checkout_concurrent_ruby do
-    checkout_repo("https://github.com/ruby-concurrency/concurrent-ruby.git", concurrent_ruby_repo, ref: "v1.3.8")
+  desc "Checkout sidekiq repository"
+  task :checkout_sidekiq do
+    checkout_repo("https://github.com/sidekiq/sidekiq.git", sidekiq_repo, ref: "v7.3.10")
   end
 
   desc "Generate markdown docs for faraday"
   task faraday: :checkout_faraday do
-    generate_markdown_docs("lib", "tmp/real-world/faraday", root: faraday_repo)
+    output_dir = File.expand_path("tmp/real-world/faraday")
+    Dir.chdir(faraday_repo) { generate_markdown_docs(nil, output_dir) }
   end
 
-  desc "Generate markdown docs for concurrent-ruby"
-  task concurrent_ruby: :checkout_concurrent_ruby do
-    generate_markdown_docs("lib", "tmp/real-world/concurrent-ruby", root: concurrent_ruby_repo)
+  desc "Generate markdown docs for sidekiq"
+  task sidekiq: :checkout_sidekiq do
+    output_dir = File.expand_path("tmp/real-world/sidekiq")
+    Dir.chdir(sidekiq_repo) { generate_markdown_docs(nil, output_dir) }
   end
 
-  desc "Generate markdown docs for faraday and concurrent-ruby"
+  desc "Generate markdown docs for faraday and sidekiq"
   task :generate do
     Rake::Task["real_world:faraday"].invoke
-    Rake::Task["real_world:concurrent_ruby"].invoke
+    Rake::Task["real_world:sidekiq"].invoke
   end
 end
 
@@ -125,11 +127,11 @@ namespace :markdown do
     end
   end
 
-  desc "Generate and validate markdown output for faraday and concurrent-ruby"
+  desc "Generate and validate markdown output for faraday and sidekiq"
   task validate_real_world: "real_world:generate" do
     {
       "tmp/real-world/faraday" => "tmp/real-world/repos/faraday",
-      "tmp/real-world/concurrent-ruby" => "tmp/real-world/repos/concurrent-ruby"
+      "tmp/real-world/sidekiq" => "tmp/real-world/repos/sidekiq"
     }.each do |dir, source_dir|
       copied_files = Dir.glob("**/*", base: source_dir).grep(YARD::Markdown::FILE_PATTERN).select do |file|
         output_file = File.join(dir, file)
