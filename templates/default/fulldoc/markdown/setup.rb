@@ -53,7 +53,7 @@ def serialize_index(objects, files)
   CSV.open(filepath, "wb") do |csv|
     csv << %w[name type path]
 
-    files.each { |file| csv << [file.title, "File", file.filename] }
+    files.each { |file| csv << [file.filename, "File", file.filename] }
 
     objects.each do |object|
       if object.type == :class

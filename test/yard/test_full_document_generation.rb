@@ -21,6 +21,7 @@ class YARD::TestFullDocumentGeneration < Minitest::Test
       RUBY
       File.binwrite(File.join(dir, "README.md"), "# Readme\n\nPreserved exactly.")
       File.binwrite(File.join(dir, "docs", "CHANGELOG.MARKDOWN"), "# Changelog\n")
+      File.binwrite(File.join(dir, "docs", "README.md"), "# Docs readme\n")
       File.write(File.join(dir, "notes.txt"), "Not Markdown\n")
 
       stdout, stderr, status = Open3.capture3(
@@ -42,8 +43,9 @@ class YARD::TestFullDocumentGeneration < Minitest::Test
       rows = CSV.read(File.join(output_dir, "index.csv"), headers: true)
         .map { |row| row.to_h.values_at("name", "type", "path") }
 
-      assert_includes rows, ["README", "File", "README.md"]
-      assert_includes rows, ["CHANGELOG", "File", "docs/CHANGELOG.MARKDOWN"]
+      assert_includes rows, ["README.md", "File", "README.md"]
+      assert_includes rows, ["docs/CHANGELOG.MARKDOWN", "File", "docs/CHANGELOG.MARKDOWN"]
+      assert_includes rows, ["docs/README.md", "File", "docs/README.md"]
       assert_includes rows, ["Fish", "Class", "Fish.md"]
     end
   end
