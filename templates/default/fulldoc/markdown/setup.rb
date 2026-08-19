@@ -9,7 +9,7 @@ include YARD::Markdown::ObjectListingHelper,
 #
 # @return [void]
 def init
-  options.objects = objects = run_verifier(options.objects).reject { |item| item.name == :root }
+  objects = run_verifier(options.objects).reject { |item| item.name == :root }
   files = Array(options.files).select { |file| file.filename.match?(YARD::Markdown::FILE_PATTERN) }
   options.copied_file_aliases = files.to_h do |file|
     path = Pathname.new(file.filename).cleanpath.to_s
@@ -56,8 +56,6 @@ def serialize_index(objects, files)
     files.each { |file| csv << [file.title, "File", file.filename] }
 
     objects.each do |object|
-      next if object.name == :root
-
       if object.type == :class
         csv << [object.path, "Class", options.serializer.serialized_path(object)]
       elsif object.type == :module
