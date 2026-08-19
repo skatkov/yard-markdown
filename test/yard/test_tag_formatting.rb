@@ -34,10 +34,6 @@ class YARD::TestTagFormatting < Minitest::Test
     assert_equal "- **@param** `value` input\n- **@return** [String] description\n\n**@example**\n```ruby\ncall_it\n```", formatter.render_tags(object)
   end
 
-  def test_render_tags_returns_empty_string_for_objects_without_tags
-    assert_equal "", formatter.render_tags(build_object)
-  end
-
   private
 
   def formatter

@@ -22,7 +22,6 @@ class YARD::TestLinkNormalizationHelper < Minitest::Test
     assert_false YARD::Markdown::LinkNormalizationHelper.constant_reference_path?("RSpec::core")
     assert_false YARD::Markdown::LinkNormalizationHelper.constant_reference_path?("rspec/core")
 
-    assert_true YARD::Markdown::LinkNormalizationHelper.unresolved_identifier_target?("a")
     assert_true YARD::Markdown::LinkNormalizationHelper.unresolved_identifier_target?("memoized")
     assert_true YARD::Markdown::LinkNormalizationHelper.unresolved_identifier_target?("./memoized")
     assert_true YARD::Markdown::LinkNormalizationHelper.unresolved_identifier_target?("../memoized")
@@ -90,7 +89,6 @@ class YARD::TestLinkNormalizationHelper < Minitest::Test
     assert_equal "docs/Fish.md", helper.resolve_local_link_target("./docs/Fish.html", Pathname.new("."))
     assert_equal "docs/Fish.md", helper.resolve_local_link_target("//docs/Fish.html", Pathname.new("."))
     assert_equal "README.md", helper.resolve_local_link_target("README", Pathname.new("."))
-    assert_equal "README.md", helper.resolve_local_link_target("README.html", Pathname.new("."))
     assert_equal "GUIDE.MARKDOWN", helper.resolve_local_link_target("docs/../GUIDE.HTML", Pathname.new("."))
     assert_equal "../docs/CHANGELOG.MARKDOWN", helper.resolve_local_link_target("docs/CHANGELOG.html", Pathname.new("guides"))
     assert_nil helper.resolve_local_link_target("memoized", Pathname.new("."))

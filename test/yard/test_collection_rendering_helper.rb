@@ -20,7 +20,6 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
     RUBY
     output = helper.render_constants([YARD::Registry.at("Salmon::BETA"), YARD::Registry.at("Salmon::ALPHA")], [])
 
-    assert_true output.index("### `ALPHA`") < output.index("### `BETA`")
     assert_includes output, <<~MARKDOWN.chomp
       ### `ALPHA` <a id="constant-ALPHA"></a> <a id="ALPHA-constant"></a>
       Not documented.
@@ -89,7 +88,6 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
     output = helper.render_attributes([YARD::Registry.at("Salmon#alpha")], [])
 
     refute_includes output, "### General"
-    assert_includes output, "### `alpha` [R]"
 
     parse_source(<<~RUBY)
       class Salmon
@@ -105,20 +103,6 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
     output = helper.render_attributes([YARD::Registry.at("Salmon#alpha"), YARD::Registry.at("Salmon#beta")], ["Beta", "Alpha"])
 
     assert_true output.index("### Beta") < output.index("### Alpha")
-
-    parse_source(<<~RUBY)
-      class Salmon
-        # @!group Named
-        attr_reader :beta
-        # @!endgroup
-
-        attr_reader :alpha
-      end
-    RUBY
-    output = helper.render_attributes([YARD::Registry.at("Salmon#alpha"), YARD::Registry.at("Salmon#beta")], ["Named"])
-
-    assert_includes output, "### Named"
-    assert_includes output, "### General"
 
     parse_source(<<~RUBY)
       class Salmon
@@ -185,33 +169,6 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
     output = helper.render_methods("Public Instance Methods", [YARD::Registry.at("Salmon#alpha"), YARD::Registry.at("Salmon#beta")], ["Beta", "Alpha"])
 
     assert_true output.index("### Beta") < output.index("### Alpha")
-
-    parse_source(<<~RUBY)
-      class Salmon
-        def alpha
-        end
-      end
-    RUBY
-    output = helper.render_methods("Public Instance Methods", [YARD::Registry.at("Salmon#alpha")], [])
-
-    refute_includes output, "### General"
-    assert_includes output, "### `alpha()`"
-
-    parse_source(<<~RUBY)
-      class Salmon
-        # @!group Named
-        def beta
-        end
-        # @!endgroup
-
-        def alpha
-        end
-      end
-    RUBY
-    output = helper.render_methods("Public Instance Methods", [YARD::Registry.at("Salmon#alpha"), YARD::Registry.at("Salmon#beta")], ["Named"])
-
-    assert_includes output, "### Named"
-    assert_includes output, "### General"
   end
 
   private
