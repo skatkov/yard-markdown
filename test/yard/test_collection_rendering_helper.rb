@@ -9,9 +9,6 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
     parse_example_yard
     output = helper.render_constants([YARD::Registry.at("Salmon::MAX_SPEED")], ["Salmon specific attributes"])
 
-    assert_includes output, "## Constants"
-    assert_includes output, "### Salmon specific attributes"
-    assert_includes output, "#### `MAX_SPEED`"
     assert_match(/^## Constants\n### Salmon specific attributes\n#### `MAX_SPEED` /, output)
     assert_includes output, "**@return** [Integer] Maximum speed for a swimming salmon"
 
@@ -75,23 +72,13 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
       Alpha documentation.
       - **@return** [Integer] alpha value
     MARKDOWN
-    refute_includes output, <<~MARKDOWN.chomp
-      ### `ALPHA` <a id="constant-ALPHA"></a> <a id="ALPHA-constant"></a>
-
-      Alpha documentation.
-    MARKDOWN
   end
 
   def test_render_attributes_handle_grouping_access_and_spacing
     parse_example_yard
     output = helper.render_attributes([YARD::Registry.at("Salmon#farmed"), YARD::Registry.at("Salmon#wild")], ["Salmon specific attributes"])
 
-    assert_includes output, "## Attributes"
-    assert_includes output, "### Salmon specific attributes"
-    assert_includes output, "#### `farmed` [RW]"
-    assert_includes output, "#### `wild` [R]"
     assert_match(/^## Attributes\n### Salmon specific attributes\n#### `farmed` \[RW\] /, output)
-    refute_includes output, "### Salmon specific attributes\n\n#### `farmed` [RW]"
     assert_match(/True for farmed salmon\n\n#### `wild` \[R\]/, output)
 
     parse_source(<<~RUBY)
@@ -147,20 +134,12 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
       Alpha documentation.
       - **@return** [String] alpha
     MARKDOWN
-    refute_includes output, <<~MARKDOWN.chomp
-      ### `alpha` [R] <a id="attribute-i-alpha"></a> <a id="alpha-instance_method"></a>
-
-      Alpha documentation.
-    MARKDOWN
   end
 
   def test_render_methods_handle_grouping_docs_and_spacing
     parse_example_yard
     output = helper.render_methods("Public Instance Methods", [YARD::Registry.at("Salmon#make_sound"), YARD::Registry.at("Salmon#sustainable?")], ["Fish overrides"])
 
-    assert_includes output, "## Public Instance Methods"
-    assert_includes output, "### Fish overrides"
-    assert_includes output, "#### `make_sound()`"
     assert_includes output, "#### `sustainable?()`"
     assert_match(/^## Public Instance Methods\n### Fish overrides\n#### `make_sound\(\)` /, output)
     assert_includes output, "- **@yield** [sound] The sound produced by the salmon"
@@ -170,13 +149,6 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
       Salmon overrides generic implementation.
       - **@return** [void]
     MARKDOWN
-    refute_includes output, <<~MARKDOWN.chomp
-      #### `make_sound()` <a id="method-i-make_sound"></a> <a id="make_sound-instance_method"></a>
-      Salmon overrides generic implementation.
-
-      - **@return** [void]
-    MARKDOWN
-
     parse_source(<<~RUBY)
       class Salmon
         # @!group Named
