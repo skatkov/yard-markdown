@@ -33,11 +33,11 @@ class YARD::TestFullDocumentGeneration < Minitest::Test
         chdir: dir
       )
 
-      assert status.success?, [stdout, stderr].reject(&:empty?).join("\n")
+      assert_true status.success?, [stdout, stderr].reject(&:empty?).join("\n")
       assert_equal "# Readme\n\nPreserved exactly.", File.binread(File.join(output_dir, "README.md"))
       assert_equal "# Changelog\n", File.binread(File.join(output_dir, "docs", "CHANGELOG.MARKDOWN"))
       assert_includes File.read(File.join(output_dir, "Fish.md")), "[README](README.md) and [changelog](docs/CHANGELOG.MARKDOWN)"
-      refute File.exist?(File.join(output_dir, "notes.txt"))
+      assert_false File.exist?(File.join(output_dir, "notes.txt"))
 
       rows = CSV.read(File.join(output_dir, "index.csv"), headers: true)
         .map { |row| row.to_h.values_at("name", "type", "path") }

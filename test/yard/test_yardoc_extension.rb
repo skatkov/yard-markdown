@@ -28,9 +28,9 @@ class YARD::TestYardocExtension < Minitest::Test
       end
       Dir.chdir(dir) { yardoc.run(nil) }
 
-      assert parsed
+      assert_true parsed
       assert_equal ["README.md", "docs/CHANGELOG.MARKDOWN"], yardoc.options.files.map(&:filename).sort
-      assert File.file?(File.join(dir, "output", "index.csv"))
+      assert_true File.file?(File.join(dir, "output", "index.csv"))
     end
   end
 
@@ -42,7 +42,7 @@ class YARD::TestYardocExtension < Minitest::Test
       parsed = Dir.chdir(dir) { yardoc.parse_arguments("--no-save", "--no-stats", "--quiet", "--format", "html") }
       Dir.chdir(dir) { yardoc.run(nil) }
 
-      assert parsed
+      assert_true parsed
       assert_empty yardoc.options.files
     end
   end
@@ -59,7 +59,7 @@ class YARD::TestYardocExtension < Minitest::Test
       end
       Dir.chdir(dir) { yardoc.run(nil) }
 
-      assert parsed
+      assert_true parsed
       assert_equal ["ROOT.md"], yardoc.options.files.map(&:filename)
     end
   end

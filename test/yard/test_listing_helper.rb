@@ -29,8 +29,8 @@ class YARD::TestListingHelper < Minitest::Test
     visible = YARD::CodeObjects::ClassObject.new(YARD::Registry.root, :Visible)
     visible.docstring = "details :nodoc:"
 
-    assert YARD::Markdown::ObjectListingHelper.hidden_object?(hidden)
-    refute YARD::Markdown::ObjectListingHelper.hidden_object?(visible)
+    assert_true YARD::Markdown::ObjectListingHelper.hidden_object?(hidden)
+    assert_false YARD::Markdown::ObjectListingHelper.hidden_object?(visible)
   end
 
   def test_public_method_lists_filter_sort_and_prune_members
