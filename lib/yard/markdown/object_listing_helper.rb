@@ -54,12 +54,7 @@ module YARD
       # @param attributes [Array<YARD::CodeObjects::MethodObject>] Attribute methods collected from eligible ancestors.
       # @return [Array<YARD::CodeObjects::MethodObject>] Sorted attributes.
       def self.sort_attributes(attributes)
-        attributes.sort do |left, right|
-          scope_comparison = left.scope <=> right.scope
-          next scope_comparison unless scope_comparison.zero?
-
-          left.name.to_s.casecmp(right.name.to_s)
-        end
+        attributes.sort { |left, right| (left.scope <=> right.scope).nonzero? || left.name.to_s.casecmp(right.name.to_s) }
       end
 
       # Returns whether an object is explicitly hidden with `:nodoc:`.
