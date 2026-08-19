@@ -5,6 +5,8 @@ This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 
 ## Unreleased
 
+- Include full filenames for files, not just titles
+
 ## 0.9.0
 
 - Detect Markdown files, copy them into generated documentation, and include them in `index.csv`.
