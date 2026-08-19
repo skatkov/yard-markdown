@@ -11,11 +11,11 @@ module YARD
       # @param object [YARD::CodeObjects::Base] Object whose docstring is being rendered.
       # @return [String] Converted documentation text or a fallback message.
       def documented_text(object)
-        text = rdoc_to_md(object.docstring)
+        docstring, tags = DocumentationHelper.documentation_for(object)
+        text = rdoc_to_md(docstring)
         return text unless text.empty?
-        return "" unless object.tags.empty?
 
-        "Not documented."
+        DocumentationHelper.undocumented_text(tags)
       end
 
       # Converts an RDoc-formatted docstring to Markdown.
@@ -25,17 +25,51 @@ module YARD
       def rdoc_to_md(docstring)
         fenced_code_blocks = []
         placeholder = "YARD_MARKDOWN_FENCED_CODE_BLOCK_%d"
-        content = docstring.gsub(/^```[^\n]*\n.*?^```[ \t]*$/m) do |block|
-          fenced_code_blocks << block
-          format(placeholder, fenced_code_blocks.length - 1)
-        end
-
+        content = extract_fenced_code_blocks(docstring, fenced_code_blocks, placeholder)
         markdown = RDoc::Markup::ToMarkdown.new.convert(content).rstrip
-        fenced_code_blocks.each_with_index do |block, index|
-          markdown = markdown.sub(format(placeholder, index), block)
-        end
+        restore_fenced_code_blocks(markdown, fenced_code_blocks, placeholder)
+      end
 
-        markdown
+      # Returns the fallback text for an empty docstring.
+      #
+      # @param tags [Array<YARD::Tags::Tag>] Tags attached to the documented object.
+      # @return [String] Fallback documentation text.
+      def self.undocumented_text(tags)
+        tags.empty? ? "Not documented." : ""
+      end
+
+      # Reads the documentation fields used by the renderer.
+      #
+      # @param object [YARD::CodeObjects::Base] Documented object.
+      # @return [Array] Docstring and tags.
+      def self.documentation_for(object)
+        [object.docstring, object.tags]
+      end
+
+      private
+
+      # Replaces fenced blocks with placeholders before RDoc conversion.
+      #
+      # @param docstring [String] Raw documentation text.
+      # @param fenced_code_blocks [Array<String>] Destination for extracted blocks.
+      # @param placeholder [String] Placeholder format string.
+      # @return [String] Documentation with fenced blocks replaced.
+      def extract_fenced_code_blocks(docstring, fenced_code_blocks, placeholder)
+        docstring.gsub(/^```[^\n]*\n.*?^```[ \t]*$/m) do |block|
+          format(placeholder, fenced_code_blocks.push(block).length - 1)
+        end
+      end
+
+      # Restores fenced blocks after RDoc conversion.
+      #
+      # @param markdown [String] Converted Markdown text.
+      # @param fenced_code_blocks [Array<String>] Extracted fenced blocks.
+      # @param placeholder [String] Placeholder format string.
+      # @return [String] Markdown with fenced blocks restored.
+      def restore_fenced_code_blocks(markdown, fenced_code_blocks, placeholder)
+        fenced_code_blocks.each_with_index.reduce(markdown) do |text, (block, index)|
+          text.sub(format(placeholder, index), block)
+        end
       end
     end
   end

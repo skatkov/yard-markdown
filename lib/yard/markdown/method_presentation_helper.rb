@@ -8,7 +8,7 @@ module YARD
       #
       # @param method_object [YARD::CodeObjects::MethodObject] Method being rendered.
       # @return [String] Method heading text.
-      def formatted_method_heading(method_object)
+      def self.formatted_method_heading(method_object)
         name = method_object.name
         signature = method_signature(method_object)
         signature = " #{signature}" if name.end_with?("]")
@@ -19,11 +19,9 @@ module YARD
       #
       # @param method_object [YARD::CodeObjects::MethodObject] Method being rendered.
       # @return [String] Parenthesized method signature.
-      def method_signature(method_object)
-        return "()" if method_object.parameters.nil?
-
-        rendered = method_object.parameters.map do |name, default|
-          (default.nil? || default.empty?) ? name : "#{name} = #{default}"
+      def self.method_signature(method_object)
+        rendered = Array(method_object.parameters).map do |name, default|
+          default.to_s.empty? ? name : "#{name} = #{default}"
         end
 
         "(#{rendered.join(", ")})"
@@ -33,7 +31,7 @@ module YARD
       #
       # @param attribute [YARD::CodeObjects::MethodObject] Attribute reader or writer.
       # @return [String] Access mode marker such as `R`, `W`, or `RW`.
-      def attribute_access(attribute)
+      def self.attribute_access(attribute)
         read, write = attribute.attr_info.fetch_values(:read, :write)
         return "RW" if read && write
         return "R" if read

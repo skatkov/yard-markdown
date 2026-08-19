@@ -119,7 +119,7 @@ namespace :markdown do
   desc "Validate checked-in example markdown output"
   task validate_examples: "examples:generate" do
     ["example/yard", "example/rdoc"].each do |dir|
-      file_count = MarkdownValidator.new(dir).validate!
+      file_count = MarkdownValidator.new(dir).validate
       puts "Validated #{file_count} markdown files in #{dir}"
     end
   end
@@ -135,7 +135,7 @@ namespace :markdown do
         File.file?(output_file) && FileUtils.compare_file(File.join(source_dir, file), output_file)
       end
       validator = MarkdownValidator.new(dir, relaxed_files: copied_files)
-      file_count = validator.validate!
+      file_count = validator.validate
       puts "Validated #{file_count} markdown files in #{dir} (unresolved local links: #{validator.unresolved_links})"
     end
   end

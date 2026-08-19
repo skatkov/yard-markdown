@@ -11,19 +11,46 @@ module YARD
       # @param checksums [Hash, nil] Previously generated file checksums.
       # @return [void]
       def run_generate(checksums)
-        if options.format == :markdown
-          existing = options.files.map { |file| File.expand_path(file.filename) }
-          exclusions = excluded.map { |path| Regexp.new(path, Regexp::IGNORECASE) }
-          output = File.expand_path(options.serializer.basepath)
-          markdown_files = Dir.glob("**/*").grep(FILE_PATTERN)
-            .reject { |file| File.basename(file).start_with?("_") }
-            .reject { |file| exclusions.any? { |pattern| pattern.match?(file) } }
-            .reject { |file| File.expand_path(file).start_with?("#{output}/") }
-            .reject { |file| existing.include?(File.expand_path(file)) }
-          add_extra_files(markdown_files)
-        end
+        add_extra_files(markdown_files) if options.format == :markdown
 
         super
+      end
+
+      # Returns project Markdown files that YARD has not already discovered.
+      #
+      # @return [Array<String>] Markdown file paths to add.
+      def markdown_files
+        Dir.glob("**/*").grep(FILE_PATTERN)
+          .reject { |file| File.basename(file).start_with?("_") }
+          .reject { |file| excluded_file?(file) }
+          .reject { |file| output_file?(file) }
+          .reject { |file| existing_file?(file) }
+      end
+
+      # Returns whether a file matches a configured exclusion.
+      #
+      # @param file [String] Candidate file path.
+      # @return [Boolean] True when excluded.
+      def excluded_file?(file)
+        excluded.any? { |path| Regexp.new(path, Regexp::IGNORECASE).match?(file) }
+      end
+
+      # Returns whether a file is inside the output directory.
+      #
+      # @param file [String] Candidate file path.
+      # @return [Boolean] True when generated output would contain the file.
+      def output_file?(file)
+        output = File.expand_path(options.serializer.basepath)
+        File.expand_path(file).start_with?("#{output}/")
+      end
+
+      # Returns whether YARD has already discovered a file.
+      #
+      # @param file [String] Candidate file path.
+      # @return [Boolean] True when the file already exists in YARD options.
+      def existing_file?(file)
+        expanded_file = File.expand_path(file)
+        options.files.any? { |existing| File.expand_path(existing.filename) == expanded_file }
       end
     end
   end

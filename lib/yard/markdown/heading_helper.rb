@@ -4,22 +4,21 @@ module YARD
   module Markdown
     # Builds headings and legacy anchors for rendered object sections.
     module HeadingHelper
-      include ArefHelper
-
       # Returns the legacy YARD anchor for an object when one exists.
       #
       # @param object [YARD::CodeObjects::Base] Object being rendered.
       # @return [String, nil] Legacy anchor id, if supported.
-      def legacy_aref(object)
-        type = object.type
+      def self.legacy_aref(object)
+        name = object.name
 
-        return "#{object.name}-constant" if type == :constant
-        return "#{object.name}-classvariable" if type == :classvariable
-        return nil unless object.respond_to?(:scope)
-
-        return "#{object.name}-class_method" if object.scope == :class
-
-        "#{object.name}-instance_method"
+        case object.type
+        when :constant
+          "#{name}-constant"
+        when :classvariable
+          "#{name}-classvariable"
+        when :method
+          "#{name}-#{(object.scope == :class) ? "class" : "instance"}_method"
+        end
       end
 
       # Returns all anchor tags that should be attached to a heading.
@@ -27,7 +26,7 @@ module YARD
       # @param object [YARD::CodeObjects::Base] Object being rendered.
       # @return [Array<String>] HTML anchor tags for the object.
       def anchor_tags_for(object)
-        anchors = [aref(object), legacy_aref(object)].compact
+        anchors = [ArefHelper.aref(object), HeadingHelper.legacy_aref(object)].compact
         anchors.map { |id| anchor_tag(id) }
       end
 

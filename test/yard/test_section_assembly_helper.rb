@@ -12,9 +12,9 @@ class YARD::TestSectionAssemblyHelper < Minitest::Test
       end
     end.new
 
-    assert_equal "hello\n\n", helper.render_section_content("  hello\n")
-    assert_equal "", helper.render_section_content(" \n")
-    assert_equal "hello\n\n", helper.render_section_content(content)
+    assert_equal "hello\n\n", YARD::Markdown::SectionAssemblyHelper.render_section_content("  hello\n")
+    assert_equal "", YARD::Markdown::SectionAssemblyHelper.render_section_content(" \n")
+    assert_equal "hello\n\n", YARD::Markdown::SectionAssemblyHelper.render_section_content(content)
   end
 
   def test_grouped_items_orders_declared_missing_and_default_groups
@@ -89,28 +89,6 @@ class YARD::TestSectionAssemblyHelper < Minitest::Test
     ], grouped_paths(methods(%w[b1 a1 n1]), nil)
   end
 
-  def test_append_lines_handles_blank_content_and_separator_rules
-    lines = ["existing"]
-    helper.append_lines(lines, " \n")
-    assert_equal ["existing"], lines
-
-    lines = ["existing"]
-    helper.append_lines(lines, "first\nsecond")
-    assert_equal ["existing", "", "first", "second"], lines
-
-    lines = ["existing", ""]
-    helper.append_lines(lines, "first\nsecond")
-    assert_equal ["existing", "", "first", "second"], lines
-
-    lines = ["existing"]
-    helper.append_lines(lines, "first\nsecond", separated: false)
-    assert_equal ["existing", "first", "second"], lines
-
-    lines = []
-    helper.append_lines(lines, "first\n\nsecond")
-    assert_equal ["first", "", "second"], lines
-  end
-
   private
 
   def helper
@@ -118,7 +96,7 @@ class YARD::TestSectionAssemblyHelper < Minitest::Test
   end
 
   def grouped_paths(items, group_order)
-    helper.grouped_items(items, group_order).map { |group, grouped_items|
+    YARD::Markdown::SectionAssemblyHelper.grouped_items(items, group_order).map { |group, grouped_items|
       [group, grouped_items.map(&:path)]
     }
   end

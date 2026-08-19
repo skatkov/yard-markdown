@@ -3,7 +3,6 @@
 require "csv"
 
 include YARD::Markdown::ObjectListingHelper,
-  YARD::Markdown::ArefHelper,
   YARD::Templates::Helpers::ModuleHelper
 
 # Prepares the markdown serializer and renders each object page.
@@ -66,7 +65,7 @@ def serialize_index(objects, files)
       end
 
       [
-        ["Constant", constant_listing(object)],
+        ["Constant", YARD::Markdown::ObjectListingHelper.constant_listing(object)],
         ["Method", public_instance_methods(object)],
         ["Method", public_class_methods(object)],
         ["Attribute", attr_listing(object)]
@@ -75,7 +74,7 @@ def serialize_index(objects, files)
           csv << [
             "#{object.path}.#{item.name(false)}",
             type,
-            options.serializer.serialized_path(object) + "#" + aref(item)
+            options.serializer.serialized_path(object) + "#" + YARD::Markdown::ArefHelper.aref(item)
           ]
         end
       end

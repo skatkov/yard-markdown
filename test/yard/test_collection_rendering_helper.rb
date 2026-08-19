@@ -246,13 +246,9 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
 
   def helper
     @helper ||= Class.new do
-      include YARD::Markdown::ArefHelper
       include YARD::Markdown::CollectionRenderingHelper
       include YARD::Markdown::DocumentationHelper
       include YARD::Markdown::HeadingHelper
-      include YARD::Markdown::MethodPresentationHelper
-      include YARD::Markdown::SectionAssemblyHelper
-      include YARD::Markdown::TagFormattingHelper
     end.new
   end
 

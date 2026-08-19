@@ -14,59 +14,59 @@ class YARD::TestLinkNormalizationHelper < Minitest::Test
   Options = Struct.new(:serializer, :copied_file_aliases, keyword_init: true)
 
   def test_link_path_helpers_classify_targets_and_compute_relative_paths
-    assert helper.constant_reference_path?("A")
-    assert helper.constant_reference_path?("RSpec::Core")
-    assert helper.constant_reference_path?("::RSpec::Core")
-    assert helper.constant_reference_path?("RSpec/Core")
-    refute helper.constant_reference_path?("")
-    refute helper.constant_reference_path?("RSpec::core")
-    refute helper.constant_reference_path?("rspec/core")
+    assert YARD::Markdown::LinkNormalizationHelper.constant_reference_path?("A")
+    assert YARD::Markdown::LinkNormalizationHelper.constant_reference_path?("RSpec::Core")
+    assert YARD::Markdown::LinkNormalizationHelper.constant_reference_path?("::RSpec::Core")
+    assert YARD::Markdown::LinkNormalizationHelper.constant_reference_path?("RSpec/Core")
+    refute YARD::Markdown::LinkNormalizationHelper.constant_reference_path?("")
+    refute YARD::Markdown::LinkNormalizationHelper.constant_reference_path?("RSpec::core")
+    refute YARD::Markdown::LinkNormalizationHelper.constant_reference_path?("rspec/core")
 
-    assert helper.unresolved_identifier_target?("a")
-    assert helper.unresolved_identifier_target?("memoized")
-    assert helper.unresolved_identifier_target?("./memoized")
-    assert helper.unresolved_identifier_target?("../memoized")
-    assert helper.unresolved_identifier_target?("../../memoized")
-    assert helper.unresolved_identifier_target?(":memoized")
-    assert helper.unresolved_identifier_target?("1memoized")
-    assert helper.unresolved_identifier_target?("Memoized")
-    refute helper.unresolved_identifier_target?("path/to/file")
-    refute helper.unresolved_identifier_target?("memoized.rb")
+    assert YARD::Markdown::LinkNormalizationHelper.unresolved_identifier_target?("a")
+    assert YARD::Markdown::LinkNormalizationHelper.unresolved_identifier_target?("memoized")
+    assert YARD::Markdown::LinkNormalizationHelper.unresolved_identifier_target?("./memoized")
+    assert YARD::Markdown::LinkNormalizationHelper.unresolved_identifier_target?("../memoized")
+    assert YARD::Markdown::LinkNormalizationHelper.unresolved_identifier_target?("../../memoized")
+    assert YARD::Markdown::LinkNormalizationHelper.unresolved_identifier_target?(":memoized")
+    assert YARD::Markdown::LinkNormalizationHelper.unresolved_identifier_target?("1memoized")
+    assert YARD::Markdown::LinkNormalizationHelper.unresolved_identifier_target?("Memoized")
+    refute YARD::Markdown::LinkNormalizationHelper.unresolved_identifier_target?("path/to/file")
+    refute YARD::Markdown::LinkNormalizationHelper.unresolved_identifier_target?("memoized.rb")
 
-    assert_equal "../Fish.md", helper.relative_output_path(Pathname.new("docs"), Pathname.new("../Fish.md"))
-    assert_equal "Fish.md", helper.relative_output_path(Pathname.new("/docs"), Pathname.new("Fish.md"))
+    assert_equal "../Fish.md", YARD::Markdown::LinkNormalizationHelper.relative_output_path(Pathname.new("docs"), Pathname.new("../Fish.md"))
+    assert_equal "Fish.md", YARD::Markdown::LinkNormalizationHelper.relative_output_path(Pathname.new("/docs"), Pathname.new("Fish.md"))
   end
 
   def test_resolve_registry_object_finds_current_namespace_and_relative_constants
     YARD::Registry.clear
     YARD.parse_string("module Ocean\n  class Salmon\n  end\nend\n")
 
-    assert_equal "Ocean::Salmon", helper.resolve_registry_object("Salmon", Pathname.new("Ocean")).path
-    assert_equal "Ocean::Salmon", helper.resolve_registry_object("Ocean/Salmon", Pathname.new(".")).path
-    assert_equal "Ocean::Salmon", helper.resolve_registry_object("Salmon", Pathname.new("./Ocean")).path
-    assert_equal "Ocean::Salmon", helper.resolve_registry_object("Salmon", Pathname.new("/Ocean")).path
+    assert_equal "Ocean::Salmon", YARD::Markdown::LinkNormalizationHelper.resolve_registry_object("Salmon", Pathname.new("Ocean")).path
+    assert_equal "Ocean::Salmon", YARD::Markdown::LinkNormalizationHelper.resolve_registry_object("Ocean/Salmon", Pathname.new(".")).path
+    assert_equal "Ocean::Salmon", YARD::Markdown::LinkNormalizationHelper.resolve_registry_object("Salmon", Pathname.new("./Ocean")).path
+    assert_equal "Ocean::Salmon", YARD::Markdown::LinkNormalizationHelper.resolve_registry_object("Salmon", Pathname.new("/Ocean")).path
 
     YARD::Registry.clear
     YARD.parse_string("module Ocean\n  module Deep\n  end\n  class Salmon\n  end\nend\n")
 
-    assert_equal "Ocean::Salmon", helper.resolve_registry_object("./Salmon", Pathname.new("Ocean")).path
-    assert_equal "Ocean::Salmon", helper.resolve_registry_object("../Salmon", Pathname.new("Ocean/Deep")).path
-    assert_equal "Ocean::Salmon", helper.resolve_registry_object("../../Salmon", Pathname.new("Ocean/Deep/Deeper")).path
+    assert_equal "Ocean::Salmon", YARD::Markdown::LinkNormalizationHelper.resolve_registry_object("./Salmon", Pathname.new("Ocean")).path
+    assert_equal "Ocean::Salmon", YARD::Markdown::LinkNormalizationHelper.resolve_registry_object("../Salmon", Pathname.new("Ocean/Deep")).path
+    assert_equal "Ocean::Salmon", YARD::Markdown::LinkNormalizationHelper.resolve_registry_object("../../Salmon", Pathname.new("Ocean/Deep/Deeper")).path
   end
 
   def test_resolve_registry_object_handles_direct_paths_root_and_non_constant_targets
     YARD::Registry.clear
     YARD.parse_string("class Fish\n  def swim\n  end\nend\n")
 
-    assert_equal "Fish#swim", helper.resolve_registry_object("Fish#swim", Pathname.new(".")).path
+    assert_equal "Fish#swim", YARD::Markdown::LinkNormalizationHelper.resolve_registry_object("Fish#swim", Pathname.new(".")).path
 
-    assert_nil helper.resolve_registry_object("", Pathname.new("."))
-    assert_nil helper.resolve_registry_object("root", Pathname.new("."))
+    assert_nil YARD::Markdown::LinkNormalizationHelper.resolve_registry_object("", Pathname.new("."))
+    assert_nil YARD::Markdown::LinkNormalizationHelper.resolve_registry_object("root", Pathname.new("."))
 
     YARD::Registry.clear
     YARD.parse_string("module Ocean\n  class Fish\n    def swim\n    end\n  end\nend\n")
 
-    assert_nil helper.resolve_registry_object("Fish#swim", Pathname.new("Ocean"))
+    assert_nil YARD::Markdown::LinkNormalizationHelper.resolve_registry_object("Fish#swim", Pathname.new("Ocean"))
   end
 
   def test_resolve_local_link_target_prefers_registry_objects_and_rewrites_paths

@@ -27,10 +27,11 @@ class YARD::TestTagFormatting < Minitest::Test
   def test_separates_regular_tags_from_example_blocks
     object = build_object(tags: [
       tag(tag_name: "return", types: "String", text: "description"),
+      tag(tag_name: "param", name: "value", text: "input"),
       tag(tag_name: "example", text: "call_it\n")
     ])
 
-    assert_equal "- **@return** [String] description\n\n**@example**\n```ruby\ncall_it\n```", formatter.render_tags(object)
+    assert_equal "- **@param** `value` input\n- **@return** [String] description\n\n**@example**\n```ruby\ncall_it\n```", formatter.render_tags(object)
   end
 
   def test_render_tags_returns_empty_string_for_objects_without_tags
@@ -40,7 +41,7 @@ class YARD::TestTagFormatting < Minitest::Test
   private
 
   def formatter
-    @formatter ||= Object.new.extend(YARD::Markdown::TagFormattingHelper)
+    YARD::Markdown::TagFormattingHelper
   end
 
   def tag(tag_name:, text: nil, types: nil, name: nil)
