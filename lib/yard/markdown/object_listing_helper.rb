@@ -8,7 +8,7 @@ module YARD
       #
       # @param object [YARD::CodeObjects::NamespaceObject] Object being rendered.
       # @return [Array<YARD::CodeObjects::Base>] Constants and class variables.
-      def constant_listing(object)
+      def self.constant_listing(object)
         constants = object.constants(included: false, inherited: false)
         constants + object.cvars
       end
@@ -19,7 +19,7 @@ module YARD
       # @return [Array<YARD::CodeObjects::MethodObject>] Sorted public methods.
       def public_method_list(object)
         prune_method_listing(object.meths(inherited: false, visibility: :public))
-          .reject { |item| hidden_object?(item) }
+          .reject { |item| ObjectListingHelper.hidden_object?(item) }
           .sort_by { |method_object| method_object.name }
       end
 
@@ -44,30 +44,17 @@ module YARD
       # @param object [YARD::CodeObjects::NamespaceObject] Object being rendered.
       # @return [Array<YARD::CodeObjects::MethodObject>] Sorted attribute methods.
       def attr_listing(object)
-        attrs = []
-
-        object.inheritance_tree(true).each do |superclass|
-          next if !options.embed_mixins.empty? && !options.embed_mixins_match?(superclass)
-
-          %i[class instance].each do |scope|
-            superclass.attributes.fetch(scope).each do |_name, rw|
-              attr = prune_method_listing([rw.fetch(:read), rw.fetch(:write)].compact, false).first
-              attrs << attr if attr
-            end
-          end
-
-          break if options.embed_mixins.empty?
-        end
-
-        sort_listing(attrs)
+        superclasses = attribute_superclasses(object)
+        attributes = superclasses.flat_map { |superclass| attributes_for(superclass) }
+        ObjectListingHelper.sort_attributes(attributes)
       end
 
-      # Sorts a listing by scope and case-insensitive name.
+      # Sorts attributes by scope and case-insensitive name.
       #
-      # @param list [Array<YARD::CodeObjects::Base>] Objects to sort.
-      # @return [Array<YARD::CodeObjects::Base>] Sorted objects.
-      def sort_listing(list)
-        list.sort do |left, right|
+      # @param attributes [Array<YARD::CodeObjects::MethodObject>] Attribute methods collected from eligible ancestors.
+      # @return [Array<YARD::CodeObjects::MethodObject>] Sorted attributes.
+      def self.sort_attributes(attributes)
+        attributes.sort do |left, right|
           scope_comparison = left.scope <=> right.scope
           next scope_comparison unless scope_comparison.zero?
 
@@ -79,8 +66,32 @@ module YARD
       #
       # @param object [YARD::CodeObjects::Base] Listed object whose docstring may start with `:nodoc:`.
       # @return [Boolean] True when the object should be hidden.
-      def hidden_object?(object)
+      def self.hidden_object?(object)
         object.docstring.start_with?(":nodoc:")
+      end
+
+      private
+
+      # Selects ancestors whose attributes should be embedded.
+      #
+      # @param object [YARD::CodeObjects::NamespaceObject] Namespace being rendered.
+      # @return [Array<YARD::CodeObjects::Base>] Eligible ancestors.
+      def attribute_superclasses(object)
+        superclasses = object.inheritance_tree(true)
+        return superclasses.first(1) if options.embed_mixins.empty?
+
+        superclasses.select { |superclass| options.embed_mixins_match?(superclass) }
+      end
+
+      # Collects visible attributes from one ancestor.
+      #
+      # @param superclass [YARD::CodeObjects::Base] Ancestor containing attributes.
+      # @return [Array<YARD::CodeObjects::MethodObject>] Visible attributes.
+      def attributes_for(superclass)
+        superclass.attributes.values.flat_map(&:values).map { |read_write|
+          read, write = read_write.fetch_values(:read, :write)
+          prune_method_listing([read, write].compact, false).first
+        }.compact
       end
     end
   end

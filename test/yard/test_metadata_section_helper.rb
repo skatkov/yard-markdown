@@ -198,9 +198,9 @@ class YARD::TestMetadataSectionHelper < Minitest::Test
       | --- | --- |
       | **Defined in** | lib/a  b\|c.rb, lib/line break.rb |
     MARKDOWN
-    assert_equal 'a\\\\b', helper.metadata_table_cell("a\\b")
-    assert_equal 'a\|b\|c', helper.metadata_table_cell("a|b|c")
-    assert_equal "a b c", helper.metadata_table_cell("a\nb\nc")
+    assert_equal 'a\\\\b', YARD::Markdown::MetadataSectionHelper.metadata_table_cell("a\\b")
+    assert_equal 'a\|b\|c', YARD::Markdown::MetadataSectionHelper.metadata_table_cell("a|b|c")
+    assert_equal "a b c", YARD::Markdown::MetadataSectionHelper.metadata_table_cell("a\nb\nc")
   end
 
   def test_metadata_reference_does_not_link_unresolved_or_hidden_namespaces

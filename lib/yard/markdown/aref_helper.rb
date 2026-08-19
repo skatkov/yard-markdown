@@ -10,7 +10,7 @@ module YARD
       #
       # @param value [Object] Raw anchor fragment to encode.
       # @return [String] Anchor-safe identifier fragment.
-      def anchor_component(value)
+      def self.anchor_component(value)
         value.to_s.each_char.map do |char|
           char.match?(/[A-Za-z0-9_-]/) ? char : format("-%X", char.ord)
         end.join
@@ -20,22 +20,41 @@ module YARD
       #
       # @param object [YARD::CodeObjects::Base] Object being rendered.
       # @return [String] Anchor id for the object's heading.
-      def aref(object)
-        type = object.type
+      def self.aref(object)
+        aref_for(object, object.type, object.name)
+      end
 
-        return "class-#{object.path.gsub("::", "-")}" if type == :class
-        return "module-#{object.path.gsub("::", "-")}" if type == :module
-        return "constant-#{object.name}" if type == :constant
-        return "classvariable-#{anchor_component(object.name)}" if type == :classvariable
-
-        scope = (object.scope == :class) ? "c" : "i"
-
-        if !object.attr_info.nil?
-          "attribute-#{scope}-#{object.name}"
+      # Dispatches anchor formatting using preloaded object attributes.
+      #
+      # @param object [YARD::CodeObjects::Base] Object being rendered.
+      # @param type [Symbol] YARD object type.
+      # @param name [String, Symbol] Object name.
+      # @return [String] Anchor id for the object's heading.
+      def self.aref_for(object, type, name)
+        case type
+        when :class, :module
+          "#{type}-#{object.path.gsub("::", "-")}"
+        when :constant
+          "constant-#{name}"
+        when :classvariable
+          "classvariable-#{anchor_component(name)}"
         else
-          "method-#{scope}-#{anchor_component(object.name)}"
+          callable_aref(object, name)
         end
       end
+      private_class_method :aref_for
+
+      # Returns the anchor id for a method or attribute.
+      #
+      # @param object [YARD::CodeObjects::MethodObject] Method or attribute being rendered.
+      # @param name [String, Symbol] Method or attribute name.
+      # @return [String] Anchor id for the callable object's heading.
+      def self.callable_aref(object, name)
+        scope = (object.scope == :class) ? "c" : "i"
+        kind, name = object.attr_info ? ["attribute", name] : ["method", anchor_component(name)]
+        "#{kind}-#{scope}-#{name}"
+      end
+      private_class_method :callable_aref
     end
   end
 end
