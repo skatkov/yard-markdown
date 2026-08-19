@@ -21,10 +21,6 @@ Run `yardoc --format=markdown` to generate markdown documentation.
 
 Markdown files in the project tree are detected automatically, copied unchanged into the output, and listed in `index.csv`:
 
-```bash
-yardoc --format=markdown
-```
-
 Markdown files whose basename starts with `_` are ignored automatically.
 
 Use YARD's `--exclude` option to omit a separate documentation tree:
