@@ -116,7 +116,7 @@ namespace :real_world do
 end
 
 namespace :markdown do
-  desc "Validate checked-in example markdown output"
+  desc "Validate generated example markdown output"
   task validate_examples: "examples:generate" do
     ["example/yard", "example/rdoc"].each do |dir|
       file_count = MarkdownValidator.new(dir).validate
