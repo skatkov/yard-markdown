@@ -5,6 +5,5 @@ AllValidators:
   Exclude:
     - "test/**/*"
     - "tmp/**/*"
-    - "vendor/**/*"
     - "example_rdoc.rb"
     - "example_yard.rb"

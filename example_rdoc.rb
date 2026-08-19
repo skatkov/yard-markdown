@@ -143,4 +143,4 @@ $default_rubber_duck = Duck.new(false, true)
 #
 # *Note:*
 #  This is weird... Thus not making it global.
-domestic_rubber_duck = Duck.new(true, true) # rubocop:disable Lint/UselessAssignment
+domestic_rubber_duck = Duck.new(true, true)
