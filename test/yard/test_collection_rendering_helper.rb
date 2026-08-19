@@ -20,7 +20,7 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
     RUBY
     output = helper.render_constants([YARD::Registry.at("Salmon::BETA"), YARD::Registry.at("Salmon::ALPHA")], [])
 
-    assert output.index("### `ALPHA`") < output.index("### `BETA`")
+    assert_true output.index("### `ALPHA`") < output.index("### `BETA`")
     assert_includes output, <<~MARKDOWN.chomp
       ### `ALPHA` <a id="constant-ALPHA"></a> <a id="ALPHA-constant"></a>
       Not documented.
@@ -41,7 +41,7 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
     RUBY
     output = helper.render_constants([YARD::Registry.at("Salmon::ALPHA"), YARD::Registry.at("Salmon::BETA")], ["Beta", "Alpha"])
 
-    assert output.index("### Beta") < output.index("### Alpha")
+    assert_true output.index("### Beta") < output.index("### Alpha")
 
     parse_source(<<~RUBY)
       class Salmon
@@ -104,7 +104,7 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
     RUBY
     output = helper.render_attributes([YARD::Registry.at("Salmon#alpha"), YARD::Registry.at("Salmon#beta")], ["Beta", "Alpha"])
 
-    assert output.index("### Beta") < output.index("### Alpha")
+    assert_true output.index("### Beta") < output.index("### Alpha")
 
     parse_source(<<~RUBY)
       class Salmon
@@ -184,7 +184,7 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
     RUBY
     output = helper.render_methods("Public Instance Methods", [YARD::Registry.at("Salmon#alpha"), YARD::Registry.at("Salmon#beta")], ["Beta", "Alpha"])
 
-    assert output.index("### Beta") < output.index("### Alpha")
+    assert_true output.index("### Beta") < output.index("### Alpha")
 
     parse_source(<<~RUBY)
       class Salmon

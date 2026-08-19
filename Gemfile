@@ -8,6 +8,7 @@ gemspec
 gem "rake", "~> 13.0"
 
 gem "minitest", "~> 5.0"
+gem "minitest-strict"
 gem "mutant"
 gem "mutant-minitest"
 gem "simplecov", require: false

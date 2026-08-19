@@ -26,6 +26,8 @@ GEM
     lint_roller (1.1.0)
     logger (1.7.0)
     minitest (5.27.0)
+    minitest-strict (1.0.0)
+      minitest (>= 5.21, < 7)
     mutant (0.16.2)
       diff-lcs (>= 1.6, < 3)
       irb (~> 1.15)
@@ -118,6 +120,7 @@ PLATFORMS
 DEPENDENCIES
   commonmarker
   minitest (~> 5.0)
+  minitest-strict
   mutant
   mutant-minitest
   rake (~> 13.0)
