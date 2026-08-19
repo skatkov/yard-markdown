@@ -12,7 +12,6 @@ class MarkdownValidator
 
   LOCAL_LINK_REGEX = %r{\]\((?!https?://|mailto:|#)([^)]+)\)}
   LOCAL_HTML_LINK_REGEX = %r{\]\((?!https?://|mailto:|#)[^)]+\.html(?:[?#][^)]+)?\)}
-  GFM_EXTENSIONS = %i[table strikethrough autolink tagfilter tasklist].freeze
 
   attr_reader :unresolved_links
 
@@ -44,8 +43,7 @@ class MarkdownValidator
 
   def validate_file(file)
     content = File.read(file, encoding: Encoding::UTF_8)
-    render_commonmark(content, file)
-    render_gfm(content, file)
+    render_markdown(content, file)
     validate_links(content, file)
   end
 
@@ -121,21 +119,10 @@ class MarkdownValidator
     expanded == @root_dir || expanded.start_with?("#{@root_dir}/")
   end
 
-  def render_gfm(content, file)
-    options = {
-      render: {github_pre_lang: true},
-      extension: GFM_EXTENSIONS.each_with_object({}) { |ext, hash| hash[ext] = true }
-    }
-
-    Commonmarker.to_html(content, options: options)
-  rescue => error
-    raise ValidationError, "GFM render failed for #{relative_path(file)}: #{error.message}"
-  end
-
-  def render_commonmark(content, file)
+  def render_markdown(content, file)
     Commonmarker.to_html(content)
   rescue => error
-    raise ValidationError, "CommonMark render failed for #{relative_path(file)}: #{error.message}"
+    raise ValidationError, "Markdown render failed for #{relative_path(file)}: #{error.message}"
   end
 
   def relative_path(path)

@@ -91,10 +91,6 @@ class YARD::TestSectionAssemblyHelper < Minitest::Test
 
   private
 
-  def helper
-    @helper ||= Object.new.extend(YARD::Markdown::SectionAssemblyHelper)
-  end
-
   def grouped_paths(items, group_order)
     YARD::Markdown::SectionAssemblyHelper.grouped_items(items, group_order).map { |group, grouped_items|
       [group, grouped_items.map(&:path)]
