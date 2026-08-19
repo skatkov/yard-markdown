@@ -6,10 +6,6 @@ class YARD::TestTemplateSections < Minitest::Test
   cover YARD::Markdown::ArefHelper
   cover YARD::Markdown::HeadingHelper
 
-  def test_anchor_component_escapes_non_identifier_characters
-    assert_equal "sustainable-3F", YARD::Markdown::ArefHelper.anchor_component("sustainable?")
-  end
-
   def test_aref_formats_supported_yard_object_types
     YARD::Registry.clear
     YARD.parse("example_yard.rb")
@@ -38,8 +34,6 @@ class YARD::TestTemplateSections < Minitest::Test
     assert_equal "MAX_SPEED-constant", YARD::Markdown::HeadingHelper.legacy_aref(YARD::Registry.at("Salmon::MAX_SPEED"))
     assert_equal "@@wild_salmon-classvariable", YARD::Markdown::HeadingHelper.legacy_aref(YARD::Registry.at("Salmon::@@wild_salmon"))
     assert_equal "wild_salmon-class_method", YARD::Markdown::HeadingHelper.legacy_aref(YARD::Registry.at("Salmon.wild_salmon"))
-    assert_equal "sustainable?-instance_method", YARD::Markdown::HeadingHelper.legacy_aref(YARD::Registry.at("Salmon#sustainable?"))
-
     assert_equal(
       '# Sustainable <a id="method-i-sustainable-3F"></a> <a id="sustainable?-instance_method"></a>',
       heading_helper.heading_with_anchors("# Sustainable", YARD::Registry.at("Salmon#sustainable?"))

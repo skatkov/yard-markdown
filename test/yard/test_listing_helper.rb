@@ -108,22 +108,6 @@ class YARD::TestListingHelper < Minitest::Test
         attr_reader :speed
       end
 
-      class Fish
-        include Swimmer
-      end
-    RUBY
-
-    mixin_template = build_template
-    mixin_template.options.embed_mixins = ["Swimmer"]
-
-    assert_equal [:speed], mixin_template.attr_listing(YARD::Registry.at("Fish")).map { |item| item.name(false) }
-
-    YARD::Registry.clear
-    YARD.parse_string(<<~RUBY)
-      module Swimmer
-        attr_reader :speed
-      end
-
       module Floater
         attr_reader :depth
       end

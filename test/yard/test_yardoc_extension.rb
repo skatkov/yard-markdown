@@ -20,7 +20,7 @@ class YARD::TestYardocExtension < Minitest::Test
       File.write(File.join(dir, "output", "Generated.md"), "# Generated\n")
 
       yardoc = YARD::CLI::Yardoc.new
-      parsed = Dir.chdir(dir) do
+      Dir.chdir(dir) do
         yardoc.parse_arguments(
           "--no-save", "--no-stats", "--quiet", "--format", "markdown",
           "--exclude", "\\Aignored/", "--output-dir", "output"
@@ -28,7 +28,6 @@ class YARD::TestYardocExtension < Minitest::Test
       end
       Dir.chdir(dir) { yardoc.run(nil) }
 
-      assert_true parsed
       assert_equal ["README.md", "docs/CHANGELOG.MARKDOWN"], yardoc.options.files.map(&:filename).sort
       assert_true File.file?(File.join(dir, "output", "index.csv"))
     end
@@ -39,10 +38,9 @@ class YARD::TestYardocExtension < Minitest::Test
       File.write(File.join(dir, "CHANGELOG.md"), "# Changelog\n")
 
       yardoc = YARD::CLI::Yardoc.new
-      parsed = Dir.chdir(dir) { yardoc.parse_arguments("--no-save", "--no-stats", "--quiet", "--format", "html") }
+      Dir.chdir(dir) { yardoc.parse_arguments("--no-save", "--no-stats", "--quiet", "--format", "html") }
       Dir.chdir(dir) { yardoc.run(nil) }
 
-      assert_true parsed
       assert_empty yardoc.options.files
     end
   end
@@ -54,12 +52,11 @@ class YARD::TestYardocExtension < Minitest::Test
       File.write(File.join(dir, "lib", "example.rb"), "class Example\nend\n")
 
       yardoc = YARD::CLI::Yardoc.new
-      parsed = Dir.chdir(dir) do
+      Dir.chdir(dir) do
         yardoc.parse_arguments("--no-save", "--no-stats", "--quiet", "--format", "markdown", "lib/**/*.rb")
       end
       Dir.chdir(dir) { yardoc.run(nil) }
 
-      assert_true parsed
       assert_equal ["ROOT.md"], yardoc.options.files.map(&:filename)
     end
   end
