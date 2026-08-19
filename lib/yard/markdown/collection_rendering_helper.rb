@@ -42,63 +42,17 @@ module YARD
       # @return [String] Markdown for the collection section.
       def render_collection(section_title, items, group_order, &label)
         groups = SectionAssemblyHelper.grouped_items(items, group_order)
-        body = render_collection_body(groups, &label)
+        grouped = groups.any? { |name, _items| name }
+        body = groups.map do |name, group_items|
+          item_heading = grouped ? "####" : "###"
+          item_markdown = group_items.map { |item| render_collection_item(item_heading, item, &label) }.join("\n\n")
+          [("### #{name || "General"}" if grouped), item_markdown].compact
+        end
 
         ["## #{section_title}", body].join("\n")
       end
 
       private
-
-      # Renders grouped or ungrouped items using the appropriate heading levels.
-      #
-      # @param groups [Array<Array>] Ordered group names and items.
-      # @param label [Proc] Item-label renderer.
-      # @yieldparam item [YARD::CodeObjects::Base] Object whose label should be rendered.
-      # @return [String] Rendered collection groups.
-      def render_collection_body(groups, &label)
-        if groups.any? { |name, _items| name }
-          render_grouped_collection(groups, &label)
-        else
-          render_ungrouped_collection(groups, &label)
-        end
-      end
-
-      # Renders named groups with nested item headings.
-      #
-      # @param groups [Array<Array>] Ordered group names and items.
-      # @param label [Proc] Item-label renderer.
-      # @yieldparam item [YARD::CodeObjects::Base] Object whose label should be rendered.
-      # @return [Array<Array<String>>] Rendered named groups.
-      def render_grouped_collection(groups, &label)
-        groups.map { |name, items|
-          render_collection_group("### #{name || "General"}", "####", items, &label)
-        }
-      end
-
-      # Renders items without group headings.
-      #
-      # @param groups [Array<Array>] Ordered group names and items.
-      # @param label [Proc] Item-label renderer.
-      # @yieldparam item [YARD::CodeObjects::Base] Object whose label should be rendered.
-      # @return [Array<Array<String>>] Rendered ungrouped items.
-      def render_ungrouped_collection(groups, &label)
-        groups.map { |_name, items|
-          render_collection_group(nil, "###", items, &label)
-        }
-      end
-
-      # Renders one collection group.
-      #
-      # @param group_heading [String, nil] Optional Markdown group heading.
-      # @param item_heading [String] Markdown heading prefix for items.
-      # @param items [Array<YARD::CodeObjects::Base>] Objects in the group.
-      # @param label [Proc] Item-label renderer.
-      # @yieldparam item [YARD::CodeObjects::Base] Object whose label should be rendered.
-      # @return [Array<String>] Group heading and rendered items.
-      def render_collection_group(group_heading, item_heading, items, &label)
-        item_markdown = items.map { |item| render_collection_item(item_heading, item, &label) }.join("\n\n")
-        [group_heading, item_markdown].compact
-      end
 
       # Renders one collection item with documentation and tags.
       #
