@@ -6,7 +6,6 @@
 /example/rdoc/
 /example/yard/
 /pkg/
-/spec/reports/
 /tmp/
 .mutant/*
 .vscode/

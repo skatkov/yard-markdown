@@ -13,7 +13,6 @@ gem "mutant-minitest"
 gem "simplecov", require: false
 gem "commonmarker"
 
-# gem "ruby-lsp"
 gem "yard-lint"
 
 gem "standard"
