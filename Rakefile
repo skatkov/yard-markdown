@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require "fileutils"
-require "open3"
-require "shellwords"
 
 require "bundler/gem_tasks"
 require "rake/testtask"
@@ -17,60 +15,29 @@ end
 
 task default: :test
 
-COMMAND_WARNING_REGEX = /\bwarning:/i
-COMMAND_ERROR_REGEX = /\b(?:error|exception|fatal|loaderror)\b/i
-
-def run_command_with_analysis(command, label:)
-  puts command
-
-  stdout, stderr, status = Open3.capture3(command)
-  combined_output = [stdout, stderr].reject(&:empty?).join("\n")
-  log_path = File.join(__dir__, "tmp", "command-logs", "#{label.gsub(%r{[^a-zA-Z0-9_-]+}, "_")}.log")
-
-  FileUtils.mkdir_p(File.dirname(log_path))
-  File.write(log_path, combined_output)
-
-  puts combined_output unless combined_output.empty?
-
-  lines = combined_output.each_line.map(&:strip).reject(&:empty?)
-  warnings = lines.grep(COMMAND_WARNING_REGEX)
-  errors = lines.grep(COMMAND_ERROR_REGEX)
-
-  puts "Output analysis for #{label}: warnings=#{warnings.size}, errors=#{errors.size}"
-
-  return if status.success? && errors.empty?
-
-  details = ["#{label} failed output checks (log: #{log_path})"]
-  details << "exit status: #{status.exitstatus}" unless status.success?
-  details << "errors: #{errors.first(5).join(" | ")}" unless errors.empty?
-  raise details.join("\n")
-end
-
 def generate_markdown_docs(source, output_dir)
   FileUtils.rm_rf(output_dir)
   FileUtils.mkdir_p(output_dir)
 
-  command = "yardoc --no-stats --quiet --format markdown --load #{Shellwords.escape(File.expand_path("lib/yard-markdown.rb", __dir__))} --output-dir #{Shellwords.escape(File.expand_path(output_dir))}"
-  command += " #{Shellwords.escape(source)}" if source
-  run_command_with_analysis(command, label: "yardoc_#{output_dir}")
+  command = [
+    "yardoc", "--no-stats", "--quiet", "--format", "markdown",
+    "--load", File.expand_path("lib/yard-markdown.rb", __dir__),
+    "--output-dir", File.expand_path(output_dir)
+  ]
+  command << source if source
+  sh(*command)
 end
 
-def checkout_repo(url, destination, ref: nil)
+def checkout_repo(url, destination, ref:)
   FileUtils.rm_rf(destination)
   FileUtils.mkdir_p(File.dirname(destination))
 
-  command = "git clone --depth 1"
-  command += " --branch #{Shellwords.escape(ref)}" if ref
-  command += " #{Shellwords.escape(url)} #{Shellwords.escape(destination)}"
-  run_command_with_analysis(command, label: "git_clone_#{destination}")
+  sh("git", "clone", "--depth", "1", "--branch", ref, url, destination)
 end
 
 namespace :examples do
   desc "Generate basic example documentation using yard-markdown plugin"
-  task :generate do
-    Rake::Task["examples:yard"].invoke
-    Rake::Task["examples:rdoc"].invoke
-  end
+  task generate: %i[yard rdoc]
 
   desc "Generate example documentation for code annotated with yard"
   task :yard do
@@ -109,10 +76,7 @@ namespace :real_world do
   end
 
   desc "Generate markdown docs for faraday and sidekiq"
-  task :generate do
-    Rake::Task["real_world:faraday"].invoke
-    Rake::Task["real_world:sidekiq"].invoke
-  end
+  task generate: %i[faraday sidekiq]
 end
 
 namespace :markdown do
