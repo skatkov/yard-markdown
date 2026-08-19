@@ -11,11 +11,10 @@ module YARD
       # @param object [YARD::CodeObjects::Base] Object whose docstring is being rendered.
       # @return [String] Converted documentation text or a fallback message.
       def documented_text(object)
-        docstring, tags = DocumentationHelper.documentation_for(object)
-        text = rdoc_to_md(docstring)
+        text = rdoc_to_md(object.docstring)
         return text unless text.empty?
 
-        DocumentationHelper.undocumented_text(tags)
+        object.tags.empty? ? "Not documented." : ""
       end
 
       # Converts an RDoc-formatted docstring to Markdown.
@@ -28,22 +27,6 @@ module YARD
         content = extract_fenced_code_blocks(docstring, fenced_code_blocks, placeholder)
         markdown = RDoc::Markup::ToMarkdown.new.convert(content).rstrip
         restore_fenced_code_blocks(markdown, fenced_code_blocks, placeholder)
-      end
-
-      # Returns the fallback text for an empty docstring.
-      #
-      # @param tags [Array<YARD::Tags::Tag>] Tags attached to the documented object.
-      # @return [String] Fallback documentation text.
-      def self.undocumented_text(tags)
-        tags.empty? ? "Not documented." : ""
-      end
-
-      # Reads the documentation fields used by the renderer.
-      #
-      # @param object [YARD::CodeObjects::Base] Documented object.
-      # @return [Array] Docstring and tags.
-      def self.documentation_for(object)
-        [object.docstring, object.tags]
       end
 
       private
