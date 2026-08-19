@@ -8,15 +8,12 @@ gemspec
 gem "rake", "~> 13.0"
 
 gem "minitest", "~> 5.0"
-gem "minitest-strict"
 gem "mutant"
 gem "mutant-minitest"
 gem "simplecov", require: false
-gem "mutex_m"
 gem "commonmarker"
 
 # gem "ruby-lsp"
-gem "yard"
 gem "yard-lint"
 
 gem "standard"

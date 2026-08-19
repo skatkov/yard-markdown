@@ -172,8 +172,4 @@ class YARD::TestListingHelper < Minitest::Test
     template.options.embed_mixins = []
     template
   end
-
-  def helper
-    @helper ||= Object.new.extend(YARD::Markdown::ObjectListingHelper)
-  end
 end
