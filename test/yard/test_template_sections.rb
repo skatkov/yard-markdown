@@ -28,7 +28,7 @@ class YARD::TestTemplateSections < Minitest::Test
     YARD::Registry.clear
     YARD.parse_string("class Salmon\n  @@population = 1\nend\n")
 
-    assert_equal "classvariable--40-40population", YARD::Markdown::ArefHelper.aref(YARD::Registry.all.find { |o| o.type == :classvariable })
+    assert_equal "classvariable--40-40population", YARD::Markdown::ArefHelper.aref(YARD::Registry.all.find { |object| object.type == :classvariable })
   end
 
   def test_heading_helpers_build_legacy_and_current_anchors
