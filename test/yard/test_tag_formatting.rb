@@ -47,8 +47,7 @@ class YARD::TestTagFormatting < Minitest::Test
   end
 
   def build_object(tags: [])
-    YARD::Registry.clear
-    object = YARD::CodeObjects::ClassObject.new(YARD::Registry.root, "TaggedObject")
+    object = YARD::CodeObjects::ClassObject.new(nil, "TaggedObject")
     tags.each { |item| object.add_tag(item) }
     object
   end
