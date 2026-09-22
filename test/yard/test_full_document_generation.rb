@@ -24,20 +24,22 @@ class YARD::TestFullDocumentGeneration < Minitest::Test
       File.binwrite(File.join(dir, "docs", "README.md"), "# Docs readme\n")
       File.write(File.join(dir, "notes.txt"), "Not Markdown\n")
 
-      stdout, stderr, status = Open3.capture3(
+      command = [
         "bundle", "exec", "yardoc",
-        "--no-stats", "--quiet", "--no-save",
+        "--no-stats", "--quiet", "--use-cache",
         "--format", "markdown",
         "--load", PLUGIN_PATH,
         "--output-dir", output_dir,
-        ".",
-        chdir: dir
-      )
+        "."
+      ]
+      stdout, stderr, status = Open3.capture3(*command, chdir: dir)
 
       assert_true status.success?, [stdout, stderr].reject(&:empty?).join("\n")
+
+      fish_path = File.join(output_dir, "Fish.md")
       assert_equal "# Readme\n\nPreserved exactly.", File.binread(File.join(output_dir, "README.md"))
       assert_equal "# Changelog\n", File.binread(File.join(output_dir, "docs", "CHANGELOG.MARKDOWN"))
-      assert_includes File.read(File.join(output_dir, "Fish.md")), "[README](README.md) and [changelog](docs/CHANGELOG.MARKDOWN)"
+      assert_includes File.read(fish_path), "[README](README.md) and [changelog](docs/CHANGELOG.MARKDOWN)"
       assert_false File.exist?(File.join(output_dir, "notes.txt"))
 
       rows = CSV.read(File.join(output_dir, "index.csv"), headers: true)
@@ -47,6 +49,14 @@ class YARD::TestFullDocumentGeneration < Minitest::Test
       assert_includes rows, ["docs/CHANGELOG.MARKDOWN", "File", "docs/CHANGELOG.MARKDOWN"]
       assert_includes rows, ["docs/README.md", "File", "docs/README.md"]
       assert_includes rows, ["Fish", "Class", "Fish.md"]
+
+      File.utime(Time.at(1), Time.at(1), fish_path)
+      fish_mtime = File.mtime(fish_path)
+
+      stdout, stderr, status = Open3.capture3(*command, chdir: dir)
+
+      assert_true status.success?, [stdout, stderr].reject(&:empty?).join("\n")
+      assert_equal fish_mtime, File.mtime(fish_path)
     end
   end
 end

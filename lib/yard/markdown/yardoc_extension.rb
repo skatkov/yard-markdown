@@ -11,7 +11,10 @@ module YARD
       # @param checksums [Hash, nil] Previously generated file checksums.
       # @return [void]
       def run_generate(checksums)
-        add_extra_files(markdown_files) if options.format == :markdown
+        if options.format == :markdown
+          add_extra_files(markdown_files)
+          options.serializer.extension = "md"
+        end
 
         super
       end

@@ -19,8 +19,6 @@ def init
   options.delete(:objects)
   options.delete(:files)
 
-  options.serializer.extension = "md"
-
   files.each { |file| options.serializer.serialize(file.filename, File.binread(file.filename)) }
 
   objects.each do |object|
