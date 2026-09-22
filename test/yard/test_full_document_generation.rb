@@ -57,6 +57,10 @@ class YARD::TestFullDocumentGeneration < Minitest::Test
 
       assert_true status.success?, [stdout, stderr].reject(&:empty?).join("\n")
       assert_equal fish_mtime, File.mtime(fish_path)
+
+      incremental_rows = CSV.read(File.join(output_dir, "index.csv"), headers: true)
+        .map { |row| row.to_h.values_at("name", "type", "path") }
+      assert_equal rows, incremental_rows
     end
   end
 end
