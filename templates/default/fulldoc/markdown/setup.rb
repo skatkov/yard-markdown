@@ -10,7 +10,6 @@ include YARD::Markdown::ObjectListingHelper,
 # @return [void]
 def init
   objects = run_verifier(options.objects).reject { |item| item.name == :root }
-  index_objects = run_verifier(YARD::Registry.all(:module, :class))
   files = Array(options.files).select { |file| file.filename.match?(YARD::Markdown::FILE_PATTERN) }
   options.copied_file_aliases = files.to_h do |file|
     path = Pathname.new(file.filename).cleanpath.to_s
@@ -30,7 +29,7 @@ def init
     log.backtrace(e)
   end
 
-  serialize_index(index_objects, files)
+  serialize_index(run_verifier(YARD::Registry.all(:module, :class)), files)
 end
 
 # Renders the markdown template for a single namespace object.
