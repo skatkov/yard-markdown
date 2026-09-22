@@ -29,6 +29,7 @@ class YARD::TestYardocExtension < Minitest::Test
       Dir.chdir(dir) { yardoc.run(nil) }
 
       assert_equal ["README.md", "docs/CHANGELOG.MARKDOWN"], yardoc.options.files.map(&:filename).sort
+      assert_equal "md", yardoc.options.serializer.extension
       assert_true File.file?(File.join(dir, "output", "index.csv"))
     end
   end
@@ -42,6 +43,7 @@ class YARD::TestYardocExtension < Minitest::Test
       Dir.chdir(dir) { yardoc.run(nil) }
 
       assert_empty yardoc.options.files
+      assert_equal "html", yardoc.options.serializer.extension
     end
   end
 
