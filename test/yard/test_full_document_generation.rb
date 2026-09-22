@@ -42,7 +42,8 @@ class YARD::TestFullDocumentGeneration < Minitest::Test
       assert_includes File.read(fish_path), "[README](README.md) and [changelog](docs/CHANGELOG.MARKDOWN)"
       assert_false File.exist?(File.join(output_dir, "notes.txt"))
 
-      rows = CSV.read(File.join(output_dir, "index.csv"), headers: true)
+      index = File.binread(File.join(output_dir, "index.csv"))
+      rows = CSV.parse(index, headers: true)
         .map { |row| row.to_h.values_at("name", "type", "path") }
 
       assert_includes rows, ["README.md", "File", "README.md"]
@@ -58,9 +59,7 @@ class YARD::TestFullDocumentGeneration < Minitest::Test
       assert_true status.success?, [stdout, stderr].reject(&:empty?).join("\n")
       assert_equal fish_mtime, File.mtime(fish_path)
 
-      incremental_rows = CSV.read(File.join(output_dir, "index.csv"), headers: true)
-        .map { |row| row.to_h.values_at("name", "type", "path") }
-      assert_equal rows, incremental_rows
+      assert_equal index, File.binread(File.join(output_dir, "index.csv"))
     end
   end
 end
