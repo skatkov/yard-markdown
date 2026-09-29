@@ -2,10 +2,6 @@
 
 Yard plugin to output markdown documentation.
 
-## Motivation
-
-Markdown has become the de-facto documentation standard. YARD should have a way to output markdown files.
-
 ## Goals:
 - Compatible with Github Flavored Markdown
 - Produce .csv index file
