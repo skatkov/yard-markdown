@@ -3,13 +3,13 @@
 Yard plugin to output markdown documentation.
 
 ## Motivation
-Markdown has become the de-facto documentation standard. I heavily rely on Obsidian to render my storage of markdown notes. But markdown is used not just for scribbles, supported is far and wide. We can render markdown file on any device, probably even on thermometer with a screen. But also everyone knows enough markdown to be dangerous (or productive).
-It's a pitty that rdoc and yard can't output a proper markdown file. I would like to change that.
+
+Markdown has become the de-facto documentation standard. YARD should have a way to output markdown files.
 
 ## Goals:
 - Compatible with Github Flavored Markdown
 - Produce .csv index file
-- Mimick yard html layout where it makes sense to maintain familiarity
+- Mimick html layout where it makes sense to maintain familiarity
 
 ## Usage
 Install a plugin
