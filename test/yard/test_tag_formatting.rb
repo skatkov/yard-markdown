@@ -40,8 +40,6 @@ class YARD::TestTagFormatting < Minitest::Test
       class Configurable
         # @param options [Hash] Configuration.
         # @option options [Boolean] :headless (true) Headless mode.
-        # @option options [Boolean] :dockerize (false) Container flags.
-        # @option options [String, nil] :path (nil) Browser path.
         # @option options [Array<Integer>] :window_size ([1024, 768]) Window dimensions.
         # @option options [Integer] :timeout (5, 10) Timeout alternatives.
         # @option options [String] :name Cookie name.
@@ -51,8 +49,6 @@ class YARD::TestTagFormatting < Minitest::Test
 
     assert_equal <<~MARKDOWN.chomp, formatter.render_tags(YARD::Registry.at("Configurable#configure"))
       - **@option** `options[:headless]` [Boolean] (default: `true`) Headless mode.
-      - **@option** `options[:dockerize]` [Boolean] (default: `false`) Container flags.
-      - **@option** `options[:path]` [String, nil] (default: `nil`) Browser path.
       - **@option** `options[:window_size]` [Array<Integer>] (default: `[1024, 768]`) Window dimensions.
       - **@option** `options[:timeout]` [Integer] (default: `5, 10`) Timeout alternatives.
       - **@option** `options[:name]` [String] Cookie name.
