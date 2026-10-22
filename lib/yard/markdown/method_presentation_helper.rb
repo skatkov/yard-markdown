@@ -21,7 +21,10 @@ module YARD
       # @return [String] Parenthesized method signature.
       def self.method_signature(method_object)
         rendered = Array(method_object.parameters).map do |name, default|
-          default.to_s.empty? ? name : "#{name} = #{default}"
+          next name if default.to_s.empty?
+
+          separator = name.end_with?(":") ? " " : " = "
+          "#{name}#{separator}#{default}"
         end
 
         "(#{rendered.join(", ")})"
