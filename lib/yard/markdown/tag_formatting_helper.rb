@@ -19,18 +19,24 @@ module YARD
         [regular, examples].reject(&:empty?).join("\n\n")
       end
 
-      # Formats a non-example YARD tag as a Markdown list item body.
+      # Formats a non-example YARD tag, including nested option details.
       #
       # @param tag [YARD::Tags::Tag] Non-example tag being converted into list item text.
       # @return [String] Markdown representation of the tag.
       def self.format_tag(tag)
         name = tag.name.to_s
+        if tag.tag_name == "option"
+          name = "#{name}[#{tag.pair.name}]"
+          tag = tag.pair
+          defaults = tag.defaults
+        end
         text = tag.text.to_s
         types = Array(tag.types).map { |type| type.to_s.strip }.reject(&:empty?)
         [
           "**@#{tag.tag_name}**",
           ("`#{name}`" unless name.lstrip.empty?),
           ("[#{types.join(", ")}]" unless types.empty?),
+          ("(default: `#{defaults.join(", ")}`)" if defaults),
           (text.strip unless text.lstrip.empty?)
         ].compact.join(" ")
       end
