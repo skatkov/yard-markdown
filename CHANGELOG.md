@@ -8,6 +8,7 @@ This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 ### Fixed
 
 - Render optional keyword parameters with valid Ruby syntax (for example, `read_timeout: nil` instead of `read_timeout: = nil`).
+- Preserve option names, types, descriptions, and defaults when rendering YARD `@option` tags.
 
 ## 0.9.1
 
