@@ -171,6 +171,22 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
     assert_true output.index("### Beta") < output.index("### Alpha")
   end
 
+  def test_render_methods_preserves_keyword_defaults_in_headings
+    parse_source(<<~RUBY)
+      class HttpClient
+        # Creates an HTTP client.
+        def initialize(open_timeout: nil, read_timeout: nil); end
+      end
+    RUBY
+
+    output = helper.render_methods("Public Instance Methods", [YARD::Registry.at("HttpClient#initialize")], [])
+
+    assert_includes output, <<~MARKDOWN.chomp
+      ### `initialize(open_timeout: nil, read_timeout: nil)` <a id="method-i-initialize"></a> <a id="initialize-instance_method"></a>
+      Creates an HTTP client.
+    MARKDOWN
+  end
+
   private
 
   def helper

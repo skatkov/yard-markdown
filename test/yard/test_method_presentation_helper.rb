@@ -15,6 +15,19 @@ class YARD::TestMethodPresentationHelper < Minitest::Test
     assert_equal "call(index)", YARD::Markdown::MethodPresentationHelper.formatted_method_heading(build_method(name: "call", parameters: [["index", nil]]))
   end
 
+  def test_mixed_parameters_preserve_positional_defaults_and_required_keywords
+    YARD::Registry.clear
+    YARD.parse_string(<<~RUBY)
+      class HttpClient
+        def configure(value = nil, required:, enabled: false, label: "", limit: 10, **options, &block); end
+      end
+    RUBY
+
+    method_object = YARD::Registry.at("HttpClient#configure")
+
+    assert_equal 'configure(value = nil, required:, enabled: false, label: "", limit: 10, **options, &block)', YARD::Markdown::MethodPresentationHelper.formatted_method_heading(method_object)
+  end
+
   def test_attribute_access_reads_attr_info
     assert_equal "RW", YARD::Markdown::MethodPresentationHelper.attribute_access(parsed_attribute("attr_accessor :speed", "Fish#speed"))
     assert_equal "R", YARD::Markdown::MethodPresentationHelper.attribute_access(parsed_attribute("attr_reader :speed", "Fish#speed"))
