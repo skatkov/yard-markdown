@@ -18,8 +18,8 @@ module YARD
       # @param object [YARD::CodeObjects::NamespaceObject] Object being rendered.
       # @return [Array<YARD::CodeObjects::MethodObject>] Sorted public methods.
       def public_method_list(object)
-        prune_method_listing(object.meths(inherited: false, visibility: :public))
-          .reject { |item| ObjectListingHelper.hidden_object?(item) }
+        run_verifier(object.meths(inherited: false, visibility: :public))
+          .reject { |item| run_verifier([item.parent]).empty? || item.is_attribute? || ObjectListingHelper.hidden_object?(item) }
           .sort_by { |method_object| method_object.name }
       end
 
@@ -59,10 +59,15 @@ module YARD
 
       # Returns whether an object is explicitly hidden with `:nodoc:`.
       #
-      # @param object [YARD::CodeObjects::Base] Listed object whose docstring may start with `:nodoc:`.
+      # @param object [YARD::CodeObjects::Base] Listed object whose docstring may contain a `:nodoc:` directive.
       # @return [Boolean] True when the object should be hidden.
       def self.hidden_object?(object)
-        object.docstring.start_with?(":nodoc:")
+        if object.type == :method && object.is_alias?
+          # YARD appends alias comments to the original method's documentation.
+          object.docstring.match?(/^:nodoc:/)
+        else
+          object.docstring.start_with?(":nodoc:")
+        end
       end
 
       private
