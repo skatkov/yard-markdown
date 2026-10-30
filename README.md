@@ -15,6 +15,18 @@ gem install yard-markdown
 
 Run `yardoc --format=markdown` to generate markdown documentation.
 
+To include Ruby method implementations beneath their documentation, opt in with:
+
+```bash
+yardoc --format=markdown --embed-source
+```
+
+The prototype adds a **Source** section with a fenced Ruby code block to methods.
+It uses source captured by YARD without executing it. Attribute accessors and
+methods without available source have no source section. Source is omitted by
+default; existing visibility filters still apply. Review implementations for
+secrets or other internal details before publishing documentation with source.
+
 Markdown files in the project tree are detected automatically, copied unchanged into the output, and listed in `index.csv`:
 
 Markdown files whose basename starts with `_` are ignored automatically.

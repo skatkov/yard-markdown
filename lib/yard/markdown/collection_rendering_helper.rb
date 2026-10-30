@@ -67,7 +67,8 @@ module YARD
           heading_with_anchors(item_heading + " " + label.call(item), item),
           method_aliases(item, items),
           collection_item_description(item, items),
-          TagFormattingHelper.render_tags(item)
+          TagFormattingHelper.render_tags(item),
+          (MethodPresentationHelper.method_source(item) if item.type == :method && !item.is_attribute? && options.embed_source).to_s
         ].reject(&:empty?).join("\n")
       end
 

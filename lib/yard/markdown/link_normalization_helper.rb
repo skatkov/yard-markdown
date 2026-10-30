@@ -10,9 +10,15 @@ module YARD
       # @param current_path [String] Output path for the current document.
       # @return [String] Normalized Markdown content with a trailing newline.
       def finalize_markdown(content, current_path)
-        LinkNormalizationHelper.finish_markdown(
-          normalize_local_links(LinkNormalizationHelper.normalize_lines(content), current_path)
+        code_blocks = []
+        text = [content].join("\n").gsub(/^(?<fence>`{3,})ruby\n.+?^\k<fence>$/m) do |code|
+          code_blocks << code
+          "\x01#{code_blocks.length - 1}\x02"
+        end
+        normalized = LinkNormalizationHelper.finish_markdown(
+          normalize_local_links(LinkNormalizationHelper.normalize_lines(text), current_path)
         )
+        normalized.gsub(/\x01(\d+)\x02/) { code_blocks.fetch(Integer(Regexp.last_match(1))) }
       end
 
       # Rewrites local Markdown links relative to the current output path.
@@ -112,11 +118,10 @@ module YARD
 
       # Converts supported content into normalized lines.
       #
-      # @param content [String, Array<String>] Markdown content.
+      # @param content [String] Markdown content.
       # @return [String] Joined content without trailing line whitespace.
       def self.normalize_lines(content)
-        text = content.instance_of?(Array) ? content.join("\n") : content
-        text.lines.map(&:rstrip).join("\n")
+        content.lines.map(&:rstrip).join("\n")
       end
 
       # Compacts blank lines and adds the final newline.

@@ -30,6 +30,18 @@ module YARD
         "(#{rendered.join(", ")})"
       end
 
+      # Renders available method source in a Ruby code block.
+      #
+      # @param method_object [YARD::CodeObjects::MethodObject] Method being rendered.
+      # @return [String] Source section, or an empty string when unavailable.
+      def self.method_source(method_object)
+        source = method_object.source.to_s
+        return "" if source.empty?
+
+        fence = "`" * [3, source.scan(/`+/).map(&:length).max.to_i + 1].max
+        "\n**Source**\n\n#{fence}ruby\n#{source}\n#{fence}\n"
+      end
+
       # Finds the method carrying an alias's parsed parameters, without following cycles.
       #
       # @param method_object [YARD::CodeObjects::MethodObject] Method whose signature is rendered.
