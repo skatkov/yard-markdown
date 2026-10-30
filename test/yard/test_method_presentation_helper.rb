@@ -34,6 +34,16 @@ class YARD::TestMethodPresentationHelper < Minitest::Test
     assert_equal "W", YARD::Markdown::MethodPresentationHelper.attribute_access(parsed_attribute("attr_writer :speed", "Fish#speed="))
   end
 
+  def test_unavailable_source_does_not_render_an_empty_block
+    method = YARD::CodeObjects::MethodObject.new(:root, :generated)
+
+    assert_equal "", YARD::Markdown::MethodPresentationHelper.method_source(method)
+
+    method.source = ""
+
+    assert_equal "", YARD::Markdown::MethodPresentationHelper.method_source(method)
+  end
+
   private
 
   def build_method(parameters:, name: "call")

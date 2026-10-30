@@ -6,6 +6,17 @@ module YARD
     module YardocExtension
       private
 
+      # Adds the opt-in method source option to YARD's command line.
+      #
+      # @param parser [OptionParser] Command-line option parser.
+      # @return [void]
+      def output_options(parser)
+        super
+        parser.on("--embed-source", "Include method source in Markdown output.") do
+          options.embed_source = true
+        end
+      end
+
       # Adds Markdown pages to the files rendered by the Markdown template.
       #
       # @param checksums [Hash, nil] Previously generated file checksums.

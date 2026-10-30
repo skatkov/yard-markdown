@@ -145,6 +145,16 @@ class YARD::TestLinkNormalizationHelper < Minitest::Test
     assert_equal "Line 1\n\nLine 2\n\nLine 3\n", helper.finalize_markdown(input, "docs/current.md")
   end
 
+  def test_finalize_markdown_keeps_ruby_blocks_verbatim_but_rewrites_surrounding_prose
+    helper.options = Options.new(serializer: Serializer.new(mapping: {}), copied_file_aliases: {})
+    first = "````ruby\n# [inside](guide.html)  \n```\n\n\n# still source\n````"
+    second = "```ruby\nputs '[another](other.html)'\n```"
+    many_methods = (1..11).map { |number| "```ruby\ndef method_#{number}; end\n```" }.join("\n\n")
+    input = "#{first}\n\n[Between](guide.html)\n\n#{second}\n\n#{many_methods}\n\n[After](other.html)\n"
+
+    assert_equal "#{first}\n\n[Between](guide.md)\n\n#{second}\n\n#{many_methods}\n\n[After](other.md)\n", helper.finalize_markdown(input, "index.md")
+  end
+
   private
 
   def helper

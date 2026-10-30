@@ -194,6 +194,10 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
       include YARD::Markdown::CollectionRenderingHelper
       include YARD::Markdown::DocumentationHelper
       include YARD::Markdown::HeadingHelper
+
+      def options
+        @options ||= YARD::Templates::TemplateOptions.new
+      end
     end.new
   end
 
