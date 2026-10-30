@@ -25,10 +25,10 @@ end
 # Renders the template and normalizes markdown for top-level page output.
 #
 # @param opts [Hash, nil] Template options passed through to the base template.
-# @option opts [YARD::CodeObjects::NamespaceObject] :object Object being rendered.
 # @param sects [Array<Symbol>] Section names to render.
 # @param start_at [Integer] Starting index within `sects`.
 # @param break_first [Boolean] Whether rendering stops after the first section.
+# @option opts [YARD::CodeObjects::NamespaceObject] :object Object being rendered.
 # @yield Optional block forwarded to the base template renderer.
 # @return [String] Rendered markdown output.
 def run(opts = nil, sects = sections, start_at = 0, break_first = false, &block)

@@ -45,7 +45,7 @@ module YARD
         grouped = groups.any? { |name, _items| name }
         body = groups.map do |name, group_items|
           item_heading = grouped ? "####" : "###"
-          item_markdown = group_items.map { |item| render_collection_item(item_heading, item, &label) }.join("\n\n")
+          item_markdown = group_items.map { |item| render_collection_item(item_heading, item, items, &label) }.join("\n\n")
           [("### #{name || "General"}" if grouped), item_markdown].compact
         end
 
@@ -58,16 +58,43 @@ module YARD
       #
       # @param item_heading [String] Markdown heading prefix for the item.
       # @param item [YARD::CodeObjects::Base] Object being rendered.
+      # @param items [Array<YARD::CodeObjects::Base>] Objects with sections in this collection.
       # @param label [Proc] Item-label renderer.
       # @yieldparam item [YARD::CodeObjects::Base] Object whose label should be rendered.
       # @return [String] Rendered item Markdown.
-      def render_collection_item(item_heading, item, &label)
+      def render_collection_item(item_heading, item, items, &label)
         [
           heading_with_anchors(item_heading + " " + label.call(item), item),
-          documented_text(item),
+          method_aliases(item, items),
+          collection_item_description(item, items),
           TagFormattingHelper.render_tags(item),
-          (MethodPresentationHelper.method_source(item) if item.type == :method && !item.is_attribute? && options.embed_source)
-        ].compact.reject(&:empty?).join("\n")
+          (MethodPresentationHelper.method_source(item) if item.type == :method && !item.is_attribute? && options.embed_source).to_s
+        ].reject(&:empty?).join("\n")
+      end
+
+      # Lists aliases that have sections in the current collection.
+      #
+      # @param item [YARD::CodeObjects::Base] Object being rendered.
+      # @param items [Array<YARD::CodeObjects::Base>] Objects with generated sections.
+      # @return [String] Linked alias list followed by a blank line, or an empty string.
+      def method_aliases(item, items)
+        return "" unless item.type == :method
+
+        aliases = (item.aliases & items).map { |aka| "[`#{aka.name}`](##{ArefHelper.aref(aka)})" }
+        aliases.empty? ? "" : "Also known as: #{aliases.join(", ")}\n"
+      end
+
+      # Renders documentation or an alias fallback without linking omitted targets.
+      #
+      # @param item [YARD::CodeObjects::Base] Object being rendered.
+      # @param items [Array<YARD::CodeObjects::Base>] Objects with generated sections.
+      # @return [String] Rendered documentation or an alias description.
+      def collection_item_description(item, items)
+        return documented_text(item) unless item.type == :method && item.is_alias? && item.docstring.empty?
+
+        name = item.namespace.aliases.fetch(item)
+        target = items.find { |candidate| candidate.name == name && candidate.scope == item.scope }
+        target ? "Alias for: [`#{name}`](##{ArefHelper.aref(target)})" : "Alias for: `#{name}`"
       end
     end
   end

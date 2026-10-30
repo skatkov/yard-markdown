@@ -5,6 +5,8 @@ This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 
 ## Unreleased
 
+- Show linked method aliases directly below method headings and include visible aliases in `index.csv`.
+
 ### 0.10.0
 
 - Render optional keyword parameters with valid Ruby syntax (for example, `read_timeout: nil` instead of `read_timeout: = nil`).

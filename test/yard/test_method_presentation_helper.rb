@@ -5,8 +5,6 @@ require "test_helper"
 class YARD::TestMethodPresentationHelper < Minitest::Test
   cover YARD::Markdown::MethodPresentationHelper
 
-  MethodObject = Struct.new(:name, :parameters, keyword_init: true)
-
   def test_method_signature_and_heading_handle_nil_defaults_and_operator_spacing
     assert_equal "()", YARD::Markdown::MethodPresentationHelper.method_signature(build_method(parameters: nil))
     assert_equal "(name, limit = 10)", YARD::Markdown::MethodPresentationHelper.method_signature(build_method(parameters: [["name", nil], ["limit", "10"]]))
@@ -44,10 +42,48 @@ class YARD::TestMethodPresentationHelper < Minitest::Test
     assert_equal "", YARD::Markdown::MethodPresentationHelper.method_source(method)
   end
 
+  def test_alias_signatures_use_original_parameters_in_the_same_scope
+    YARD::Registry.clear
+    YARD.parse_string(<<~RUBY)
+      class Dictionary
+        def unrelated(other); end
+        def lookup(key, default = nil, required:, enabled: true); end
+        def self.lookup(value); end
+        alias [] lookup
+        alias_method :fetch, :[]
+        class << self
+          alias restore lookup
+        end
+      end
+    RUBY
+
+    assert_equal "[] (key, default = nil, required:, enabled: true)", YARD::Markdown::MethodPresentationHelper.formatted_method_heading(YARD::Registry.at("Dictionary#[]"))
+    assert_equal "fetch(key, default = nil, required:, enabled: true)", YARD::Markdown::MethodPresentationHelper.formatted_method_heading(YARD::Registry.at("Dictionary#fetch"))
+    assert_equal "restore(value)", YARD::Markdown::MethodPresentationHelper.formatted_method_heading(YARD::Registry.at("Dictionary.restore"))
+  end
+
+  def test_alias_signatures_handle_missing_targets_and_cycles
+    YARD::Registry.clear
+    YARD.parse_string(<<~RUBY)
+      class Fish
+        alias paddle missing
+        def swim; end
+        alias float swim
+        alias swim float
+      end
+    RUBY
+
+    assert_equal "paddle()", YARD::Markdown::MethodPresentationHelper.formatted_method_heading(YARD::Registry.at("Fish#paddle"))
+    assert_equal "swim()", YARD::Markdown::MethodPresentationHelper.formatted_method_heading(YARD::Registry.at("Fish#swim"))
+  end
+
   private
 
   def build_method(parameters:, name: "call")
-    MethodObject.new(name: name, parameters: parameters)
+    YARD::Registry.clear
+    object = YARD::CodeObjects::MethodObject.new(YARD::Registry.root, name)
+    object.parameters = parameters
+    object
   end
 
   def parsed_attribute(source, path)

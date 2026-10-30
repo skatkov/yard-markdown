@@ -187,6 +187,94 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
     MARKDOWN
   end
 
+  def test_render_methods_lists_only_rendered_aliases_between_heading_and_body
+    parse_source(<<~RUBY)
+      class Dictionary
+        # @!group Lookup
+        # Checks a key.
+        def key?(key); end
+        alias has_key? key?
+        alias_method :include?, :key?
+        alias hidden key?
+        # @!endgroup
+
+        # Loads a value.
+        def self.load; end
+        class << self
+          alias restore load
+        end
+      end
+    RUBY
+    methods = %w[key? has_key? include?].map { |name| YARD::Registry.at("Dictionary##{name}") }
+    output = helper.render_methods("Public Instance Methods", methods, ["Lookup"])
+
+    assert_includes output, <<~MARKDOWN.chomp
+      #### `key?(key)` <a id="method-i-key-3F"></a> <a id="key?-instance_method"></a>
+      Also known as: [`has_key?`](#method-i-has_key-3F), [`include?`](#method-i-include-3F)
+
+      Checks a key.
+      - **@return** [Boolean]
+    MARKDOWN
+    assert_equal 1, output.scan("Also known as:").length
+    refute_includes output, "hidden"
+    assert_includes output, "### Lookup"
+
+    methods = %w[load restore].map { |name| YARD::Registry.at("Dictionary.#{name}") }
+    output = helper.render_methods("Public Class Methods", methods, [])
+
+    assert_includes output, <<~MARKDOWN.chomp
+      ### `load()` <a id="method-c-load"></a> <a id="load-class_method"></a>
+      Also known as: [`restore`](#method-c-restore)
+
+      Loads a value.
+    MARKDOWN
+  end
+
+  def test_render_methods_preserves_alias_documentation_and_tags
+    parse_source(<<~RUBY)
+      class Fish
+        # Swims upstream.
+        # @return [String] direction
+        def swim; end
+        # Uses the same route.
+        alias paddle swim
+      end
+    RUBY
+    methods = %w[swim paddle].map { |name| YARD::Registry.at("Fish##{name}") }
+    output = helper.render_methods("Public Instance Methods", methods, [])
+
+    assert_includes output, <<~MARKDOWN.chomp
+      ### `paddle()` <a id="method-i-paddle"></a> <a id="paddle-instance_method"></a>
+      Swims upstream. Uses the same route.
+      - **@return** [String] direction
+    MARKDOWN
+    refute_includes output, "Alias for:"
+  end
+
+  def test_render_methods_links_undocumented_aliases_only_to_rendered_same_scope_targets
+    parse_source(<<~RUBY)
+      class Fish
+        def other; end
+        def swim; end
+        def self.swim; end
+        alias paddle swim
+      end
+    RUBY
+    target = YARD::Registry.at("Fish#swim")
+    aka = YARD::Registry.at("Fish#paddle")
+    other_scope = YARD::Registry.at("Fish.swim")
+    other_name = YARD::Registry.at("Fish#other")
+    output = helper.render_methods("Public Instance Methods", [other_scope, other_name, target, aka], [])
+
+    assert_includes output, "Alias for: [`swim`](#method-i-swim)"
+
+    output = helper.render_methods("Public Instance Methods", [other_scope, aka], [])
+
+    assert_includes output, "Alias for: `swim`"
+    refute_includes output, "Alias for: [`swim`]"
+    refute_includes output, "Also known as:"
+  end
+
   private
 
   def helper

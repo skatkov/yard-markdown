@@ -20,7 +20,7 @@ module YARD
       # @param method_object [YARD::CodeObjects::MethodObject] Method being rendered.
       # @return [String] Parenthesized method signature.
       def self.method_signature(method_object)
-        rendered = Array(method_object.parameters).map do |name, default|
+        rendered = Array(signature_method(method_object).parameters).map do |name, default|
           next name if default.to_s.empty?
 
           separator = name.end_with?(":") ? " " : " = "
@@ -41,6 +41,24 @@ module YARD
         fence = "`" * [3, source.scan(/`+/).map(&:length).max.to_i + 1].max
         "\n**Source**\n\n#{fence}ruby\n#{source}\n#{fence}\n"
       end
+
+      # Finds the method carrying an alias's parsed parameters, without following cycles.
+      #
+      # @param method_object [YARD::CodeObjects::MethodObject] Method whose signature is rendered.
+      # @return [YARD::CodeObjects::MethodObject] Method providing the parameter list.
+      def self.signature_method(method_object)
+        seen = []
+        while method_object.is_alias? && !seen.include?(method_object)
+          seen << method_object
+          name = method_object.namespace.aliases.fetch(method_object)
+          target = method_object.namespace.child(name: name, scope: method_object.scope)
+          break unless target
+
+          method_object = target
+        end
+        method_object
+      end
+      private_class_method :signature_method
 
       # Returns the access marker for an attribute.
       #
