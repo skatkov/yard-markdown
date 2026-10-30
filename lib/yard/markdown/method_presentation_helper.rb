@@ -20,7 +20,15 @@ module YARD
       # @param method_object [YARD::CodeObjects::MethodObject] Method being rendered.
       # @return [String] Parenthesized method signature.
       def self.method_signature(method_object)
-        rendered = Array(signature_method(method_object).parameters).map do |name, default|
+        seen = []
+        while method_object.is_alias? && !seen.include?(method_object)
+          seen << method_object
+          target = alias_target(method_object)
+          break unless target
+
+          method_object = target
+        end
+        rendered = Array(method_object.parameters).map do |name, default|
           next name if default.to_s.empty?
 
           separator = name.end_with?(":") ? " " : " = "
@@ -30,23 +38,14 @@ module YARD
         "(#{rendered.join(", ")})"
       end
 
-      # Finds the method carrying an alias's parsed parameters, without following cycles.
+      # Resolves an alias in its declaration scope, even when rendered as an extended method.
       #
-      # @param method_object [YARD::CodeObjects::MethodObject] Method whose signature is rendered.
-      # @return [YARD::CodeObjects::MethodObject] Method providing the parameter list.
-      def self.signature_method(method_object)
-        seen = []
-        while method_object.is_alias? && !seen.include?(method_object)
-          seen << method_object
-          name = method_object.namespace.aliases.fetch(method_object)
-          target = method_object.namespace.child(name: name, scope: method_object.scope)
-          break unless target
-
-          method_object = target
-        end
-        method_object
+      # @param method_object [YARD::CodeObjects::MethodObject] Alias being rendered.
+      # @return [YARD::CodeObjects::MethodObject, nil] Target declaration, if available.
+      def self.alias_target(method_object)
+        aka, name = method_object.namespace.aliases.find { |candidate, _name| candidate == method_object }
+        aka.namespace.child(name: name, scope: aka.scope)
       end
-      private_class_method :signature_method
 
       # Returns the access marker for an attribute.
       #

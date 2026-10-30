@@ -134,24 +134,38 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
       - **@return** [void]
     MARKDOWN
     parse_source(<<~RUBY)
-      class Salmon
+      module Salmon
         # @!group Named
-        def alpha
-        end
-
-        def beta
-        end
+        # Named documentation.
+        # @return [String] result
+        def alpha(value); end
+        alias gamma alpha
+        # Uses the same result.
+        alias_method :beta, :alpha
+        alias hidden alpha
         # @!endgroup
+        module_function :alpha
       end
     RUBY
-    output = helper.render_methods("Public Instance Methods", [YARD::Registry.at("Salmon#alpha"), YARD::Registry.at("Salmon#beta")], ["Named"])
+    methods = %w[alpha beta gamma].map { |name| YARD::Registry.at("Salmon##{name}") }
+    output = helper.render_methods("Public Instance Methods", methods, ["Named"])
 
     assert_includes output, <<~MARKDOWN.chomp
-      #### `alpha()` <a id="method-i-alpha"></a> <a id="alpha-instance_method"></a>
-      Not documented.
+      #### `alpha(value)` <a id="method-i-alpha"></a> <a id="alpha-instance_method"></a>
+      Also known as: [`gamma`](#method-i-gamma), [`beta`](#method-i-beta)
 
-      #### `beta()` <a id="method-i-beta"></a> <a id="beta-instance_method"></a>
+      Named documentation.
+      - **@return** [String] result
+
+      #### `beta(value)` <a id="method-i-beta"></a> <a id="beta-instance_method"></a>
+      Named documentation. Uses the same result.
+      - **@return** [String] result
     MARKDOWN
+    refute_includes output, "hidden"
+    refute_includes output, "Alias for:"
+    assert_equal 1, output.scan("Also known as:").length
+    output = helper.render_methods("Public Class Methods", YARD::Registry.at("Salmon").meths(scope: :class), [])
+    refute_includes output, "Also known as:"
 
     parse_source(<<~RUBY)
       class Salmon
@@ -187,89 +201,28 @@ class YARD::TestCollectionRenderingHelper < Minitest::Test
     MARKDOWN
   end
 
-  def test_render_methods_lists_only_rendered_aliases_between_heading_and_body
+  def test_render_methods_preserves_extended_aliases_and_does_not_link_overridden_targets
     parse_source(<<~RUBY)
-      class Dictionary
-        # @!group Lookup
-        # Checks a key.
-        def key?(key); end
-        alias has_key? key?
-        alias_method :include?, :key?
-        alias hidden key?
-        # @!endgroup
-
-        # Loads a value.
-        def self.load; end
-        class << self
-          alias restore load
-        end
-      end
-    RUBY
-    methods = %w[key? has_key? include?].map { |name| YARD::Registry.at("Dictionary##{name}") }
-    output = helper.render_methods("Public Instance Methods", methods, ["Lookup"])
-
-    assert_includes output, <<~MARKDOWN.chomp
-      #### `key?(key)` <a id="method-i-key-3F"></a> <a id="key?-instance_method"></a>
-      Also known as: [`has_key?`](#method-i-has_key-3F), [`include?`](#method-i-include-3F)
-
-      Checks a key.
-      - **@return** [Boolean]
-    MARKDOWN
-    assert_equal 1, output.scan("Also known as:").length
-    refute_includes output, "hidden"
-    assert_includes output, "### Lookup"
-
-    methods = %w[load restore].map { |name| YARD::Registry.at("Dictionary.#{name}") }
-    output = helper.render_methods("Public Class Methods", methods, [])
-
-    assert_includes output, <<~MARKDOWN.chomp
-      ### `load()` <a id="method-c-load"></a> <a id="load-class_method"></a>
-      Also known as: [`restore`](#method-c-restore)
-
-      Loads a value.
-    MARKDOWN
-  end
-
-  def test_render_methods_preserves_alias_documentation_and_tags
-    parse_source(<<~RUBY)
-      class Fish
-        # Swims upstream.
-        # @return [String] direction
-        def swim; end
-        # Uses the same route.
-        alias paddle swim
-      end
-    RUBY
-    methods = %w[swim paddle].map { |name| YARD::Registry.at("Fish##{name}") }
-    output = helper.render_methods("Public Instance Methods", methods, [])
-
-    assert_includes output, <<~MARKDOWN.chomp
-      ### `paddle()` <a id="method-i-paddle"></a> <a id="paddle-instance_method"></a>
-      Swims upstream. Uses the same route.
-      - **@return** [String] direction
-    MARKDOWN
-    refute_includes output, "Alias for:"
-  end
-
-  def test_render_methods_links_undocumented_aliases_only_to_rendered_same_scope_targets
-    parse_source(<<~RUBY)
-      class Fish
-        def other; end
-        def swim; end
+      module Swimmer
+        def swim(value); end
         def self.swim; end
         alias paddle swim
       end
+      class Fish
+        include Swimmer
+        extend Swimmer
+        def swim; end
+      end
     RUBY
-    target = YARD::Registry.at("Fish#swim")
-    aka = YARD::Registry.at("Fish#paddle")
-    other_scope = YARD::Registry.at("Fish.swim")
-    other_name = YARD::Registry.at("Fish#other")
-    output = helper.render_methods("Public Instance Methods", [other_scope, other_name, target, aka], [])
+    fish = YARD::Registry.at("Fish")
+    output = helper.render_methods("Public Class Methods", fish.meths(scope: :class, inherited: false), [])
 
-    assert_includes output, "Alias for: [`swim`](#method-i-swim)"
+    assert_includes output, "### `paddle(value)` <a id=\"method-c-paddle\">"
+    assert_includes output, "Also known as: [`paddle`](#method-c-paddle)"
+    assert_includes output, "Alias for: [`swim`](#method-c-swim)"
 
-    output = helper.render_methods("Public Instance Methods", [other_scope, aka], [])
-
+    methods = fish.meths(scope: :instance, inherited: false) + [YARD::Registry.at("Swimmer.swim")]
+    output = helper.render_methods("Public Instance Methods", methods, [])
     assert_includes output, "Alias for: `swim`"
     refute_includes output, "Alias for: [`swim`]"
     refute_includes output, "Also known as:"
