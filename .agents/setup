@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+export PATH="$HOME/.nix-profile/bin:$PATH"
+if ! command -v ruby >/dev/null || [[ "$(command -v gcc)" != "$HOME/.nix-profile/bin/gcc" ]]; then
+  nix --extra-experimental-features 'nix-command flakes' profile add nixpkgs#ruby_3_4 nixpkgs#gcc
+fi
+
+bundler_version=$(tail -1 Gemfile.lock | tr -d ' ')
+gem list --installed bundler --version "$bundler_version" >/dev/null ||
+  gem install bundler --version "$bundler_version" --no-document --user-install
+bundle config set --local path "$HOME/.cache/yard-markdown-bundle"
+bundle check || bundle install
