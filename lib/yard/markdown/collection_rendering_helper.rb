@@ -63,24 +63,15 @@ module YARD
       # @yieldparam item [YARD::CodeObjects::Base] Object whose label should be rendered.
       # @return [String] Rendered item Markdown.
       def render_collection_item(item_heading, item, items, &label)
+        aliases = (item.type == :method) ? item.aliases : []
+        alias_links = aliases.map { |aka| items.find { |candidate| candidate == aka } }.compact
+          .map { |aka| "[`#{aka.name}`](##{ArefHelper.aref(aka)})" }
         [
           heading_with_anchors(item_heading + " " + label.call(item), item),
-          method_aliases(item, items),
+          (alias_links.empty? ? "" : "Also known as: #{alias_links.join(", ")}\n"),
           collection_item_description(item, items),
           TagFormattingHelper.render_tags(item)
         ].reject(&:empty?).join("\n")
-      end
-
-      # Lists aliases that have sections in the current collection.
-      #
-      # @param item [YARD::CodeObjects::Base] Object being rendered.
-      # @param items [Array<YARD::CodeObjects::Base>] Objects with generated sections.
-      # @return [String] Linked alias list followed by a blank line, or an empty string.
-      def method_aliases(item, items)
-        return "" unless item.type == :method
-
-        aliases = (item.aliases & items).map { |aka| "[`#{aka.name}`](##{ArefHelper.aref(aka)})" }
-        aliases.empty? ? "" : "Also known as: #{aliases.join(", ")}\n"
       end
 
       # Renders documentation or an alias fallback without linking omitted targets.
@@ -92,7 +83,8 @@ module YARD
         return documented_text(item) unless item.type == :method && item.is_alias? && item.docstring.empty?
 
         name = item.namespace.aliases.fetch(item)
-        target = items.find { |candidate| candidate.name == name && candidate.scope == item.scope }
+        declaration = MethodPresentationHelper.alias_target(item)
+        target = items.find { |candidate| candidate == declaration }
         target ? "Alias for: [`#{name}`](##{ArefHelper.aref(target)})" : "Alias for: `#{name}`"
       end
     end

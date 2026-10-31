@@ -62,12 +62,12 @@ module YARD
       # @param object [YARD::CodeObjects::Base] Listed object whose docstring may contain a `:nodoc:` directive.
       # @return [Boolean] True when the object should be hidden.
       def self.hidden_object?(object)
-        if object.type == :method && object.is_alias?
-          # YARD appends alias comments to the original method's documentation.
-          object.docstring.match?(/^:nodoc:/)
-        else
-          object.docstring.start_with?(":nodoc:")
-        end
+        docstring = object.docstring
+        return true if docstring.start_with?(":nodoc:")
+        return false unless docstring.line_range
+
+        # Keep the alias's own comment lines, including any trailing blank line.
+        "#{docstring.all}\n".lines.last(docstring.line_range.size).join.lstrip.start_with?(":nodoc:")
       end
 
       private

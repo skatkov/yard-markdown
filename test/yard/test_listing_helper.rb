@@ -28,23 +28,26 @@ class YARD::TestListingHelper < Minitest::Test
     hidden.docstring = "   :nodoc: hidden"
     visible = YARD::CodeObjects::ClassObject.new(YARD::Registry.root, :Visible)
     visible.docstring = "details :nodoc:"
-    method = YARD::CodeObjects::MethodObject.new(visible, :explain)
-    method.docstring = "Explains directives.\n:nodoc: is mentioned in the body."
 
     assert_true YARD::Markdown::ObjectListingHelper.hidden_object?(hidden)
     assert_false YARD::Markdown::ObjectListingHelper.hidden_object?(visible)
-    assert_false YARD::Markdown::ObjectListingHelper.hidden_object?(method)
   end
 
   def test_public_method_lists_filter_sort_and_prune_members
     YARD::Registry.clear
     YARD.parse_string(<<~RUBY)
+      # @private
+      module Internal
+        def skipped; end
+        alias skipped_alias skipped
+      end
       class Fish
         def inherited_public
         end
       end
 
       class Salmon < Fish
+        include Internal
         # :nodoc:
         def self.hidden
         end
@@ -60,10 +63,27 @@ class YARD::TestListingHelper < Minitest::Test
         def alpha
         end
 
+        # Explains directives.
+        # :nodoc: is mentioned in the body.
+        # @return [String] direction
         def swim
         end
 
         alias paddle swim
+        # Explains :nodoc:
+        alias_method :row, :swim
+        alias inline_hidden swim # :nodoc:
+        #   :nodoc:
+        #
+        alias hidden_comment swim
+        # @private
+        alias internal swim
+        alias secret swim
+        private :secret
+        alias guarded swim
+        protected :guarded
+        # :nodoc:
+        alias undocumented_hidden alpha
 
         # :nodoc:
         def sink
@@ -77,9 +97,10 @@ class YARD::TestListingHelper < Minitest::Test
     RUBY
 
     object = YARD::Registry.at("Salmon")
+    template.options.verifier = YARD::Verifier.new("!@private")
 
     assert_equal ["Salmon.spawn"], template.public_class_methods(object).map(&:path)
-    assert_equal ["Salmon#alpha", "Salmon#paddle", "Salmon#swim", "Salmon#zebra"], template.public_instance_methods(object).map(&:path)
+    assert_equal %w[Salmon#alpha Salmon#paddle Salmon#row Salmon#swim Salmon#zebra], template.public_instance_methods(object).map(&:path)
   end
 
   def test_attr_listing_handles_direct_attributes_and_default_inheritance_rules
@@ -102,53 +123,6 @@ class YARD::TestListingHelper < Minitest::Test
     RUBY
 
     assert_equal ["Salmon.config", "Salmon#alpha", "Salmon#beta", "Salmon#captured=", "Salmon#Zebra"], template.attr_listing(YARD::Registry.at("Salmon")).map(&:path)
-  end
-
-  def test_public_method_lists_hide_private_protected_nodoc_and_unverified_aliases
-    YARD::Registry.clear
-    YARD.parse_string(<<~RUBY)
-      class Dictionary
-        # Checks a key and explains :nodoc: annotations.
-        def key?(key); end
-        alias has_key? key?
-        alias_method :include?, :key?
-        alias inline_hidden key? # :nodoc:
-        # :nodoc:
-        alias hidden key?
-        # @private
-        alias internal key?
-        alias secret key?
-        private :secret
-        alias guarded key?
-        protected :guarded
-
-        def undocumented; end
-        # :nodoc:
-        alias undocumented_hidden undocumented
-      end
-    RUBY
-    template.options.verifier = YARD::Verifier.new("!@private")
-
-    assert_equal %w[Dictionary#has_key? Dictionary#include? Dictionary#key? Dictionary#undocumented],
-      template.public_instance_methods(YARD::Registry.at("Dictionary")).map(&:path)
-  end
-
-  def test_public_method_lists_verify_included_method_owners
-    YARD::Registry.clear
-    YARD.parse_string(<<~RUBY)
-      # @private
-      module Internal
-        def swim; end
-        alias paddle swim
-      end
-
-      class Fish
-        include Internal
-      end
-    RUBY
-    template.options.verifier = YARD::Verifier.new("!@private")
-
-    assert_equal [], template.public_instance_methods(YARD::Registry.at("Fish"))
   end
 
   def test_attr_listing_handles_embed_mixins_proxy_ancestors_and_pruned_entries
