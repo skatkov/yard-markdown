@@ -66,8 +66,8 @@ module YARD
         return true if docstring.start_with?(":nodoc:")
         return false unless docstring.line_range
 
-        # YARD appends the alias's own comment after the inherited documentation.
-        docstring.all.split("\n", -1).last(docstring.line_range.size).join("\n").lstrip.start_with?(":nodoc:")
+        # Keep the alias's own comment lines, including any trailing blank line.
+        "#{docstring.all}\n".lines.last(docstring.line_range.size).join.lstrip.start_with?(":nodoc:")
       end
 
       private

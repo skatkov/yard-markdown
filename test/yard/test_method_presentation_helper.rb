@@ -19,9 +19,9 @@ class YARD::TestMethodPresentationHelper < Minitest::Test
       module HttpClient
         def unrelated(other); end
         def configure(value = nil, required:, enabled: false, label: "", limit: 10, **options, &block); end
+        def self.configure(other); end
         alias [] configure
         alias_method :fetch, :[]
-        def self.configure(other); end
         class << self
           alias restore configure
         end

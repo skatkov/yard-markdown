@@ -70,7 +70,7 @@ class YARD::TestListingHelper < Minitest::Test
         end
 
         alias paddle swim
-        # Uses the same route.
+        # Explains :nodoc:
         alias_method :row, :swim
         alias inline_hidden swim # :nodoc:
         #   :nodoc:
