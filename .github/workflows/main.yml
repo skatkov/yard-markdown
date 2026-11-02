@@ -10,13 +10,16 @@ on:
 permissions:
   contents: read
 
+env:
+  LC_ALL: C.UTF-8
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     name: Lint
     steps:
       - uses: actions/checkout@v5
@@ -31,7 +34,7 @@ jobs:
         run: bundle exec standardrb
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     name: Ruby ${{ matrix.ruby }}
     strategy:
       matrix:
@@ -56,7 +59,7 @@ jobs:
   mutant:
     if: github.event_name == 'pull_request'
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     name: Mutant
     steps:
       - uses: actions/checkout@v5
